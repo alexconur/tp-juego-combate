@@ -1,33 +1,60 @@
 package org.modelo.tablero;
 
+import org.modelo.unidades.Unidad;
+import org.modelo.tablero.excepciones.CasillaOcupadaException;
+import org.modelo.tablero.excepciones.CasillaIntransitableException;
+
 public class Tablero {
-    // Super hipotetico, el tablero debe cargarse desde un archivo (como tropas)
-    private static Tablero tablero;
-    private Casilla[][] casilla;
+    // Atributos
+    private int filas;
+    private int columnas;
+    private Casilla[][] casillas;
 
-    private Tablero(int n, int m){
-        casilla = new Casilla[n][m];
+    // Constructor
+    private Tablero(int filas, int columnas){
+        this.filas=filas;
+        this.columnas=columnas;
+        this.casillas = new Casilla[filas][columnas];
     }
 
-    // Singleton para el tablero
-    public static Tablero crearTablero(int n, int m){
-        if(tablero == null){
-            Tablero.tablero = new Tablero(n, m);
-            return Tablero.tablero;
-        }
-        return tablero;
-    }
-
+    // Devuelve la casilla en la posicion dada. Incluye chequeo de limites
     public Casilla getCasilla(int fila, int columna){
-        return casilla[fila][columna];
+        if (!posicionValida(fila,columna)){
+            return null;
+        }
+        return casillas[fila][columna];
     }
 
+    // Coloca un tipo de casilla (Terreno) en el tablero
+        // *X*: Esto lo usa el "CargadorDeMapas". (a implementar)
     public void setCasilla(int fila, int columna, Casilla nuevaCasilla){
-        casilla[fila][columna] = nuevaCasilla;
+        if(!posicionValida(fila,columna)){
+            return;
+        }
+        casillas[fila][columna] = nuevaCasilla;
     }
-    
-    // Metodos ideas
-    // public boolean posicionValida();
-    // 
 
+    // Ayuda a verificar si una coordenada esta dentro del tablero
+    public boolean posicionValida(int fila, int columna) {
+        return fila >= 0 && fila < this.filas && columna >= 0 && columna < this.columnas;
+    }
+
+    // Mueve una unidad de una casilla a otra. 
+    public void moverUnidad(Unidad unidad, int nuevaFila, int nuevaCol) 
+            throws CasillaOcupadaException, CasillaIntransitableException {
+        
+        if (unidad == null) return;
+        
+        Casilla destino = getCasilla(nuevaFila, nuevaCol);
+        if (destino == null) {
+            throw new CasillaIntransitableException("Posición de destino fuera del tablero.");
+        }
+        // 1. Desocupar la casilla actual (si tiene una)
+        Casilla origen = unidad.getCasillaActual();
+        if (origen != null) {
+            origen.desocupar();
+        }
+        // 2. Ocupar la nueva casilla
+        destino.ocupar(unidad);
+    }
 }
