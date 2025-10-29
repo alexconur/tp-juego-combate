@@ -9,6 +9,7 @@ public class Lord extends Unidad {
 
     private Lord(String nombre, int hp, int atk, int def, int mgc, int mov, Bando bando) {
         super(nombre, hp, atk, def, mgc, mov, bando);
+        this.setEsLord(true);
     }
 
     // *A* hice valores por defecto porque no sé a que se refieren con que lord tenga stats mejorados
