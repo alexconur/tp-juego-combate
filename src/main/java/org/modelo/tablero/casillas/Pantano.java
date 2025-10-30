@@ -3,7 +3,7 @@ package org.modelo.tablero.casillas;
 import org.modelo.tablero.Casilla;
 import org.modelo.unidades.Unidad;
 
-public class Pantano extends Casilla {
+public class Pantano extends Casilla implements Aplicable {
     public Pantano(int fila, int columna) {
         super(fila, columna);
     }

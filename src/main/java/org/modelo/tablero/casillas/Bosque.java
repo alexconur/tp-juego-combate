@@ -3,7 +3,7 @@ package org.modelo.tablero.casillas;
 import org.modelo.tablero.Casilla;
 import org.modelo.unidades.Unidad;
 
-public class Bosque extends Casilla {
+public class Bosque extends Casilla implements Aplicable {
     private static final int BONUS_DEFENSA = 5;  // Valor hipotético
     private static final int BONUS_MAGIA = 5;  // Valor hipotético
 

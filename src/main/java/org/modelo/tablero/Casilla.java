@@ -1,9 +1,8 @@
 package org.modelo.tablero;
 
-import org.modelo.unidades.Unidad;
-
-import org.modelo.tablero.excepciones.CasillaOcupadaException;
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
+import org.modelo.tablero.excepciones.CasillaOcupadaException;
+import org.modelo.unidades.Unidad;
 
 public abstract class Casilla {
     // Atributos
@@ -17,7 +16,6 @@ public abstract class Casilla {
         this.col = columna;
         this.ocupante = null;
     }
-
 
     // --- Métodos de Estado y Posición ---
 
@@ -67,6 +65,11 @@ public abstract class Casilla {
 
     // Define el costo al moverse en esta casilla
     public abstract int getCostoMovimiento();
+
+
+    // *I* Ya está la interfaz, habría que ver que Casilla no use estos métodos 
+    //  en desocupar y ocupar como para poder sacarlos.
+    //  P/D: Si dejamos ocupante como protected creo no haría falta pasar Unidad por parám.
 
     // Aplica efectos que ocurren cuando una unidad ENTRA a la casilla.
     public abstract void aplicarEfectoAlEntrar(Unidad unidad);

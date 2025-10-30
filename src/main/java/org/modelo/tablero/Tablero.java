@@ -1,8 +1,8 @@
 package org.modelo.tablero;
 
-import org.modelo.unidades.Unidad;
-import org.modelo.tablero.excepciones.CasillaOcupadaException;
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
+import org.modelo.tablero.excepciones.CasillaOcupadaException;
+import org.modelo.unidades.Unidad;
 
 public class Tablero {
     // Atributos
@@ -11,7 +11,7 @@ public class Tablero {
     private Casilla[][] casillas;
 
     // Constructor
-    private Tablero(int filas, int columnas){
+    public Tablero(int filas, int columnas){
         this.filas=filas;
         this.columnas=columnas;
         this.casillas = new Casilla[filas][columnas];

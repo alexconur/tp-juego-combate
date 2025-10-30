@@ -1,6 +1,13 @@
 package org.modelo.tablero;
 
-import org.modelo.tablero.casillas.*;
+import org.modelo.tablero.casillas.Acantilado;
+import org.modelo.tablero.casillas.Agua;
+import org.modelo.tablero.casillas.AreaContaminada;
+import org.modelo.tablero.casillas.Bosque;
+import org.modelo.tablero.casillas.Castillo;
+import org.modelo.tablero.casillas.Enredadera;
+import org.modelo.tablero.casillas.Llanura;
+import org.modelo.tablero.casillas.Pantano;
 
 public class FabricaCasillas {
     public Casilla crearCasilla(String tipoTerreno, int fila, int columna){
