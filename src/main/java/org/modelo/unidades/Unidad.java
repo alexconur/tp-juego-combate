@@ -162,4 +162,27 @@ public class Unidad {
         this.bonusDefTemporal = 0;
         this.bonusMgcTemporal = 0;
     }
+
+    // --- MOVIMIENTO EN EL TABLERO ---
+    public void moverA(org.modelo.tablero.Tablero tablero, int nuevaFila, int nuevaColumna) {
+        if (movimientoRealizado) {
+            System.out.println(nombre + " ya se movió este turno.");
+            return;
+        }
+
+        try {
+            // Tablero se encarga de validar el movimiento y de realizarlo
+            tablero.moverUnidad(this, nuevaFila, nuevaColumna);
+
+            // Seteo al movimiento como realizado y revelo la unidad
+            movimientoRealizado = true;
+            revelar();
+
+            System.out.println(nombre + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
+        } catch (org.modelo.tablero.excepciones.CasillaOcupadaException e) {
+            System.out.println("Casilla ocupada: " + e.getMessage());
+        } catch (org.modelo.tablero.excepciones.CasillaIntransitableException e) {
+            System.out.println("Movimiento inválido: " + e.getMessage());
+        }
+    }
 }

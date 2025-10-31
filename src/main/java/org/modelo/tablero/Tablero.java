@@ -40,21 +40,39 @@ public class Tablero {
     }
 
     // Mueve una unidad de una casilla a otra. 
-    public void moverUnidad(Unidad unidad, int nuevaFila, int nuevaCol) 
-            throws CasillaOcupadaException, CasillaIntransitableException {
-        
-        if (unidad == null) return;
-        
-        Casilla destino = getCasilla(nuevaFila, nuevaCol);
-        if (destino == null) {
-            throw new CasillaIntransitableException("Posición de destino fuera del tablero.");
-        }
-        // 1. Desocupar la casilla actual (si tiene una)
-        Casilla origen = unidad.getCasillaActual();
-        if (origen != null) {
-            origen.desocupar();
-        }
-        // 2. Ocupar la nueva casilla
-        destino.ocupar(unidad);
+    public void moverUnidad(Unidad unidad, int nuevaFila, int nuevaColumna)
+        throws CasillaOcupadaException, CasillaIntransitableException {
+
+    if (unidad == null) return;
+
+    if (!posicionValida(nuevaFila, nuevaColumna)) {
+        throw new CasillaIntransitableException("Movimiento fuera del tablero");
     }
+
+    Casilla destino = getCasilla(nuevaFila, nuevaColumna);
+
+    // 1. Verificar si la casilla permite el movimiento
+    if (!destino.esTransitable()) {
+        throw new CasillaIntransitableException("Casilla intransitable");
+    }
+
+    if (destino.estaOcupada()) {
+        throw new CasillaOcupadaException("Casilla ya ocupada");
+    }
+
+    // 2. Liberar la casilla actual
+    Casilla origen = unidad.getCasillaActual();
+    if (origen != null) origen.desocupar();
+
+    // 3. Mover la unidad a la nueva posición
+    destino.ocupar(unidad);
+    unidad.setCasillaActual(destino);
+
+    // 4. Aplicar efectos del terreno si los hay
+    if (destino instanceof org.modelo.tablero.casillas.Aplicable a) {
+        a.aplicarEfectoAlEntrar(unidad);
+    }
+
+    System.out.println(unidad.getNombre() + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
+}
 }
