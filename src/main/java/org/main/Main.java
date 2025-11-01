@@ -6,12 +6,10 @@ import org.vista.VistaPrincipal;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.print("Boca");
-
         // *I* main no debería necesitar más que esto para el resto del proyecto
 
         //*M* necesitamos el parseo de los archivos para cargar los datos iniciales
-        Juego juego = new Juego();
+        Juego juego = new Juego(1,1); // *A* puse valores temporales, despues en ControladorInicio se reemplaza el tablero
         VistaPrincipal vista = new VistaPrincipal();
         ControladorPrincipal controlador = new ControladorPrincipal(juego, vista);
 

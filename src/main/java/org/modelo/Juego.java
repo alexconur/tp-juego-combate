@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.modelo.tablero.FabricaCasillas;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 
 public class Juego {
+    // *A* falta lógica de que un jugador se pueda rendir ademas de perder, y termine el juego.
     private Tablero tablero;
     private List<Unidad> bando1;
     private List<Unidad> bando2;
@@ -27,15 +27,23 @@ public class Juego {
 
 
     // Cargar tablero
-    public void cargarTablero() {
-        FabricaCasillas fabrica = new FabricaCasillas(); //rompe algo??? suspishus, idk
+    // public void cargarTablero() {
+    //     FabricaCasillas fabrica = new FabricaCasillas(); //rompe algo??? suspishus, idk
 
-        for (int i = 0; i < tablero.getFilas(); i++) {
-            for (int j = 0; j < tablero.getColumnas(); j++) {
-                //*M* acá hacemos algo con lo que nos dan desde los archivos (creo que tenemos como min un parametro en este método)
-            }
-        }
+    //     for (int i = 0; i < tablero.getFilas(); i++) {
+    //         for (int j = 0; j < tablero.getColumnas(); j++) {
+    //             //*M* acá hacemos algo con lo que nos dan desde los archivos (creo que tenemos como min un parametro en este método)
+    //         }
+    //     }
 
+    // }
+
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public void reemplazarTablero(Tablero nuevo) {
+        this.tablero = nuevo;
     }
 
     // agrego las unidades la lista

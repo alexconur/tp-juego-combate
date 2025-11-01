@@ -1,9 +1,0 @@
-codigo,desc,atk_mod,mgc_mod,mov_cap,fin_turno_hp_delta,fin_turno_def_boost,intransitable
-LLA,Llanura,0,0,,0,0,false
-BOS,Bosque,1,1,,0,0,false
-PAN,Pantano,0,0,1,0,0,false
-FOR,Fuerte,0,0,,5,2,false
-CON,Contaminada,0,0,,-5,0,false
-AGU,Agua,0,0,0,0,0,true
-ENR,Enredadera,0,0,0,0,0,true
-ACA,Acantilado,0,0,0,0,0,true

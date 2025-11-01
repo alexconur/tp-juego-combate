@@ -1,0 +1,10 @@
+# bando,nombre,tipo,HP,ATK,DEF,MGC,MOV,equipamiento
+REINO_DRUIDA,Elendir,LORD,28,10,6,8,5,Espada de Hierro
+REINO_DRUIDA,Guardabosques,UNIDAD,20,7,4,2,5,Arco Simple
+REINO_DRUIDA,Lancero Verde,UNIDAD,22,8,5,1,5,Lanza Corta
+REINO_DRUIDA,Sanador del Roble,UNIDAD,18,2,3,0,5,Báculo Curación
+
+REINO_NIGROMANTICO,Morghul,LORD,26,9,6,10,4,Grimorio Fuego
+REINO_NIGROMANTICO,Hachero Sombrío,UNIDAD,21,8,4,1,5,Hacha Ligera
+REINO_NIGROMANTICO,Tirador Funesto,UNIDAD,19,6,3,2,5,Arco Simple
+REINO_NIGROMANTICO,Sacerdote Umbrío,UNIDAD,17,2,3,0,5,Báculo Fortaleza

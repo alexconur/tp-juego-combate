@@ -1,11 +1,11 @@
+// src/main/java/org/archivos/CargadorDeDatos.java
 package org.archivos;
 
 import org.modelo.tablero.Tablero;
-import org.modelo.unidades.Unidad;
-import org.modelo.equipamiento.Equipamiento;
-
-import java.util.*;
 
 public final class CargadorDeDatos {
-    //lógica de cargador de datos
+    public Tablero cargarMapa(String mapaResourcePath) {
+        return MapaLoader.cargar(mapaResourcePath);
+    }
+    // más adelante: cargarArsenal y cargarEjercito. usar EquipamientoLoader y EjercitoLoader seguro
 }
