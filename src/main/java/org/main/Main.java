@@ -9,6 +9,8 @@ public class Main {
         System.out.print("Boca");
 
         // *I* main no debería necesitar más que esto para el resto del proyecto
+
+        //*M* necesitamos el parseo de los archivos para cargar los datos iniciales
         Juego juego = new Juego();
         VistaPrincipal vista = new VistaPrincipal();
         ControladorPrincipal controlador = new ControladorPrincipal(juego, vista);

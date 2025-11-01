@@ -17,6 +17,15 @@ public class Tablero {
         this.casillas = new Casilla[filas][columnas];
     }
 
+    public int getFilas(){
+        return filas;
+    }
+
+    public int getColumnas(){
+        return columnas;
+    }
+
+
     // Devuelve la casilla en la posicion dada. Incluye chequeo de limites
     public Casilla getCasilla(int fila, int columna){
         if (!posicionValida(fila,columna)){
@@ -43,36 +52,31 @@ public class Tablero {
     public void moverUnidad(Unidad unidad, int nuevaFila, int nuevaColumna)
         throws CasillaOcupadaException, CasillaIntransitableException {
 
-    if (unidad == null) return;
+        if (unidad == null) return;
 
-    if (!posicionValida(nuevaFila, nuevaColumna)) {
-        throw new CasillaIntransitableException("Movimiento fuera del tablero");
+        if (!posicionValida(nuevaFila, nuevaColumna)) {
+            throw new CasillaIntransitableException("Movimiento fuera del tablero");
+        }
+
+        Casilla destino = getCasilla(nuevaFila, nuevaColumna);
+
+        // 1. Verificar si la casilla permite el movimiento
+        if (!destino.esTransitable()) {
+            throw new CasillaIntransitableException("Casilla intransitable");
+        }
+
+        if (destino.estaOcupada()) {
+            throw new CasillaOcupadaException("Casilla ya ocupada");
+        }
+
+        // 2. Liberar la casilla actual
+        Casilla origen = unidad.getCasillaActual();
+        if (origen != null) origen.desocupar();
+
+        // 3. Mover la unidad a la nueva posición
+        destino.ocupar(unidad);
+        unidad.setCasillaActual(destino);
+
+        System.out.println(unidad.getNombre() + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
     }
-
-    Casilla destino = getCasilla(nuevaFila, nuevaColumna);
-
-    // 1. Verificar si la casilla permite el movimiento
-    if (!destino.esTransitable()) {
-        throw new CasillaIntransitableException("Casilla intransitable");
-    }
-
-    if (destino.estaOcupada()) {
-        throw new CasillaOcupadaException("Casilla ya ocupada");
-    }
-
-    // 2. Liberar la casilla actual
-    Casilla origen = unidad.getCasillaActual();
-    if (origen != null) origen.desocupar();
-
-    // 3. Mover la unidad a la nueva posición
-    destino.ocupar(unidad);
-    unidad.setCasillaActual(destino);
-
-    // 4. Aplicar efectos del terreno si los hay
-    if (destino instanceof org.modelo.tablero.casillas.Aplicable a) {
-        a.aplicarEfectoAlEntrar(unidad);
-    }
-
-    System.out.println(unidad.getNombre() + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
-}
 }

@@ -7,20 +7,20 @@ import org.modelo.unidades.Unidad;
 public abstract class Casilla {
     // Atributos
     private int fila;
-    private int col;
+    private int columna;
     private Unidad ocupante;
 
     // Constructor
     protected Casilla(int fila, int columna) {
         this.fila = fila;
-        this.col = columna;
+        this.columna = columna;
         this.ocupante = null;
     }
 
     // --- Métodos de Estado y Posición ---
 
     public int getFila() { return this.fila; }
-    public int getColumna() { return this.col; }
+    public int getColumna() { return this.columna; }
     public Unidad getOcupante() { return this.ocupante; }
     public boolean estaOcupada() { return ocupante != null; }
 
@@ -30,10 +30,10 @@ public abstract class Casilla {
         // Actualiza la referencia interna de la unidad.
     public void ocupar(Unidad unidad) throws CasillaOcupadaException, CasillaIntransitableException {
         if (estaOcupada()) {
-            throw new CasillaOcupadaException("La casilla (" + fila + "," + col + ") ya está ocupada.");
+            throw new CasillaOcupadaException("La casilla (" + fila + "," + columna + ") ya está ocupada.");
         }
         if (!esTransitable()) {
-            throw new CasillaIntransitableException("La casilla (" + fila + "," + col + ") es intransitable.");
+            throw new CasillaIntransitableException("La casilla (" + fila + "," + columna + ") es intransitable.");
         }
         
         this.ocupante = unidad;

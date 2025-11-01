@@ -50,7 +50,7 @@ public class Unidad {
     public int getDef() { return this.def + this.bonusDefTemporal; }
     public Casilla getCasillaActual(){ return casillaActual; }
     public Equipamiento getEquipamiento(){ return equipamiento; }
-    public boolean estaVivo(){ return hp > 0; }
+    public boolean estaVivo(){ return hp > 0; } // *A* para eliminar del juego a la unidad
     public boolean isOculto() { return oculto; }
     public boolean isLord() { return esLord; }
 
