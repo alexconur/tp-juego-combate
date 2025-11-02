@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-// *A* no está funcional ni testeado todavía
 public final class CsvReader {
   private CsvReader() {}
   public static List<List<String>> readResource(String resourcePath) {
@@ -22,7 +21,8 @@ public final class CsvReader {
         while ((line = br.readLine()) != null) {
           line = line.strip();
           if (line.isEmpty() || line.startsWith("#")) continue;
-          rows.add(List.of(line.split("\\s*,\\s*|\\s*;\\s*|\\s+")));
+          
+          rows.add(List.of(line.split("\\s*[,;]\\s*")));
         }
         return rows;
       }

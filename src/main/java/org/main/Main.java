@@ -9,7 +9,7 @@ public class Main {
         // *I* main no debería necesitar más que esto para el resto del proyecto
 
         //*M* necesitamos el parseo de los archivos para cargar los datos iniciales
-        Juego juego = new Juego(1,1); // *A* puse valores temporales, despues en ControladorInicio se reemplaza el tablero
+        Juego juego = new Juego(); // *X* corregi lo que puso aylu de valores iniciales
         VistaPrincipal vista = new VistaPrincipal();
         ControladorPrincipal controlador = new ControladorPrincipal(juego, vista);
 

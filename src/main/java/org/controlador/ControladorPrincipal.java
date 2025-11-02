@@ -25,9 +25,16 @@ public class ControladorPrincipal implements Controlador {
 
     @Override
     public void ejecutar() {
-        // Lógica para iniciar el juego
-        cInicio.ejecutar();
+        try {
+            // 1. Lógica para iniciar el juego (Carga de archivos, etc.)
+            cInicio.ejecutar();
 
+            // 2. Una vez iniciado, comienza el bucle de turnos
+            cTurno.ejecutar();
 
+        } catch (Exception e) {
+            System.err.println("Ha ocurrido un error fatal que detuvo el juego.");
+            e.printStackTrace();
+        }
     }
 }

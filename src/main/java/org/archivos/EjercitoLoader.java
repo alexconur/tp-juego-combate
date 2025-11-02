@@ -7,38 +7,45 @@ import org.modelo.equipamiento.Equipamiento;
 
 import java.util.*;
 
-// *A* no está chequeado todavía
 public final class EjercitoLoader {
 
-  // public static List<Unidad> cargar(String resourcePath, Map<String, Equipamiento> porNombre) {
-  //   var rows = CsvReader.readResource(resourcePath);
-  //   if (!rows.isEmpty() && rows.get(0).get(0).equalsIgnoreCase("bando"))
-  //     rows = rows.subList(1, rows.size());
+  private EjercitoLoader() {}
 
-  //   List<Unidad> out = new ArrayList<>();
-  //   for (var r : rows) {
-  //     Bando bando   = Bando.valueOf(r.get(0).toUpperCase()); // DRUIDA / NIGROMANTE
-  //     String nombre = r.get(1);
-  //     String tipo   = r.get(2).toUpperCase();                // LORD / UNIDAD
-  //     int HP  = Integer.parseInt(r.get(3));
-  //     int ATK = Integer.parseInt(r.get(4));
-  //     int DEF = Integer.parseInt(r.get(5));
-  //     int MGC = Integer.parseInt(r.get(6));
-  //     int MOV = Integer.parseInt(r.get(7));
-  //     String eqName = r.get(8);
-  //     Equipamiento eq = porNombre.get(eqName);
-  //     if (eq == null) throw new IllegalArgumentException("Equipamiento inexistente: " + eqName);
+  public static List<Unidad> cargar(String resourcePath, Map<String, Equipamiento> arsenalPorNombre) {
+    var rows = CsvReader.readResource(resourcePath);
+    // Ignorar header si existe (ej: "bando,nombre,tipo...")
+    if (!rows.isEmpty() && rows.get(0).get(0).equalsIgnoreCase("bando"))
+      rows = rows.subList(1, rows.size());
 
-  //     Unidad u;
-  //     if (tipo.equals("LORD")) {
-  //       // TODO: ajustar al constructor real de tu Lord
-  //       u = new Lord(nombre, HP, ATK, DEF, MGC, MOV, bando); // *A* hay que hacer get, por eso falla
-  //     } else {
-  //       // TODO: ajustar al constructor real de tu Unidad
-  //       u = new Unidad(nombre, HP, ATK, DEF, MGC, MOV, bando);
-  //     }
-  //     out.add(u);
-  //   }
-  //   return out;
-  // }
+    List<Unidad> out = new ArrayList<>();
+    for (var r : rows) {
+      // Asume formato: bando,nombre,tipo,HP,ATK,DEF,MGC,MOV,equipamiento
+      Bando bando   = Bando.valueOf(r.get(0).toUpperCase()); // REINO_DRUIDA / REINO_NIGROMANTICO
+      String nombre = r.get(1);
+      String tipo   = r.get(2).toUpperCase();                // LORD / UNIDAD
+      int HP  = Integer.parseInt(r.get(3));
+      int ATK = Integer.parseInt(r.get(4));
+      int DEF = Integer.parseInt(r.get(5));
+      int MGC = Integer.parseInt(r.get(6));
+      int MOV = Integer.parseInt(r.get(7));
+      String eqName = r.get(8);
+      
+      Equipamiento eq = arsenalPorNombre.get(eqName);
+      if (eq == null) {
+          System.out.println("Advertencia: Equipamiento '" + eqName + "' no encontrado en el arsenal. Asignando null.");
+      }
+
+      Unidad u;
+      if (tipo.equals("LORD")) {
+        // Usa el factory de Lord para crearlo con stats personalizadas
+        u = Lord.crearPersonalizado(nombre, HP, ATK, DEF, MGC, MOV, bando);
+      } else {
+        u = new Unidad(nombre, HP, ATK, DEF, MGC, MOV, bando);
+      }
+      
+      u.setEquipamiento(eq); // Asigna el equipamiento encontrado
+      out.add(u);
+    }
+    return out;
+  }
 }

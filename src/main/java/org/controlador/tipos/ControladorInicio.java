@@ -2,11 +2,16 @@
 package org.controlador.tipos;
 
 import java.util.List;
+import java.util.Map;
 
 import org.archivos.CargadorDeDatos;
-import org.archivos.CsvReader;
+// import org.archivos.CsvReader; // *X*ya no es necesario aquí, se usa en CargadorDeDatos/MapaLoader
 import org.modelo.Juego;
 import org.modelo.tablero.Tablero;
+import org.modelo.tablero.Casilla;
+import org.modelo.equipamiento.Equipamiento; 
+import org.modelo.unidades.Bando; 
+import org.modelo.unidades.Unidad; 
 import org.vista.tipos.VistaInicio;
 
 public class ControladorInicio {
@@ -16,7 +21,6 @@ public class ControladorInicio {
 
     // Se guardan por si los necesita otro controlador
     private String mapaPath, ejercitoPath, arsenalPath;
-    private int lordFila, lordColumna;
 
     public ControladorInicio(Juego juego, VistaInicio vInicio) {
         this.juego = juego;
@@ -33,40 +37,75 @@ public class ControladorInicio {
         ejercitoPath = sel.getEjercitoPath();
         arsenalPath  = sel.getArsenalPath();
 
-        // 3) Leer solo dimensiones del mapa para validar el rango de ubicación
-        List<List<String>> celdas = CsvReader.readResource(mapaPath);
-        if (celdas == null || celdas.isEmpty()) {
-            throw new IllegalArgumentException("El mapa está vacío: " + mapaPath);
-        }
-        int filas = celdas.size();
-        int columnas = celdas.get(0).size();
-        for (int i = 1; i < filas; i++) {
-            if (celdas.get(i).size() != columnas) {
-                throw new IllegalArgumentException(
-                    "Mapa no rectangular (fila " + i + " tiene " + celdas.get(i).size() +
-                    " columnas; esperado " + columnas + ")"
-                );
-            }
-        }
-
-        // 4) Pedir ubicación del Lord dentro del rango [0..filas-1] x [0..columnas-1]
-        VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionLord(filas, columnas);
-        lordFila = ubi.getFila();
-        lordColumna = ubi.getColumna();
-
-        // 5) Cargar el mapa en el modelo y mostrarlo (la Vista se encarga de la salida)
         CargadorDeDatos cargador = new CargadorDeDatos();
+
+        // 3) Cargar el mapa en el modelo
         Tablero tablero = cargador.cargarMapa(mapaPath);
         juego.reemplazarTablero(tablero);
+
+        // 4) Cargar Arsenal
+        Map<String, Equipamiento> arsenal = cargador.cargarArsenal(arsenalPath);
+
+        // 5) Cargar Ejército (ambos bandos desde el mismo archivo)
+        List<Unidad> todasLasUnidades = cargador.cargarEjercito(ejercitoPath, arsenal);
+        juego.setEjercitos(todasLasUnidades);
+
+        // 6) Mostrar tablero y pedir ubicación del Lord (Jugador 1)
         vInicio.mostrarTablero(tablero);
 
-        // Próximo paso: validar que la casilla elegida sea transitable y ubicar al Lord ahí,
-        //  luego cargar arsenal/ejército con los otros paths y continuar el flujo de juego
+        Bando bandoJ1 = juego.getBandoActual();
+        System.out.println("Jugador 1 (" + bandoJ1 + "), posiciona a tu Lord.");
+        
+        Unidad lordJ1 = juego.getLordDeReserva(bandoJ1);
+        if (lordJ1 == null) {
+            throw new IllegalStateException("No se encontró un Lord para el " + bandoJ1);
+        }
+
+        // Pedir ubicación hasta que sea válida
+        while(true) {
+            VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionLord(tablero.getFilas(), tablero.getColumnas());
+            Casilla c = tablero.getCasilla(ubi.getFila(), ubi.getColumna());
+            
+            if (c.esTransitable() && !c.estaOcupada()) {
+                juego.desplegarUnidad(lordJ1, ubi.getFila(), ubi.getColumna());
+                System.out.println("✔ Lord " + lordJ1.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
+                break;
+            }
+            System.out.println("¡Ubicación inválida! La casilla no es transitable o está ocupada.");
+        }
+
+        // 7) Posicionar Lord del Jugador 2 (automático por simplicidad)
+        Bando bandoJ2 = (bandoJ1 == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
+        Unidad lordJ2 = juego.getLordDeReserva(bandoJ2);
+        if (lordJ2 == null) {
+            throw new IllegalStateException("No se encontró un Lord para el " + bandoJ2);
+        }
+        
+        // Busca una casilla válida en la última fila
+        boolean j2Desplegado = false;
+        for (int j = tablero.getColumnas() - 1; j >= 0; j--) {
+            Casilla c = tablero.getCasilla(tablero.getFilas() - 1, j);
+            if (c.esTransitable() && !c.estaOcupada()) {
+                juego.desplegarUnidad(lordJ2, tablero.getFilas() - 1, j);
+                System.out.println("Lord " + lordJ2.getNombre() + " (J2) desplegado automáticamente en (" + (tablero.getFilas() - 1) + "," + j + ").");
+                j2Desplegado = true;
+                break;
+            }
+        }
+        if (!j2Desplegado) {
+            System.out.println("ADVERTENCIA: No se pudo encontrar lugar para el Lord J2.");
+        }
+        
+        // 8) Mostrar tablero actualizado
+        vInicio.mostrarTablero(tablero);
+        
+        // 9) El flujo continúa en ControladorPrincipal
     }
-    
-    public String getMapaPath()     { return mapaPath; }
-    public String getEjercitoPath() { return ejercitoPath; }
-    public String getArsenalPath()  { return arsenalPath; }
-    public int getLordFila()        { return lordFila; }
-    public int getLordColumna()     { return lordColumna; }
+ 
+    // *X* no se usa mas, por las dudas lo comento
+    // public String getMapaPath()     { return mapaPath; }
+    // public String getEjercitoPath() { return ejercitoPath; }
+    // public String getArsenalPath()  { return arsenalPath; }
+    // public int getLordFila()        { return lordFila; }
+    // public int getLordColumna()     { return lordColumna; }
 }
