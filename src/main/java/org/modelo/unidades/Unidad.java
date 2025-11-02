@@ -2,6 +2,7 @@ package org.modelo.unidades;
 
 import org.modelo.equipamiento.Equipamiento;
 import org.modelo.tablero.Casilla;
+import org.modelo.tablero.Tablero; // *NUEVO* Import
 
 public class Unidad {
     
@@ -20,7 +21,8 @@ public class Unidad {
 
     private Casilla casillaActual; // Logica tablero
 
-    private boolean ataqueRealizado, movimientoRealizado; // Logica turnos
+    private boolean ataqueRealizado;
+    private int movimientoRestante;
 
     // Constructor
     public Unidad(String nombre, int hp, int atk, int def, int mgc, int mov, Bando bando) {
@@ -38,7 +40,7 @@ public class Unidad {
 
         // --> Las unidades empiezan listas para su primer turno
         this.ataqueRealizado = false;
-        this.movimientoRealizado = false;
+        this.movimientoRestante = mov;
     }
 
     // Getters de Estado
@@ -53,6 +55,10 @@ public class Unidad {
     public boolean estaVivo(){ return hp > 0; } // *A* para eliminar del juego a la unidad
     public boolean isOculto() { return oculto; }
     public boolean isLord() { return esLord; }
+
+    public int getMovimientoRestante(){ return movimientoRestante; }
+    public boolean puedeMoverse(){ return movimientoRestante > 0 && !ataqueRealizado ;}
+    public boolean puedeActuar(){ return !ataqueRealizado;}
 
     // Devuelve el ATK total (base + bonus de equipamiento).
     public int getAtkTotal() {
@@ -77,7 +83,7 @@ public class Unidad {
     public void setCasillaActual(Casilla casilla) { this.casillaActual = casilla; }
     public void setEsLord(boolean esLord) { this.esLord = esLord; }
     public void setOculto(boolean oculto) { this.oculto = oculto; } // *X*: lo habia puesto xq a nacho le daba error, pero a mi no me dio ese error...
-
+    public void setMovimientoRestante(int mov) { this.movimientoRestante = mov; }
 
     // Metodos al recibir daño o cura
     public void recibirDanio(int cantDanio){
@@ -103,47 +109,66 @@ public class Unidad {
     // Resetea los flags de acción al inicio de un nuevo turno.
     public void prepararParaNuevoTurno() {
         this.ataqueRealizado = false;
-        this.movimientoRealizado = false;
+        this.movimientoRestante = this.mov;
         this.resetearBonusTemporales();
+
+        // Aplicar efecto de fin de turno en la casilla
+        if (this.casillaActual != null) {
+            this.casillaActual.aplicarEfectoFinDeTurno(this);
+        }
         // Aquí también se aplicarían efectos de terreno (Fuerte, Área Contaminada)
     }
 
 
     // --- ACCIONES DE LA UNIDAD ---
-    public void setMovimientoRealizado(boolean movimientoRealizado) { this.movimientoRealizado = movimientoRealizado; }
     public boolean yaAtaco() { return ataqueRealizado; }
-    public boolean yaSeMovio() { return movimientoRealizado; }
+    public boolean yaSeMovio() { return movimientoRestante < mov; }
 
     // Ataca a una unidad objetivo. Delega la lógica de cálculo de daño al equipamiento (Strategy).
         // Si no tiene equipamiento o está roto, ataca "a puño limpio".
     public void atacar(Unidad objetivo) {
-        if (ataqueRealizado || this.bando == objetivo.getBando()) {
-            // Ya atacó este turno o está intentando atacar a un aliado
+        if (!puedeActuar() || this.bando == objetivo.getBando()) {
             return;
         }
+        
+        // Lógica de Puño Limpio (Rango 1)
         if (equipamiento == null || !equipamiento.esOfensivo() || equipamiento.estaRoto()) {
-            // Lógica de "Puño Limpio"
-            int danio = this.getAtkTotal() - objetivo.getDef(); // Usa AtkTotal (base)
-            objetivo.recibirDanio(Math.max(0, danio)); // Daño físico
+            // Solo puede atacar adyacente
+            if (this.casillaActual.getFila() - objetivo.getCasillaActual().getFila() > 1 ||
+                this.casillaActual.getColumna() - objetivo.getCasillaActual().getColumna() > 1) {
+                System.out.println("El objetivo está fuera de rango para atacar a puño limpio.");
+                return;
+            }
+            int danio = this.getAtkTotal() - objetivo.getDef();
+            objetivo.recibirDanio(Math.max(0, danio));
         } else {
-            // Delegar la acción al equipamiento (Strategy)
+            // Chequeo de rango del equipamiento
+            int dist = Math.max(Math.abs(this.casillaActual.getFila() - objetivo.getCasillaActual().getFila()),
+                                Math.abs(this.casillaActual.getColumna() - objetivo.getCasillaActual().getColumna()));
+            
+            if (dist > equipamiento.getRango()) {
+                 System.out.println("El objetivo está fuera de rango del equipamiento (Rango: " + equipamiento.getRango() + ", Dist: " + dist + ")");
+                 return;
+            }
+            
             equipamiento.accionar(this, objetivo);
         }
+        
         this.ataqueRealizado = true;
-        this.revelar(); // Atacar revela la unidad
+        this.movimientoRestante = 0; // Atacar consume el movimiento
+        this.revelar();
     }
 
     // Cura a una unidad aliada. Solo funciona si tiene un Báculo equipado.
     public void curarAliado(Unidad aliado) {
-        if (ataqueRealizado || this.bando != aliado.getBando()) {
-            // Ya actuó o está intentando curar a un enemigo
+        if (!puedeActuar() || this.bando != aliado.getBando()) {
             return;
         }
 
         if (equipamiento != null && !equipamiento.esOfensivo() && !equipamiento.estaRoto()) {
             // Delega la acción de curar al báculo
             equipamiento.accionar(this, aliado);
-            this.ataqueRealizado = true; // Curar cuenta como la acción del turno [cite: 69]
+            this.ataqueRealizado = true; // Curar cuenta como la acción del turno
         }
     }
 
@@ -164,18 +189,30 @@ public class Unidad {
     }
 
     // --- MOVIMIENTO EN EL TABLERO ---
-    public void moverA(org.modelo.tablero.Tablero tablero, int nuevaFila, int nuevaColumna) {
-        if (movimientoRealizado) {
-            System.out.println(nombre + " ya se movió este turno.");
+    public void moverA(Tablero tablero, int nuevaFila, int nuevaColumna) {
+        if (!puedeMoverse()) {
+            System.out.println(nombre + " no puede moverse (ya actuó o no tiene movimiento).");
+            return;
+        }
+
+        // Validación simple de distancia: permite 8 direcciones 
+        int dist = Math.max(Math.abs(casillaActual.getFila() - nuevaFila), 
+                            Math.abs(casillaActual.getColumna() - nuevaColumna));
+
+        if (dist == 0) {
+            System.out.println("No te puedes mover a la casilla actual.");
+            return;
+        }
+
+        if (dist > this.movimientoRestante) {
+            System.out.println("Movimiento inválido: distancia (" + dist + ") excede el movimiento restante (" + this.movimientoRestante + ").");
             return;
         }
 
         try {
             // Tablero se encarga de validar el movimiento y de realizarlo
             tablero.moverUnidad(this, nuevaFila, nuevaColumna);
-
             // Seteo al movimiento como realizado y revelo la unidad
-            movimientoRealizado = true;
             revelar();
 
             System.out.println(nombre + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
