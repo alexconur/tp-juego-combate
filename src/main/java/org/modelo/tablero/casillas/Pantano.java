@@ -12,11 +12,10 @@ public class Pantano extends Casilla implements Aplicable {
     public boolean esTransitable() { return true; }
     @Override
     public int getCostoMovimiento() { return 1; }
+
     @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {
-        // Implementar lógica que reduce el movimiento de la unidad.
-        // Por ejemplo: unidad.setMovimientoRestante(1);
-        // (Esto requiere agregar lógica de movimiento a la Unidad)
+        unidad.setMovimientoRestante(1);
         System.out.println(unidad.getNombre() + " se atasca en el pantano!");
 
     }
