@@ -1,3 +1,3 @@
-DRUIDA,Elendir,LORD,25,10,5,8,5,Espada de Hierro
-DRUIDA,Ranger,UNIDAD,18,6,3,2,5,Arco Simple
-NIGROMANTE,Mor’ghul,LORD,24,9,6,10,4,Grimorio Fuego
+REINO_DRUIDA,Elendir,LORD,25,10,5,8,5,Espada de Hierro|ARMA|ESPADA|5|1|999
+REINO_DRUIDA,Ranger,UNIDAD,18,6,3,2,5,Arco Simple|ARMA|ARCO|3|2|999
+REINO_NIGROMANTICO,Mor’ghul,LORD,24,9,6,10,4,Grimorio Fuego|GRIMORIO||7|2|50

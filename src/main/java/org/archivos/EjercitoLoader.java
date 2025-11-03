@@ -1,17 +1,23 @@
 package org.archivos;
 
-import org.modelo.unidades.Unidad;
-import org.modelo.unidades.Lord;
-import org.modelo.unidades.Bando;
-import org.modelo.equipamiento.Equipamiento;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import org.modelo.equipamiento.Arma;
+import org.modelo.equipamiento.Baculo;
+import org.modelo.equipamiento.Equipamiento;
+import org.modelo.equipamiento.Grimorio;
+import org.modelo.equipamiento.TipoArma;
+import org.modelo.equipamiento.TipoBaculo;
+import org.modelo.unidades.Bando;
+import org.modelo.unidades.Lord;
+import org.modelo.unidades.Unidad;
 
 public final class EjercitoLoader {
 
   private EjercitoLoader() {}
 
-  public static List<Unidad> cargar(String resourcePath, Map<String, Equipamiento> arsenalPorNombre) {
+  public static List<Unidad> cargar(String resourcePath) {
     var rows = CsvReader.readResource(resourcePath);
     // Ignorar header si existe (ej: "bando,nombre,tipo...")
     if (!rows.isEmpty() && rows.get(0).get(0).equalsIgnoreCase("bando"))
@@ -28,11 +34,24 @@ public final class EjercitoLoader {
       int DEF = Integer.parseInt(r.get(5));
       int MGC = Integer.parseInt(r.get(6));
       int MOV = Integer.parseInt(r.get(7));
-      String eqName = r.get(8);
-      
-      Equipamiento eq = arsenalPorNombre.get(eqName);
-      if (eq == null) {
-          System.out.println("Advertencia: Equipamiento '" + eqName + "' no encontrado en el arsenal. Asignando null.");
+        
+      String eqData = r.get(8);
+      Equipamiento eq = null;
+      if (eqData.contains("|")) {
+        String[] partes = eqData.split("\\|");
+        String nombreEq = partes[0];
+        String tipoEq   = partes[1];
+        String subtipo  = partes[2].isBlank() ? null : partes[2];
+        int potencia    = Integer.parseInt(partes[3]);
+        int alcance     = Integer.parseInt(partes[4]);
+        int usos        = Integer.parseInt(partes[5]);
+
+        switch (tipoEq.toUpperCase()) {
+            case "ARMA" -> eq = new Arma(nombreEq, TipoArma.valueOf(subtipo.toUpperCase()), potencia, alcance, usos);
+            case "GRIMORIO" -> eq = new Grimorio(nombreEq, potencia, alcance, usos);
+            case "BACULO" -> eq = new Baculo(nombreEq, TipoBaculo.valueOf(subtipo.toUpperCase()), potencia, usos, alcance);
+            default -> throw new IllegalArgumentException("Tipo de equipamiento desconocido: " + tipoEq);
+        }
       }
 
       Unidad u;

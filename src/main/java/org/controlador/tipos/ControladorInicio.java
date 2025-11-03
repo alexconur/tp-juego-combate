@@ -2,16 +2,13 @@
 package org.controlador.tipos;
 
 import java.util.List;
-import java.util.Map;
 
 import org.archivos.CargadorDeDatos;
-// import org.archivos.CsvReader; // *X*ya no es necesario aquí, se usa en CargadorDeDatos/MapaLoader
 import org.modelo.Juego;
-import org.modelo.tablero.Tablero;
 import org.modelo.tablero.Casilla;
-import org.modelo.equipamiento.Equipamiento; 
-import org.modelo.unidades.Bando; 
-import org.modelo.unidades.Unidad; 
+import org.modelo.tablero.Tablero;
+import org.modelo.unidades.Bando;
+import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaInicio;
 
 public class ControladorInicio {
@@ -35,7 +32,6 @@ public class ControladorInicio {
         VistaInicio.Selecciones sel = vInicio.seleccionarArchivos();
         mapaPath     = sel.getMapaPath();
         ejercitoPath = sel.getEjercitoPath();
-        arsenalPath  = sel.getArsenalPath();
 
         CargadorDeDatos cargador = new CargadorDeDatos();
 
@@ -43,14 +39,11 @@ public class ControladorInicio {
         Tablero tablero = cargador.cargarMapa(mapaPath);
         juego.reemplazarTablero(tablero);
 
-        // 4) Cargar Arsenal
-        Map<String, Equipamiento> arsenal = cargador.cargarArsenal(arsenalPath);
-
-        // 5) Cargar Ejército (ambos bandos desde el mismo archivo)
-        List<Unidad> todasLasUnidades = cargador.cargarEjercito(ejercitoPath, arsenal);
+        // 4) Cargar Ejército (ambos bandos desde el mismo archivo)
+        List<Unidad> todasLasUnidades = cargador.cargarEjercito(ejercitoPath);
         juego.setEjercitos(todasLasUnidades);
 
-        // 6) Mostrar tablero y pedir ubicación del Lord (Jugador 1)
+        // 5) Mostrar tablero y pedir ubicación del Lord (Jugador 1)
         vInicio.mostrarTablero(tablero);
 
         Bando bandoJ1 = juego.getBandoActual();

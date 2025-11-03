@@ -18,16 +18,16 @@ public class VistaInicio {
     public static class Selecciones {
         private final String mapaPath;
         private final String ejercitoPath;
-        private final String arsenalPath;
+        //private final String arsenalPath;
 
-        public Selecciones(String mapaPath, String ejercitoPath, String arsenalPath) {
+        public Selecciones(String mapaPath, String ejercitoPath) { // antes recibia String arsenalPath
             this.mapaPath = mapaPath;
             this.ejercitoPath = ejercitoPath;
-            this.arsenalPath = arsenalPath;
+            //this.arsenalPath = arsenalPath;
         }
         public String getMapaPath()     { return mapaPath; }
         public String getEjercitoPath() { return ejercitoPath; }
-        public String getArsenalPath()  { return arsenalPath; }
+        //public String getArsenalPath()  { return arsenalPath; }
     }
     public static class Ubicacion {
         private final int fila;
@@ -41,7 +41,7 @@ public class VistaInicio {
 
     private static final String DIR_MAPAS     = "archivos/mapas";
     private static final String DIR_EJERCITOS = "archivos/ejercito";
-    private static final String DIR_ARSENAL   = "archivos/arsenal";
+    //private static final String DIR_ARSENAL   = "archivos/arsenal";
 
     public void mostrar() {
         System.out.println("\n| Bienvenido a CLASS EMBLEM |\n");
@@ -50,14 +50,14 @@ public class VistaInicio {
     public Selecciones seleccionarArchivos() {
         String mapa     = pedirArchivo("Mapa",     DIR_MAPAS);
         String ejercito = pedirArchivo("Ejército", DIR_EJERCITOS);
-        String arsenal  = pedirArchivo("Arsenal",  DIR_ARSENAL);
+        //String arsenal  = pedirArchivo("Arsenal",  DIR_ARSENAL);
 
         System.out.println("\n✔ Selecciones:");
         System.out.println(" - Mapa:     " + mapa);
         System.out.println(" - Ejército: " + ejercito);
-        System.out.println(" - Arsenal:  " + arsenal);
+        //System.out.println(" - Arsenal:  " + arsenal);
 
-        return new Selecciones(mapa, ejercito, arsenal);
+        return new Selecciones(mapa, ejercito); // antes devolvía arsenal
     }
 
     // --- pide Fila/Columna dentro del rango [0..filas-1], [0..columnas-1] ---
