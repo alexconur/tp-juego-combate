@@ -15,6 +15,10 @@ public class VistaTurno {
     private final Scanner sc = new Scanner(System.in);
 
     public void mostrarEstado(Juego juego) {
+        if (juego.isGameOver()) {
+            return;
+        }
+
         System.out.println("\n=== ESTADO DEL JUEGO ===");
         System.out.println("\n══════════════════════════════════════════════");
         System.out.println("TURNO DE: " + juego.getBandoActual());
@@ -45,7 +49,8 @@ public class VistaTurno {
         System.out.println("4. Desplegar unidad (desde reserva)");
         System.out.println("5. Preparar emboscada");
         System.out.println("6. Terminar Turno");
-        return leerEnteroEnRango("Opción", 1, 6);
+        System.out.println("7. Rendirse");
+        return leerEnteroEnRango("Opción", 1, 7);
     }
     
     public Unidad seleccionarUnidad(List<Unidad> unidades, String prompt) {

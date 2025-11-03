@@ -58,9 +58,17 @@ public class ControladorTurno implements Controlador {
                     case 6: // Terminar Turno
                         turnoActivo = false;
                         break;
+                    case 7: // Rendirse
+                        juego.rendirse(juego.getBandoActual());
+                        turnoActivo = false;
+                        break;    
                     default:
                         System.out.println("Opción inválida. Intente de nuevo.");
 
+                }
+                if (juego.isGameOver()) {
+                    turnoActivo = false;
+                    break;
                 }
                 
                 // Si la opción no fue 'Terminar Turno', mostrar el estado actualizado
@@ -72,6 +80,9 @@ public class ControladorTurno implements Controlador {
             // Cambiar de turno
             if (!juego.isGameOver()) {
                 juego.cambiarTurno();
+            } else {
+                System.out.println("\n🏁 ¡El juego ha finalizado!");
+                break;
             }
         }
         

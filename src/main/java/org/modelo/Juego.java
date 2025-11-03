@@ -17,6 +17,7 @@ public class Juego {
     private List<Unidad> bando1Reserva;
     private List<Unidad> bando2Reserva;
     private Bando bandoActual;
+    private boolean gameOver = false;
 
     //Constructor
     public Juego() {
@@ -150,27 +151,41 @@ public class Juego {
     }
     
     // --- Lógica de fin de juego ---
-    public boolean isGameOver() {
-        // Filtra solo Lords VIVOS
-        boolean lord1Vivo = bando1EnTablero.stream()
-            .anyMatch(u -> u.isLord() && u.estaVivo());
-            
-        boolean lord2Vivo = bando2EnTablero.stream()
-            .anyMatch(u -> u.isLord() && u.estaVivo());
+     public boolean isGameOver() {
+        if (gameOver) return true;
 
-        // Si bando1 NO tiene un lord vivo, bando2 gana
+        boolean lord1Vivo = bando1EnTablero.stream().anyMatch(u -> u.isLord() && u.estaVivo());
+        boolean lord2Vivo = bando2EnTablero.stream().anyMatch(u -> u.isLord() && u.estaVivo());
+
         if (!lord1Vivo) {
-            System.out.println("¡El " + Bando.REINO_NIGROMANTICO + " ha ganado!");
+            System.out.println("🏁 ¡El " + Bando.REINO_NIGROMANTICO + " ha ganado!");
+            gameOver = true;
             return true;
         }
-        // Si bando2 NO tiene un lord vivo, bando1 gana
         if (!lord2Vivo) {
-            System.out.println("¡El " + Bando.REINO_DRUIDA + " ha ganado!");
+            System.out.println("🏁 ¡El " + Bando.REINO_DRUIDA + " ha ganado!");
+            gameOver = true;
             return true;
         }
-        
+
         return false;
     }
+
+    // --- Rendición ---
+    public void rendirse(Bando bando) {
+        if (gameOver) {
+            System.out.println("El juego ya había terminado.");
+            return;
+        }
+
+        System.out.println("😩 El " + bando + " se ha rendido.");
+        Bando ganador = (bando == Bando.REINO_DRUIDA)
+                ? Bando.REINO_NIGROMANTICO
+                : Bando.REINO_DRUIDA;
+        System.out.println("🏁 ¡El " + ganador + " ha ganado la partida por rendición!");
+        gameOver = true;
+    }
+
     
     // Encontrar al Lord de un bando (en reserva)
     public Unidad getLordDeReserva(Bando bando) {
