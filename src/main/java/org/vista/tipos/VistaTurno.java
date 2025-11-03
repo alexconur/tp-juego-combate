@@ -1,24 +1,30 @@
 package org.vista.tipos;
 
-import java.util.List;
-import java.util.Scanner;
+import org.modelo.Juego;
 import org.modelo.unidades.Unidad;
 import org.vista.TableroRenderer;
-import org.modelo.Juego;
+import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
+
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
 public class VistaTurno {
     
-    private final Scanner in = new Scanner(System.in);
+    private final Scanner sc = new Scanner(System.in);
 
     public void mostrarEstado(Juego juego) {
         System.out.println("\n=== ESTADO DEL JUEGO ===");
-        System.out.println("Turno actual: " + juego.getBandoActual());
+        System.out.println("\n══════════════════════════════════════════════");
+        System.out.println("TURNO DE: " + juego.getBandoActual());
+        System.out.println("══════════════════════════════════════════════");
         
         Tablero tablero = juego.getTablero();
         System.out.println(TableroRenderer.render(tablero));
         
-        System.out.println("--- Unidades en Tablero ---");
+        System.out.println("\n--- Unidades en Tablero ---");
+
         for (Unidad u : juego.getTodasUnidadesEnTablero()) {
             String bando = u.getBando().toString().substring(0, 3);
             String pos = (u.getCasillaActual() != null) ? 
@@ -36,24 +42,26 @@ public class VistaTurno {
         System.out.println("\n-- Menú de Acciones --");
         System.out.println("1. Mover unidad");
         System.out.println("2. Atacar / Curar");
-        System.out.println("3. Desplegar unidad (desde reserva)");
-        System.out.println("4. Terminar Turno");
-        return leerEnteroEnRango("Opción", 1, 4);
+        System.out.println("3. Ver unidades / detalles");
+        System.out.println("4. Desplegar unidad (desde reserva)");
+        System.out.println("5. Terminar Turno");
+        return leerEnteroEnRango("Opción", 1, 5);
     }
     
     public Unidad seleccionarUnidad(List<Unidad> unidades, String prompt) {
         if (unidades.isEmpty()) {
-            System.out.println("No hay unidades disponibles para " + prompt + ".");
+            System.out.println("\nNo hay unidades disponibles para " + prompt + ".");
             return null;
         }
         
-        System.out.println("-- Seleccionar Unidad para " + prompt + " --");
+        System.out.println("\n-- Seleccionar Unidad para " + prompt + " --");
+        System.out.println("[0] Cancelar");
         for (int i = 0; i < unidades.size(); i++) {
             Unidad u = unidades.get(i);
-            String pos = "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")";
-            System.out.printf("[%d] %s %s%n", i + 1, u.getNombre(), pos);
+            Casilla c = u.getCasillaActual();
+            String pos = (c != null) ? "(" + c.getFila() + "," + c.getColumna() + ")" : "(reserva)";
+            System.out.printf("[%d] %-18s %s\n", i + 1, u.getNombre(), pos);
         }
-        System.out.println("[0] Cancelar");
         
         int idx = leerEnteroEnRango("Opción", 0, unidades.size());
         if (idx == 0) return null;
@@ -66,34 +74,44 @@ public class VistaTurno {
             return null;
         }
         
-        System.out.println("-- Seleccionar Unidad a Desplegar --");
+        System.out.println("\n-- Seleccionar Unidad a Desplegar --");
+        System.out.println("[0] Cancelar");
         for (int i = 0; i < unidades.size(); i++) {
             System.out.printf("[%d] %s%n", i + 1, unidades.get(i).getNombre());
         }
-        System.out.println("[0] Cancelar");
+        
         
         int idx = leerEnteroEnRango("Opción", 0, unidades.size());
         if (idx == 0) return null;
         return unidades.get(idx - 1);
     }
 
-    public VistaInicio.Ubicacion pedirUbicacion(String prompt) {
-        System.out.println("-- " + prompt + " --");
-        // (Reutiliza la lógica de VistaInicio para pedirUbicacion, idealmente esto estaría en una clase helper)
-        int f = leerEnteroEnRango("Fila", 0, 99); // 99 como límite genérico
-        int c = leerEnteroEnRango("Columna", 0, 99);
-        return new VistaInicio.Ubicacion(f, c);
+    public VistaInicio.Ubicacion pedirUbicacion(String mensaje) {
+        System.out.println("-- " + mensaje + " --");
+        int fila = leerEntero("Fila");
+        int col = leerEntero("Columna");
+        return new VistaInicio.Ubicacion(fila, col);
     }
 
-    private int leerEnteroEnRango(String etiqueta, int min, int max) {
+    // Utilidades de lectura
+    private int leerEntero(String prompt) {
         while (true) {
-            System.out.print(etiqueta + " (" + min + "-" + max + "): ");
             try {
-                String s = in.nextLine().trim();
-                int v = Integer.parseInt(s);
-                if (v >= min && v <= max) return v;
-            } catch (NumberFormatException ignored) { }
-            System.out.println("Entrada inválida, probá de nuevo.");
+                System.out.print(prompt + ": ");
+                return sc.nextInt();
+            } catch (InputMismatchException e) {
+                sc.nextLine();
+                System.out.println("Entrada inválida. Intente de nuevo.");
+            }
         }
     }
+
+    private int leerEnteroEnRango(String prompt, int min, int max) {  //*M* ver forma de unificar esto para todas las vistas
+        int valor;
+        do {
+            valor = leerEntero(prompt);
+        } while (valor < min || valor > max);
+        return valor;
+    }
+
 }

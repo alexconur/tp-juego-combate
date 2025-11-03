@@ -4,6 +4,7 @@ package org.controlador.tipos;
 import org.controlador.Controlador;
 import org.vista.tipos.VistaInicio;
 import org.vista.tipos.VistaTurno;
+import org.vista.tipos.VistaUnidades;
 import org.modelo.Juego;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
@@ -35,19 +36,26 @@ public class ControladorTurno implements Controlador {
             while (turnoActivo) {
                 int opcion = vTurno.mostrarMenuPrincipal();
                 
-                switch (opcion) {
+                switch (opcion) {  //*M* esto podria romper OPC, podria hacerse en un enum (??)
                     case 1: // Mover
                         accionMover(bandoActual);
                         break;
                     case 2: // Atacar / Curar
                         accionActuar(bandoActual);
                         break;
-                    case 3: // Desplegar
+                    case 3: // Ver unidades / detalles
+                        ControladorUnidades cu = new ControladorUnidades(juego, new VistaUnidades());
+                        cu.ejecutar();
+                        break;
+                    case 4: // Desplegar
                         accionDesplegar(bandoActual);
                         break;
-                    case 4: // Terminar Turno
+                    case 5: // Terminar Turno
                         turnoActivo = false;
                         break;
+                    default:
+                        System.out.println("Opción inválida. Intente de nuevo.");
+
                 }
                 
                 // Si la opción no fue 'Terminar Turno', mostrar el estado actualizado
@@ -70,7 +78,9 @@ public class ControladorTurno implements Controlador {
         // 1. Filtrar unidades que pueden moverse
         List<Unidad> movibles = juego.getUnidadesEnTablero(bando).stream()
             .filter(Unidad::puedeMoverse)
+            .filter(Unidad::estaVivo)
             .collect(Collectors.toList());
+        if (movibles.isEmpty()) return;
         
         // 2. Vista selecciona unidad
         Unidad u = vTurno.seleccionarUnidad(movibles, "Mover");
@@ -78,16 +88,34 @@ public class ControladorTurno implements Controlador {
 
         // 3. Vista pide coordenadas
         VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Mover a");
+        int fila = ubi.getFila();
+        int col = ubi.getColumna(); 
+
+        // Validar rango de movimiento
+        int distancia = Math.max(
+                Math.abs(u.getCasillaActual().getFila() - fila),
+                Math.abs(u.getCasillaActual().getColumna() - col)
+        );
+
+        if (distancia > u.getMovimientoRestante()) {
+            System.out.println("Movimiento inválido: destino fuera del rango de movimiento.");
+            return;
+        }
         
         // 4. Modelo ejecuta
         u.moverA(juego.getTablero(), ubi.getFila(), ubi.getColumna());
+
+        // Marcar movimiento realizado
+        u.setMovimientoRestante(0);
     }
 
     private void accionActuar(Bando bando) {
         // 1. Filtrar unidades que pueden actuar
         List<Unidad> actuables = juego.getUnidadesEnTablero(bando).stream()
             .filter(Unidad::puedeActuar)
+            .filter(Unidad::estaVivo)
             .collect(Collectors.toList());
+        if (actuables.isEmpty()) return;
 
         // 2. Vista selecciona unidad
         Unidad u = vTurno.seleccionarUnidad(actuables, "Atacar/Curar");
@@ -98,6 +126,7 @@ public class ControladorTurno implements Controlador {
 
         // 4. Buscar objetivos
         List<Unidad> objetivos = new ArrayList<>();
+        
         if (esCuracion) {
             // Si cura, los objetivos son aliados [cite: 125]
             objetivos = juego.getUnidadesEnTablero(bando).stream()
@@ -112,23 +141,36 @@ public class ControladorTurno implements Controlador {
         }
 
         // 5. Vista selecciona objetivo
-        Unidad objetivo = vTurno.seleccionarUnidad(objetivos, "Seleccionar Objetivo");
-        if (objetivo == null) return; // Canceló
+        Unidad objetivo = vTurno.seleccionarUnidad(objetivos, esCuracion ? "Curar" : "Atacar");
+        if (objetivo == null) return;
 
-        // 6. Modelo ejecuta
+        // Validar rango
+        int rango = u.getEquipamiento().getRango();
+        int dist = Math.max(
+                Math.abs(u.getCasillaActual().getFila() - objetivo.getCasillaActual().getFila()),
+                Math.abs(u.getCasillaActual().getColumna() - objetivo.getCasillaActual().getColumna())
+        );
+
+        if (dist > rango) {
+            System.out.println("Objetivo fuera de rango (" + rango + ").");
+            return;
+        }
+
+        // Ejecutar acción
         if (esCuracion) {
             u.curarAliado(objetivo);
+            System.out.println("💚 " + u.getNombre() + " curó a " + objetivo.getNombre() + ".");
         } else {
             u.atacar(objetivo);
+            System.out.println("💥 " + u.getNombre() + " atacó a " + objetivo.getNombre() + ".");
         }
-        
-        // *NUEVO* Verificar si el objetivo murió
-        if (!objetivo.estaVivo()) {
-            System.out.println("¡" + objetivo.getNombre() + " ha sido derrotado!");
-            // Desocupar la casilla
+
+        // No necesitamos setear flags manualmente, Unidad.atacar() ya lo hace
+        if (!objetivo.estaVivo() && objetivo.getCasillaActual() != null) {
             objetivo.getCasillaActual().desocupar();
-            // (El objeto sigue en la lista bandoXEnTablero, pero marcado como muerto)
+            System.out.println("💀 ¡" + objetivo.getNombre() + " ha sido derrotado!");
         }
+
     }
     
     private void accionDesplegar(Bando bando) {
@@ -148,5 +190,6 @@ public class ControladorTurno implements Controlador {
 
         // 4. Modelo ejecuta
         juego.desplegarUnidad(u, ubi.getFila(), ubi.getColumna());
+        System.out.println("✅ Unidad desplegada en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
     }
 }
