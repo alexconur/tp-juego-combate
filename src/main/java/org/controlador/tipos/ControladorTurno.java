@@ -1,19 +1,19 @@
 // *NUEVO* - Archivo completo
 package org.controlador.tipos;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.controlador.Controlador;
-import org.vista.tipos.VistaInicio;
-import org.vista.tipos.VistaTurno;
-import org.vista.tipos.VistaUnidades;
 import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.casillas.Bosque;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.vista.tipos.VistaInicio;
+import org.vista.tipos.VistaTurno;
+import org.vista.tipos.VistaUnidades;
 
 public class ControladorTurno implements Controlador {
     private final Juego juego;
@@ -79,6 +79,7 @@ public class ControladorTurno implements Controlador {
             
             // Cambiar de turno
             if (!juego.isGameOver()) {
+                vTurno.limpiarPantalla();
                 juego.cambiarTurno();
             } else {
                 System.out.println("\n🏁 ¡El juego ha finalizado!");
@@ -194,7 +195,8 @@ public class ControladorTurno implements Controlador {
     private void accionDesplegar(Bando bando) {
         // 1. Obtener unidades en reserva
         List<Unidad> reserva = juego.getUnidadesEnReserva(bando);
-
+        
+        /*
         // 2. Vista selecciona unidad
         Unidad u = vTurno.seleccionarUnidadReserva(reserva);
         if (u == null) return; // Canceló
@@ -205,10 +207,34 @@ public class ControladorTurno implements Controlador {
         // estar en el modelo (Juego.desplegarUnidad).
         // Por simplicidad, aquí solo pedimos coords.
         VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Desplegar en");
+        */
 
         // 4. Modelo ejecuta
-        juego.desplegarUnidad(u, ubi.getFila(), ubi.getColumna());
-        System.out.println("✅ Unidad desplegada en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
+        VistaInicio.Ubicacion ubi = null;
+        boolean desplegada = false;
+        while (!desplegada && !reserva.isEmpty()) {
+            Unidad u = vTurno.seleccionarUnidadReserva(reserva);
+            if (u == null) return; // Canceló
+
+            ubi = vTurno.pedirUbicacion("Desplegar en (fila, columna)");
+            
+            // Intentar desplegar
+            desplegada = juego.desplegarUnidad(u, ubi.getFila(), ubi.getColumna());
+            if (!desplegada) {
+                System.out.println("Despliegue fallido. Puede seleccionar otra unidad o cancelar.");
+                // Remover esta unidad de la lista temporal para no repetir automáticamente
+                // Si querés permitir reintentos con la misma unidad, no hagas esto
+                // reserva.remove(u);
+            }
+        }
+
+        if (desplegada && ubi != null) {
+        System.out.println("✅ Unidad desplegada en (" 
+            + ubi.getFila() + "," + ubi.getColumna() + ").");
+        } else {
+            System.out.println("No se desplegó ninguna unidad.");
+        }
+        
     }
 
     private void accionPrepararEmboscada(Bando bando) {

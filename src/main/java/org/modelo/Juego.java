@@ -63,16 +63,22 @@ public class Juego {
 
 
     // agrego las unidades la lista
-    public void desplegarUnidad(Unidad unidad, int fila, int columna) {
-        if (unidad == null || tablero == null) return;
+    public boolean desplegarUnidad(Unidad unidad, int fila, int columna) {
+        if (unidad == null || tablero == null) return false;
         
         try {
             // *CORRECCIÓN IMPORTANTE*: La casilla debe obtenerse del tablero
             if (tablero.getCasilla(fila, columna) == null) {
                  System.out.println("Error al desplegar: Casilla (" + fila + "," + columna + ") es nula.");
-                 return;
+                 return false;
             }
-        
+            
+            if (tablero.getCasilla(fila, columna).estaOcupada()) {
+            System.out.println("Error al desplegar: Casilla (" + fila + "," + columna + ") ya está ocupada.");
+                return false;
+            }
+
+
             tablero.getCasilla(fila, columna).ocupar(unidad);
             
             if (unidad.getBando() == Bando.REINO_DRUIDA) {
@@ -83,8 +89,10 @@ public class Juego {
                 bando2EnTablero.add(unidad);
             }
             
+            return true;
         } catch (Exception e) {
             System.out.println("Error al desplegar unidad ("+ unidad.getNombre() +") en (" + fila + "," + columna + "): " + e.getMessage());
+            return false;
         }
     }
 
@@ -105,6 +113,7 @@ public class Juego {
 
         bandoActual = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
         System.out.println("--- Turno del " + bandoActual + " ---");
+        System.out.flush();
         Bando bandoAnterior = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
 
         //  Preparar unidades del nuevo bando

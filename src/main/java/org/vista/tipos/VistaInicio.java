@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.modelo.tablero.Tablero;
-import org.vista.TableroRenderer;
 import org.modelo.unidades.Bando;
+import org.vista.TableroRenderer;
 
 public class VistaInicio {
 
@@ -68,7 +68,7 @@ public class VistaInicio {
                            ", columnas 0.." + (columnas - 1) + ".");
         int f = leerEnteroEnRango("Fila", 0, filas - 1);
         int c = leerEnteroEnRango("Columna", 0, columnas - 1);
-        System.out.println("✔ Lord ubicado tentativamente en (" + f + "," + c + ")");
+        System.out.println("... Intentando posicionar Lord en (" + f + "," + c + ") ...");
         return new Ubicacion(f, c);
     }
 

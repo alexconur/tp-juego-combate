@@ -64,31 +64,35 @@ public class ControladorInicio {
                 System.out.println("✔ Lord " + lordJ1.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
                 break;
             }
+            vInicio.mostrarTablero(tablero, juego.getBandoActual());
             System.out.println("¡Ubicación inválida! La casilla no es transitable o está ocupada.");
         }
 
-        // 7) Posicionar Lord del Jugador 2 (automático por simplicidad)
+        // 7) Posicionar Lord del Jugador 2 (interactivo, igual que J1)
         Bando bandoJ2 = (bandoJ1 == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
         Unidad lordJ2 = juego.getLordDeReserva(bandoJ2);
+        
+        System.out.println("Jugador 2 (" + bandoJ2 + "), posiciona a tu Lord.");
+        // Mostrar tablero antes de la selección del J2
         if (lordJ2 == null) {
             throw new IllegalStateException("No se encontró un Lord para el " + bandoJ2);
         }
+
+        vInicio.mostrarTablero(tablero, bandoJ2);
         
-        // Busca una casilla válida en la última fila
-        boolean j2Desplegado = false;
-        for (int j = tablero.getColumnas() - 1; j >= 0; j--) {
-            Casilla c = tablero.getCasilla(tablero.getFilas() - 1, j);
-            if (c.esTransitable() && !c.estaOcupada()) {
-                juego.desplegarUnidad(lordJ2, tablero.getFilas() - 1, j);
-                System.out.println("Lord " + lordJ2.getNombre() + " (J2) desplegado automáticamente en (" + (tablero.getFilas() - 1) + "," + j + ").");
-                j2Desplegado = true;
+        while (true) {
+            VistaInicio.Ubicacion ubi2 = vInicio.pedirUbicacionLord(tablero.getFilas(), tablero.getColumnas());
+            Casilla c2 = tablero.getCasilla(ubi2.getFila(), ubi2.getColumna());
+            if (c2.esTransitable() && !c2.estaOcupada()) {
+                juego.desplegarUnidad(lordJ2, ubi2.getFila(), ubi2.getColumna());
+                System.out.println("✔ Lord " + lordJ2.getNombre() + " desplegado en (" + ubi2.getFila() + "," + ubi2.getColumna() + ").");
                 break;
             }
+            System.out.println("¡Ubicación inválida! La casilla no es transitable o está ocupada.");
+            vInicio.mostrarTablero(tablero, bandoJ2);
         }
-        if (!j2Desplegado) {
-            System.out.println("ADVERTENCIA: No se pudo encontrar lugar para el Lord J2.");
-        }
-        
+
+
         // 8) Mostrar tablero actualizado
         vInicio.mostrarTablero(tablero, juego.getBandoActual());
         

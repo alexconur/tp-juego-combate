@@ -1,14 +1,14 @@
 package org.vista.tipos;
 
-import org.modelo.Juego;
-import org.modelo.unidades.Unidad;
-import org.vista.TableroRenderer;
-import org.modelo.tablero.Casilla;
-import org.modelo.tablero.Tablero;
-
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import org.modelo.Juego;
+import org.modelo.tablero.Casilla;
+import org.modelo.tablero.Tablero;
+import org.modelo.unidades.Unidad;
+import org.vista.TableroRenderer;
 
 public class VistaTurno {
     
@@ -30,7 +30,7 @@ public class VistaTurno {
         System.out.println("\n--- Unidades en Tablero ---");
 
         for (Unidad u : juego.getTodasUnidadesEnTablero()) {
-            String bando = u.getBando().toString().substring(0, 3);
+            String bando = u.getBando().toString().substring(6, 12);
             String pos = (u.getCasillaActual() != null) ? 
                          "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")" : "(RESERVA)";
             String hp = u.getHp() + "/" + u.getMaxHp() + " HP";
@@ -142,4 +142,15 @@ public class VistaTurno {
         return valor;
     }
 
+    public void limpiarPantalla() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

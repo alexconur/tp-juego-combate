@@ -260,8 +260,6 @@ public class Unidad {
             this.descansoTurno = false;
             this.movimientoRestante = 0;
 
-            System.out.println("✅ " + nombre + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
-
         } catch (org.modelo.tablero.excepciones.CasillaOcupadaException e) {
             System.out.println("Casilla ocupada: " + e.getMessage());
         } catch (org.modelo.tablero.excepciones.CasillaIntransitableException e) {

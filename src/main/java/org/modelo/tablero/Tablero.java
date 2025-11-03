@@ -84,7 +84,6 @@ public class Tablero {
         destino.ocupar(unidad);
         unidad.setCasillaActual(destino);
 
-        System.out.println(unidad.getNombre() + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
     }
 
     // Devuelve las casillas vecinas (en las 8 direcciones posibles)
