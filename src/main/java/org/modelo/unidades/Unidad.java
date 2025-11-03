@@ -18,6 +18,8 @@ public class Unidad {
     private int bonusAtkTemporal;
     private int bonusDefTemporal;
     private int bonusMgcTemporal;
+    private boolean descansoTurno;                       
+    private static final int BONUS_DEF_DESCANSO = 3;
 
     private Casilla casillaActual; // Logica tablero
 
@@ -91,6 +93,11 @@ public class Unidad {
         if (this.hp < 0){
             this.hp = 0;
         }
+        // Se pierde el bonus defensivo
+        if (this.bonusDefTemporal > 0) {
+            System.out.println(nombre + " pierde su bonus defensivo al ser atacada!");
+            this.resetearBonusTemporales();
+        }
     }
 
     public void recibirCuracion(int cantCurar) {
@@ -108,11 +115,22 @@ public class Unidad {
 
     // Resetea los flags de acción al inicio de un nuevo turno.
     public void prepararParaNuevoTurno() {
+        // Si descansó, aplica bonus defensivo
+        if (this.descansoTurno) {
+            this.aplicarBonusTemporal("DEF", BONUS_DEF_DESCANSO);
+            System.out.println(nombre + " recibe +" + BONUS_DEF_DESCANSO + " DEF por descansar el turno anterior.");
+        } else {
+            // Si no descansó, limpia cualquier bonus anterior
+            this.resetearBonusTemporales();
+        }
+
+        // Resetear acciones para el nuevo turno
         this.ataqueRealizado = false;
         this.movimientoRestante = this.mov;
-        this.resetearBonusTemporales();
 
-        // Aquí también se aplicarían efectos de terreno (Fuerte, Área Contaminada)
+        // Ahora vuelve a marcarse como descansando,
+        // y perderá ese estado si ataca o se mueve
+        this.descansoTurno = true;
     }
 
 
@@ -153,6 +171,8 @@ public class Unidad {
         this.ataqueRealizado = true;
         this.movimientoRestante = 0; // Atacar consume el movimiento
         this.revelar();
+        this.descansoTurno = false;          // no descansó
+        this.resetearBonusTemporales();      // pierde bonus temporales al atacar
     }
 
     // Cura a una unidad aliada. Solo funciona si tiene un Báculo equipado.
@@ -165,16 +185,22 @@ public class Unidad {
             // Delega la acción de curar al báculo
             equipamiento.accionar(this, aliado);
             this.ataqueRealizado = true; // Curar cuenta como la acción del turno
+            this.revelar();
+            this.descansoTurno = false;      // curar también cancela el descanso
+            this.resetearBonusTemporales();
         }
     }
 
+    // Emboscada -------------
     public boolean puedePrepararEmboscada() {
         return !this.oculto && !this.yaAtaco() && !this.yaSeMovio();
     }
 
     public void prepararEmboscada() {
-        this.oculto = true;
-        System.out.println(nombre + " se oculta entre los árboles...");
+        if (puedePrepararEmboscada()) {
+            this.oculto = true;
+            System.out.println(nombre + " se oculta entre los árboles...");
+        }
     }
 
     // --- Metodos para aplicar y resetear los bonus ---
@@ -201,8 +227,10 @@ public class Unidad {
         }
 
         // Validación simple de distancia: permite 8 direcciones 
-        int dist = Math.max(Math.abs(casillaActual.getFila() - nuevaFila), 
-                            Math.abs(casillaActual.getColumna() - nuevaColumna));
+        int dist = Math.max(
+            Math.abs(casillaActual.getFila() - nuevaFila), 
+            Math.abs(casillaActual.getColumna() - nuevaColumna)
+        );
 
         if (dist == 0) {
             System.out.println("No te puedes mover a la casilla actual.");
@@ -210,17 +238,30 @@ public class Unidad {
         }
 
         if (dist > this.movimientoRestante) {
-            System.out.println("Movimiento inválido: distancia (" + dist + ") excede el movimiento restante (" + this.movimientoRestante + ").");
+            System.out.println("Movimiento inválido: distancia (" + dist + 
+                            ") excede el movimiento restante (" + this.movimientoRestante + ").");
             return;
         }
 
         try {
             // Tablero se encarga de validar el movimiento y de realizarlo
             tablero.moverUnidad(this, nuevaFila, nuevaColumna);
-            // Seteo al movimiento como realizado y revelo la unidad
+
+            // Revelar la unidad (por si estaba oculta)
             revelar();
 
-            System.out.println(nombre + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
+            // 🟡 Si tenía bonus defensivo (por haber descansado), lo pierde al moverse
+            if (this.bonusDefTemporal > 0) {
+                System.out.println(nombre + " pierde su bonus defensivo al moverse.");
+                this.resetearBonusTemporales();
+            }
+
+            // Ya no se considera que descansó
+            this.descansoTurno = false;
+            this.movimientoRestante = 0;
+
+            System.out.println("✅ " + nombre + " se movió a (" + nuevaFila + "," + nuevaColumna + ").");
+
         } catch (org.modelo.tablero.excepciones.CasillaOcupadaException e) {
             System.out.println("Casilla ocupada: " + e.getMessage());
         } catch (org.modelo.tablero.excepciones.CasillaIntransitableException e) {

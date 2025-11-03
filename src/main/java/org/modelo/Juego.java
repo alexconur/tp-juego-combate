@@ -105,16 +105,23 @@ public class Juego {
 
         bandoActual = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
         System.out.println("--- Turno del " + bandoActual + " ---");
+        Bando bandoAnterior = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
 
-        // INICIO DE TURNO del nuevo bando:
-        //    - resetear flags / movimiento
-        //    - limpiar bonus temporales
-        prepararUnidadesNuevoTurno(bandoActual);
+        //  Preparar unidades del nuevo bando
+        //  Incluye bonus de defensa si descansaron
+        for (Unidad u : getUnidadesEnTablero(bandoActual)) {
+            u.prepararParaNuevoTurno();  // <-- este método aplica el bonus defensivo
+        }
 
-        // Aplicar bonus pasivos de POSICIÓN al comenzar el turno
+        // Limpiar los bonus temporales del bando anterior
+        for (Unidad u : getUnidadesEnTablero(bandoAnterior)) {
+            u.resetearBonusTemporales();
+        }
+
+        // Aplicar efectos pasivos de posición
         aplicarBonosDePosicion(bandoActual);
 
-        // Verificar condición de fin de juego
+        // Verificar fin de juego
         if (isGameOver()) {
             System.out.println("🏁 ¡La partida ha terminado!");
         }
@@ -131,14 +138,14 @@ public class Juego {
         }
     }
     
-    private void prepararUnidadesNuevoTurno(Bando bando) {
-        // *X*: Aquí iría lógica si algo debe aplicarse al INICIO del turno
-        for (Unidad u : getUnidadesEnTablero(bando)) {
-            if (u.estaVivo()) {
-                u.prepararParaNuevoTurno(); // resetea acción/mov y limpia bonus temporales
-            }
-        }
-    }
+    // private void prepararUnidadesNuevoTurno(Bando bando) {
+    //     // *X*: Aquí iría lógica si algo debe aplicarse al INICIO del turno
+    //     for (Unidad u : getUnidadesEnTablero(bando)) {
+    //         if (u.estaVivo()) {
+    //             u.prepararParaNuevoTurno(); // resetea acción/mov y limpia bonus temporales
+    //         }
+    //     }
+    // }
 
     private void aplicarBonosDePosicion(Bando bando) {
         for (Unidad u : getUnidadesEnTablero(bando)) {
