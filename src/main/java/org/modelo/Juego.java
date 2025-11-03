@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
@@ -104,21 +105,48 @@ public class Juego {
         bandoActual = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
         System.out.println("--- Turno del " + bandoActual + " ---");
 
-        // Prepara las unidades del nuevo bando para el inicio de su turno
+        // INICIO DE TURNO del nuevo bando:
+        //    - resetear flags / movimiento
+        //    - limpiar bonus temporales
         prepararUnidadesNuevoTurno(bandoActual);
+
+        // Aplicar bonus pasivos de POSICIÓN al comenzar el turno
+        aplicarBonosDePosicion(bandoActual);
+
+        // Verificar condición de fin de juego
+        if (isGameOver()) {
+            System.out.println("🏁 ¡La partida ha terminado!");
+        }
     }
 
     private void prepararUnidadesFinTurno(Bando bando) {
         // *IMPORTANTE*: Llama a prepararParaNuevoTurno al FINAL del turno
         for (Unidad u : getUnidadesEnTablero(bando)) {
-             if (u.estaVivo()) {
-                u.prepararParaNuevoTurno(); 
+            if (!u.estaVivo()) continue;
+            Casilla c = u.getCasillaActual();
+            if (c != null) {
+                c.aplicarEfectoFinDeTurno(u);
             }
         }
     }
     
     private void prepararUnidadesNuevoTurno(Bando bando) {
         // *X*: Aquí iría lógica si algo debe aplicarse al INICIO del turno
+        for (Unidad u : getUnidadesEnTablero(bando)) {
+            if (u.estaVivo()) {
+                u.prepararParaNuevoTurno(); // resetea acción/mov y limpia bonus temporales
+            }
+        }
+    }
+
+    private void aplicarBonosDePosicion(Bando bando) {
+        for (Unidad u : getUnidadesEnTablero(bando)) {
+            if (!u.estaVivo()) continue;
+            Casilla c = u.getCasillaActual();
+            if (c != null) {
+                c.aplicarEfectoDePosicion(u); // p.ej. Bosque +ATK/+MGC, etc.
+            }
+        }
     }
     
     // --- Lógica de fin de juego ---

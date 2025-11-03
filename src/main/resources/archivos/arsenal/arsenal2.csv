@@ -1,9 +1,0 @@
-# nombre,tipo,subtipo,potencia,alcance,usos
-Espada de Hierro,ARMA,ESPADA,5,1,999
-Hacha Ligera,ARMA,HACHA,6,1,999
-Lanza Corta,ARMA,LANZA,5,1,999
-Arco Simple,ARMA,ARCO,3,2,999
-Grimorio Fuego,GRIMORIO,,7,2,50
-Báculo Curación,BACULO,CURACION,10,1,30
-Báculo Sanación,BACULO,SANACION,999,1,10
-Báculo Fortaleza,BACULO,FORTALEZA,0,1,20

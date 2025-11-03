@@ -21,7 +21,7 @@ public class VistaTurno {
         System.out.println("══════════════════════════════════════════════");
         
         Tablero tablero = juego.getTablero();
-        System.out.println(TableroRenderer.render(tablero));
+        System.out.println(TableroRenderer.render(tablero, juego.getBandoActual()));
         
         System.out.println("\n--- Unidades en Tablero ---");
 
@@ -31,8 +31,7 @@ public class VistaTurno {
                          "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")" : "(RESERVA)";
             String hp = u.getHp() + "/" + u.getMaxHp() + " HP";
             String estado = u.estaVivo() ? hp : "MUERTO";
-            String acciones = "[Mov: " + (u.puedeMoverse() ? "SI" : "NO") + ", Act: " + (u.puedeActuar() ? "SI" : "NO") + "]";
-            
+            String acciones = "[Mov: " + (u.puedeMoverse() ? "SI" : "NO") + ", Act: " + (u.puedeActuar() ? "SI" : "NO") + "]";  
             System.out.printf("[%s] %-18s %-10s %s %s%n", bando, u.getNombre(), pos, estado, acciones);
         }
         System.out.println("---------------------------");
@@ -44,8 +43,9 @@ public class VistaTurno {
         System.out.println("2. Atacar / Curar");
         System.out.println("3. Ver unidades / detalles");
         System.out.println("4. Desplegar unidad (desde reserva)");
-        System.out.println("5. Terminar Turno");
-        return leerEnteroEnRango("Opción", 1, 5);
+        System.out.println("5. Preparar emboscada");
+        System.out.println("6. Terminar Turno");
+        return leerEnteroEnRango("Opción", 1, 6);
     }
     
     public Unidad seleccionarUnidad(List<Unidad> unidades, String prompt) {
@@ -60,7 +60,8 @@ public class VistaTurno {
             Unidad u = unidades.get(i);
             Casilla c = u.getCasillaActual();
             String pos = (c != null) ? "(" + c.getFila() + "," + c.getColumna() + ")" : "(reserva)";
-            System.out.printf("[%d] %-18s %s\n", i + 1, u.getNombre(), pos);
+            String oculto = u.isOculto() ? " (OCULTA)" : "";
+            System.out.printf("[%d] %-18s %s%s%n", i + 1, u.getNombre(), pos, oculto);
         }
         
         int idx = leerEnteroEnRango("Opción", 0, unidades.size());
@@ -86,11 +87,33 @@ public class VistaTurno {
         return unidades.get(idx - 1);
     }
 
+    // Muestra las casillas a las que puede moverse la unidad seleccionada
+    public void mostrarCasillasDisponibles(List<Casilla> casillas) {
+        if (casillas == null || casillas.isEmpty()) {
+            System.out.println("No hay casillas alcanzables para esta unidad.");
+            return;
+        }
+
+        System.out.println("\n--- Casillas alcanzables ---");
+        for (Casilla c : casillas) {
+            System.out.println("  (" + c.getFila() + ", " + c.getColumna() + ")");
+        }
+        System.out.println("----------------------------\n");
+    }
+
     public VistaInicio.Ubicacion pedirUbicacion(String mensaje) {
         System.out.println("-- " + mensaje + " --");
         int fila = leerEntero("Fila");
         int col = leerEntero("Columna");
         return new VistaInicio.Ubicacion(fila, col);
+    }
+
+    public void mostrarEmboscadaExitosa(Unidad u) {
+        System.out.println("🕵️ " + u.getNombre() + " se ha ocultado en el bosque. ¡El enemigo no podrá verla!");
+    }
+
+    public void mostrarEmboscadaInvalida(Unidad u) {
+        System.out.println("❌ " + u.getNombre() + " no puede preparar emboscada aquí.");
     }
 
     // Utilidades de lectura

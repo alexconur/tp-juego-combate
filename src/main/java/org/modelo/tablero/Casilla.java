@@ -24,6 +24,10 @@ public abstract class Casilla {
     public Unidad getOcupante() { return this.ocupante; }
     public boolean estaOcupada() { return ocupante != null; }
 
+    public String getTipoTerreno() {
+        return this.getClass().getSimpleName();
+    }
+
     // --- Métodos de Ocupación ---
     // Coloca una unidad en esta casilla.
         // Lanza excepciones si la casilla no es un destino válido.

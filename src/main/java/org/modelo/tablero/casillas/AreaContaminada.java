@@ -16,7 +16,10 @@ public class AreaContaminada extends Casilla implements Aplicable {
     public int getCostoMovimiento() { return 1; }
     @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
-
+    @Override
+    public String getTipoTerreno() {
+        return "Area Contaminada";
+    }
     @Override
     public void aplicarEfectoFinDeTurno(Unidad unidad) {
         unidad.recibirDanio(HP_DISMINUIDO);

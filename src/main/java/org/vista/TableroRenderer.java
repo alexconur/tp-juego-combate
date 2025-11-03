@@ -1,41 +1,90 @@
 // src/main/java/org/vista/util/TableroAsciiRenderer.java
 package org.vista;
 
-import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
-import org.modelo.tablero.casillas.Acantilado;
-import org.modelo.tablero.casillas.Agua;
-import org.modelo.tablero.casillas.AreaContaminada;
-import org.modelo.tablero.casillas.Bosque;
-import org.modelo.tablero.casillas.Castillo;
-import org.modelo.tablero.casillas.Enredadera;
-import org.modelo.tablero.casillas.Llanura;
-import org.modelo.tablero.casillas.Pantano;
+import org.modelo.tablero.Casilla;
+import org.modelo.unidades.Unidad;
+import org.modelo.unidades.Bando;
 
-public final class TableroRenderer {
-    private TableroRenderer() {}
+public class TableroRenderer {
 
-    public static String render(Tablero t) {
+    public static String render(Tablero tablero, Bando bandoActual) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < t.getFilas(); i++) {
-            for (int j = 0; j < t.getColumnas(); j++) {
-                sb.append(simbolo(t.getCasilla(i, j))).append(' ');
-            }
-            sb.append('\n');
-        }
+
+        sb.append("\n=== TERRENOS ===\n");
+        sb.append(renderTerrenos(tablero));
+        sb.append("\n=== UNIDADES ===\n");
+        sb.append(renderUnidades(tablero, bandoActual));
+
         return sb.toString();
     }
 
-    private static char simbolo(Casilla c) {
-        // *A* recontra viola OCP
-        if (c instanceof Llanura)         return '.';
-        if (c instanceof Bosque)          return 'B';
-        if (c instanceof Pantano)         return 'P';
-        if (c instanceof Castillo)        return 'F';
-        if (c instanceof AreaContaminada) return 'X';
-        if (c instanceof Agua
-         || c instanceof Enredadera
-         || c instanceof Acantilado)     return '#';
-        return '?';
+    // 🔹 Render del tipo de terreno
+    private static String renderTerrenos(Tablero tablero) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int fila = 0; fila < tablero.getFilas(); fila++) {
+            for (int col = 0; col < tablero.getColumnas(); col++) {
+                Casilla casilla = tablero.getCasilla(fila, col);
+                sb.append(simboloTerreno(casilla)).append("  ");
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    // 🔹 Render de las unidades (propias ocultas, visibles o vacías)
+    private static String renderUnidades(Tablero tablero, Bando bandoActual) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int fila = 0; fila < tablero.getFilas(); fila++) {
+            for (int col = 0; col < tablero.getColumnas(); col++) {
+                Casilla casilla = tablero.getCasilla(fila, col);
+                Unidad u = casilla.getOcupante();
+
+                if (u != null && u.estaVivo()) {
+                    // Si pertenece al jugador actual
+                    if (u.getBando() == bandoActual) {
+                        if (u.isOculto()) {
+                            sb.append(".  "); // unidad propia oculta
+                        } else {
+                            String inicial = u.getNombre().substring(0, 1).toUpperCase();
+                            sb.append(inicial + "  "); // unidad propia visible
+                        }
+                    } else {
+                        // Enemigo → nunca mostrar si está oculto
+                        if (u.isOculto()) {
+                            sb.append("-  "); // invisible
+                        } else {
+                            String inicial = u.getNombre().substring(0, 1).toUpperCase();
+                            sb.append(inicial + "  "); // enemigo visible
+                        }
+                    }
+                } else {
+                    sb.append("-  "); // Casilla vacía
+                }
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    // 🔸 Símbolos para cada tipo de terreno
+    private static String simboloTerreno(Casilla casilla) {
+        String tipo = casilla.getClass().getSimpleName();
+
+        switch (tipo) {
+            case "Bosque": return "B";
+            case "Llanura": return "L";
+            case "Pantano": return "P";
+            case "Castillo": return "F";
+            case "Enredadera": return "E";
+            case "AreaContaminada": return "A";
+            case "Agua": return "~";
+            case "Acantilado": return "^";
+            default: return "-";
+        }
     }
 }

@@ -6,6 +6,8 @@ import org.vista.tipos.VistaInicio;
 import org.vista.tipos.VistaTurno;
 import org.vista.tipos.VistaUnidades;
 import org.modelo.Juego;
+import org.modelo.tablero.Casilla;
+import org.modelo.tablero.casillas.Bosque;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 
@@ -36,7 +38,7 @@ public class ControladorTurno implements Controlador {
             while (turnoActivo) {
                 int opcion = vTurno.mostrarMenuPrincipal();
                 
-                switch (opcion) {  //*M* esto podria romper OPC, podria hacerse en un enum (??)
+                switch (opcion) {  //*M* esto podria romper OCP, podria hacerse en un enum (??)
                     case 1: // Mover
                         accionMover(bandoActual);
                         break;
@@ -50,7 +52,10 @@ public class ControladorTurno implements Controlador {
                     case 4: // Desplegar
                         accionDesplegar(bandoActual);
                         break;
-                    case 5: // Terminar Turno
+                    case 5: // Preparar Emboscada
+                        accionPrepararEmboscada(bandoActual);
+                        break;
+                    case 6: // Terminar Turno
                         turnoActivo = false;
                         break;
                     default:
@@ -80,33 +85,35 @@ public class ControladorTurno implements Controlador {
             .filter(Unidad::puedeMoverse)
             .filter(Unidad::estaVivo)
             .collect(Collectors.toList());
-        if (movibles.isEmpty()) return;
+        if (movibles.isEmpty()) {
+            System.out.println("No hay unidades disponibles para mover.");
+            return;
+        }
         
         // 2. Vista selecciona unidad
         Unidad u = vTurno.seleccionarUnidad(movibles, "Mover");
         if (u == null) return; // Canceló
 
-        // 3. Vista pide coordenadas
-        VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Mover a");
-        int fila = ubi.getFila();
-        int col = ubi.getColumna(); 
+        // 3. Calcular casillas alcanzables usando BFS
+        List<Casilla> alcanzables = juego.getTablero().obtenerCasillasAlcanzables(u);
 
-        // Validar rango de movimiento
-        int distancia = Math.max(
-                Math.abs(u.getCasillaActual().getFila() - fila),
-                Math.abs(u.getCasillaActual().getColumna() - col)
-        );
+        // 4. Mostrar al jugador las casillas donde puede moverse
+        vTurno.mostrarCasillasDisponibles(alcanzables);
 
-        if (distancia > u.getMovimientoRestante()) {
-            System.out.println("Movimiento inválido: destino fuera del rango de movimiento.");
+        // 5. Pedir destino
+        VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Seleccione destino para moverse");
+        Casilla destino = juego.getTablero().getCasilla(ubi.getFila(), ubi.getColumna());
+
+        // 6. Validar destino
+        if (!alcanzables.contains(destino)) {
+            System.out.println("Movimiento inválido: la casilla no está dentro del rango.");
             return;
         }
-        
-        // 4. Modelo ejecuta
-        u.moverA(juego.getTablero(), ubi.getFila(), ubi.getColumna());
 
-        // Marcar movimiento realizado
+        // 7. Ejecutar movimiento
+        u.moverA(juego.getTablero(), ubi.getFila(), ubi.getColumna());
         u.setMovimientoRestante(0);
+        System.out.println("✅ " + u.getNombre() + " se movió a (" + ubi.getFila() + ", " + ubi.getColumna() + ").");
     }
 
     private void accionActuar(Bando bando) {
@@ -159,7 +166,7 @@ public class ControladorTurno implements Controlador {
         // Ejecutar acción
         if (esCuracion) {
             u.curarAliado(objetivo);
-            System.out.println("💚 " + u.getNombre() + " curó a " + objetivo.getNombre() + ".");
+            System.out.println("🩹 " + u.getNombre() + " curó a " + objetivo.getNombre() + ".");
         } else {
             u.atacar(objetivo);
             System.out.println("💥 " + u.getNombre() + " atacó a " + objetivo.getNombre() + ".");
@@ -191,5 +198,29 @@ public class ControladorTurno implements Controlador {
         // 4. Modelo ejecuta
         juego.desplegarUnidad(u, ubi.getFila(), ubi.getColumna());
         System.out.println("✅ Unidad desplegada en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
+    }
+
+    private void accionPrepararEmboscada(Bando bando) {
+        List<Unidad> disponibles = juego.getUnidadesEnTablero(bando).stream()
+                .filter(Unidad::estaVivo)
+                .filter(Unidad::puedePrepararEmboscada)
+                .collect(Collectors.toList());
+
+        if (disponibles.isEmpty()) {
+            System.out.println("No hay unidades que puedan preparar emboscada.");
+            return;
+        }
+
+        Unidad u = vTurno.seleccionarUnidad(disponibles, "Preparar emboscada");
+        if (u == null) return;
+
+        Casilla c = u.getCasillaActual();
+        if (c == null || !(c instanceof Bosque)) {
+            vTurno.mostrarEmboscadaInvalida(u);
+            return;
+        }
+
+        u.prepararEmboscada();
+        vTurno.mostrarEmboscadaExitosa(u);
     }
 }

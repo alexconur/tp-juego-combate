@@ -13,6 +13,10 @@ public class Agua extends Casilla {
     @Override
     public int getCostoMovimiento() { return 1; }
     @Override
+    public String getTipoTerreno() {
+        return "Agua";
+    }
+    @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
 
     @Override

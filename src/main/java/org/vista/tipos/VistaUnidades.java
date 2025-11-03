@@ -14,10 +14,10 @@ public class VistaUnidades {
     // Menú principal
     public int mostrarMenuPrincipal() {
         System.out.println("\n=== MENÚ DE UNIDADES ===");
+        System.out.println("0. Volver");
         System.out.println("1. Ver unidades desplegadas");
         System.out.println("2. Ver unidades en reserva");
         System.out.println("3. Ver detalle de una unidad");
-        System.out.println("0. Volver");
         return leerEnteroEnRango("Opción", 0, 3);
     }
 

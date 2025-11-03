@@ -17,6 +17,10 @@ public class Bosque extends Casilla implements Aplicable {
     @Override
     public int getCostoMovimiento() { return 1; }
     @Override
+    public String getTipoTerreno() {
+        return "Bosque";
+    }
+    @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
     @Override
     public void aplicarEfectoFinDeTurno(Unidad unidad) {}

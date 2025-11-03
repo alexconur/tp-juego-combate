@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import org.modelo.tablero.Tablero;
 import org.vista.TableroRenderer;
+import org.modelo.unidades.Bando;
 
 public class VistaInicio {
 
@@ -131,8 +132,8 @@ public class VistaInicio {
         }
     }
 
-    public void mostrarTablero(Tablero tablero) {
+    public void mostrarTablero(Tablero tablero, Bando bandoActual) {
         System.out.println("\n=== TABLERO ===");
-        System.out.println(TableroRenderer.render(tablero));
+        System.out.println(TableroRenderer.render(tablero, bandoActual));
     }
 }

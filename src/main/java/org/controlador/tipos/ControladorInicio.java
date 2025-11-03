@@ -17,7 +17,7 @@ public class ControladorInicio {
     private final VistaInicio vInicio;
 
     // Se guardan por si los necesita otro controlador
-    private String mapaPath, ejercitoPath, arsenalPath;
+    private String mapaPath, ejercitoPath;
 
     public ControladorInicio(Juego juego, VistaInicio vInicio) {
         this.juego = juego;
@@ -44,7 +44,7 @@ public class ControladorInicio {
         juego.setEjercitos(todasLasUnidades);
 
         // 5) Mostrar tablero y pedir ubicación del Lord (Jugador 1)
-        vInicio.mostrarTablero(tablero);
+        vInicio.mostrarTablero(tablero, juego.getBandoActual());
 
         Bando bandoJ1 = juego.getBandoActual();
         System.out.println("Jugador 1 (" + bandoJ1 + "), posiciona a tu Lord.");
@@ -90,7 +90,7 @@ public class ControladorInicio {
         }
         
         // 8) Mostrar tablero actualizado
-        vInicio.mostrarTablero(tablero);
+        vInicio.mostrarTablero(tablero, juego.getBandoActual());
         
         // 9) El flujo continúa en ControladorPrincipal
     }

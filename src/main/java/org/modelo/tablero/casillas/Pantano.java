@@ -12,7 +12,10 @@ public class Pantano extends Casilla implements Aplicable {
     public boolean esTransitable() { return true; }
     @Override
     public int getCostoMovimiento() { return 1; }
-
+    @Override
+    public String getTipoTerreno() {
+        return "Pantano";
+    }
     @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {
         unidad.setMovimientoRestante(1);

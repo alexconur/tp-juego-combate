@@ -2,7 +2,7 @@ package org.modelo.unidades;
 
 import org.modelo.equipamiento.Equipamiento;
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.Tablero; // *NUEVO* Import
+import org.modelo.tablero.Tablero; 
 
 public class Unidad {
     
@@ -112,10 +112,6 @@ public class Unidad {
         this.movimientoRestante = this.mov;
         this.resetearBonusTemporales();
 
-        // Aplicar efecto de fin de turno en la casilla
-        if (this.casillaActual != null) {
-            this.casillaActual.aplicarEfectoFinDeTurno(this);
-        }
         // Aquí también se aplicarían efectos de terreno (Fuerte, Área Contaminada)
     }
 
@@ -170,6 +166,15 @@ public class Unidad {
             equipamiento.accionar(this, aliado);
             this.ataqueRealizado = true; // Curar cuenta como la acción del turno
         }
+    }
+
+    public boolean puedePrepararEmboscada() {
+        return !this.oculto && !this.yaAtaco() && !this.yaSeMovio();
+    }
+
+    public void prepararEmboscada() {
+        this.oculto = true;
+        System.out.println(nombre + " se oculta entre los árboles...");
     }
 
     // --- Metodos para aplicar y resetear los bonus ---

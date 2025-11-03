@@ -13,6 +13,10 @@ public class Llanura extends Casilla {
     @Override
     public int getCostoMovimiento() { return 1; }
     @Override
+    public String getTipoTerreno() {
+        return "Llanura";
+    }
+    @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
     @Override
     public void aplicarEfectoFinDeTurno(Unidad unidad) {}

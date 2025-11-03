@@ -13,6 +13,10 @@ public class Enredadera extends Casilla {
     @Override
     public int getCostoMovimiento() { return 1; }
     @Override
+    public String getTipoTerreno() {
+        return "Enredadera";
+    }
+    @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
 
     @Override

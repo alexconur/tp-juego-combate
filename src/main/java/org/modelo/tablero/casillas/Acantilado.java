@@ -13,6 +13,10 @@ public class Acantilado extends Casilla {
     @Override
     public int getCostoMovimiento() { return 1; }
     @Override
+    public String getTipoTerreno() {
+        return "Acantilado";
+    }
+    @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
 
     @Override

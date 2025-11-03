@@ -14,7 +14,10 @@ public class Castillo extends Casilla implements Aplicable {
     public boolean esTransitable() { return true; }
     @Override
     public int getCostoMovimiento() { return 1; } // costo normal
-    
+    @Override
+    public String getTipoTerreno() {
+        return "Castillo";
+    }
     // *X*: No hace nada al entrar, pero estariamos violando ISP
     @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
