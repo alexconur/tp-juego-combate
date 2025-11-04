@@ -19,7 +19,7 @@ public class TableroRenderer {
         return sb.toString();
     }
 
-    // 🔹 Render del tipo de terreno
+    // Render del tipo de terreno
     private static String renderTerrenos(Tablero tablero) {
         StringBuilder sb = new StringBuilder();
 
@@ -34,7 +34,7 @@ public class TableroRenderer {
         return sb.toString();
     }
 
-    // 🔹 Render de las unidades (propias ocultas, visibles o vacías)
+    // Render de las unidades (propias ocultas, visibles o vacías)
     private static String renderUnidades(Tablero tablero, Bando bandoActual) {
         StringBuilder sb = new StringBuilder();
 
@@ -71,19 +71,19 @@ public class TableroRenderer {
         return sb.toString();
     }
 
-    // 🔸 Símbolos para cada tipo de terreno
+    // Símbolos para cada tipo de terreno
     private static String simboloTerreno(Casilla casilla) {
         String tipo = casilla.getClass().getSimpleName();
 
         switch (tipo) {
-            case "Bosque": return "B";
-            case "Llanura": return "L";
-            case "Pantano": return "P";
-            case "Castillo": return "F";
-            case "Enredadera": return "E";
-            case "AreaContaminada": return "A";
-            case "Agua": return "~";
-            case "Acantilado": return "^";
+            case "Bosque": return "BO";
+            case "Llanura": return "LL";
+            case "Pantano": return "PA";
+            case "Castillo": return "FO";
+            case "Enredadera": return "EN";
+            case "AreaContaminada": return "AR";
+            case "Agua": return "AG";
+            case "Acantilado": return "AC";
             default: return "-";
         }
     }

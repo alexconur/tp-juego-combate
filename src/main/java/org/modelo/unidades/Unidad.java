@@ -250,7 +250,7 @@ public class Unidad {
             // Revelar la unidad (por si estaba oculta)
             revelar();
 
-            // 🟡 Si tenía bonus defensivo (por haber descansado), lo pierde al moverse
+            // Si tenía bonus defensivo (por haber descansado), lo pierde al moverse
             if (this.bonusDefTemporal > 0) {
                 System.out.println(nombre + " pierde su bonus defensivo al moverse.");
                 this.resetearBonusTemporales();
