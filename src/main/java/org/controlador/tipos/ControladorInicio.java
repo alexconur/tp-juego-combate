@@ -9,8 +9,8 @@ import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
-import org.vista.tipos.VistaInicio;
 import org.vista.Colores;
+import org.vista.tipos.VistaInicio;
 
 public class ControladorInicio implements Controlador {
 
@@ -72,6 +72,7 @@ public class ControladorInicio implements Controlador {
             throw new IllegalStateException("No se encontró un Lord para el " + bandoJ2);
         }
         
+        // *A* acá hay un while true feo jajaj
         while (true) {
             // Mostramos el tablero ANTES de pedir la ubicación
             vInicio.mostrarTablero(tablero, bandoJ2);

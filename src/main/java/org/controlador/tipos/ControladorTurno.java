@@ -31,7 +31,7 @@ public class ControladorTurno implements Controlador {
         // Bucle principal del juego
         while (!juego.isGameOver()) {
             Bando bandoActual = juego.getBandoActual();
-            
+
             // Bucle de acciones para el jugador actual
             boolean turnoActivo = true;
             while (turnoActivo) {
@@ -40,7 +40,7 @@ public class ControladorTurno implements Controlador {
             
                 int opcion = vTurno.mostrarMenuPrincipal();
                 
-                switch (opcion) {  //*M* esto podria romper OCP, podria hacerse en un enum (??)
+                switch (opcion) {  //*M* esto podria romper OCP, podria hacerse en un enum .. *A* lo intenté y me quedó feo
                     case 1: // Mover
                         accionMover(bandoActual);
                         break;
@@ -66,6 +66,7 @@ public class ControladorTurno implements Controlador {
                         break;    
                     default:
                         System.out.println("Opción inválida. Intente de nuevo.");
+                        break;
 
                 }
                 if (juego.isGameOver()) {
