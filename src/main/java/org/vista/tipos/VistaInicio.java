@@ -13,6 +13,7 @@ import java.util.Scanner;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.vista.TableroRenderer;
+import org.vista.Colores; 
 
 public class VistaInicio {
 
@@ -27,6 +28,7 @@ public class VistaInicio {
         public String getMapaPath() { return mapaPath; }
         public String getEjercitoPath() { return ejercitoPath; }
     }
+
     public static class Ubicacion {
         private final int fila;
         private final int columna;
@@ -40,29 +42,43 @@ public class VistaInicio {
     private static final String DIR_MAPAS = "archivos/mapas";
     private static final String DIR_EJERCITOS = "archivos/ejercito";
 
-    public void mostrar() {
-        System.out.println("\n| Bienvenido a CLASS EMBLEM |\n");
+public void mostrar() {
+        System.out.println("╔══════════════════════════════════════════════╗");
+        System.out.println("║                                              ║");
+        System.out.println("║         🛡️ BIENVENIDO A CLASS EMBLEM 🛡️        ║");
+        System.out.println("║                                              ║");
+        System.out.println("╚══════════════════════════════════════════════╝" + Colores.RESET);
+        System.out.println();
     }
 
     public Selecciones seleccionarArchivos() {
         String mapa = pedirArchivo("Mapa", DIR_MAPAS);
         String ejercito = pedirArchivo("Ejército", DIR_EJERCITOS);
 
-        System.out.println("\n✔ Selecciones:");
-        System.out.println(" - Mapa: " + mapa);
-        System.out.println(" - Ejército: " + ejercito);
+        System.out.println("\n╔══════════ CONFIGURACIÓN ══════════╗");
+        System.out.printf("║ %-10s %-27s ║%n", "Mapa:", mapa);
+        System.out.printf("║ %-10s %-27s ║%n", "Ejército:", ejercito);
+        System.out.println("╚══════════════════════════════════════════╝");
 
         return new Selecciones(mapa, ejercito);
     }
 
     // --- pide Fila/Columna dentro del rango [0..filas-1], [0..columnas-1] ---
-    public Ubicacion pedirUbicacionLord(int filas, int columnas) {
-        System.out.println("\n-- Ubicar Lord --");
-        System.out.println("Usá índices base 0. Rango válido: filas 0.." + (filas - 1) +
-                           ", columnas 0.." + (columnas - 1) + ".");
+    public Ubicacion pedirUbicacionLord(Bando bando, int filas, int columnas) {
+
+        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.ALIADO : Colores.ENEMIGO;
+        String bandoNombre = bando.toString();
+
+        System.out.println("\n╔═════════════ POSICIONAR LORD ═════════════╗");
+        System.out.printf("║ Jugador: %s%-31s%s ║%n", bandoColor, bandoNombre, Colores.RESET);
+        System.out.println("║                                           ║");
+        System.out.printf("║ Rango Filas:    0..%-22s ║%n", (filas - 1));
+        System.out.printf("║ Rango Columnas: 0..%-22s ║%n", (columnas - 1));
+        System.out.println("╚═══════════════════════════════════════════╝");
+
         int f = leerEnteroEnRango("Fila", 0, filas - 1);
         int c = leerEnteroEnRango("Columna", 0, columnas - 1);
-        System.out.println("... Intentando posicionar Lord en (" + f + "," + c + ") ...");
+        
         return new Ubicacion(f, c);
     }
 
@@ -73,8 +89,10 @@ public class VistaInicio {
             try {
                 int v = Integer.parseInt(s);
                 if (v >= min && v <= max) return v;
-            } catch (NumberFormatException ignored) { }
-            System.out.println("Entrada inválida, probá de nuevo.");
+                System.out.println(Colores.ENEMIGO + "Opción fuera de rango." + Colores.RESET);
+            } catch (NumberFormatException ignored) { 
+                System.out.println(Colores.ENEMIGO + "Entrada inválida, probá de nuevo." + Colores.RESET);
+            }
         }
     }
 
@@ -85,11 +103,16 @@ public class VistaInicio {
             throw new IllegalStateException("No hay CSV en " + resourceDir +
                     " (revisá src/main/resources/" + resourceDir + ")");
         }
-        System.out.println("-- Elegir " + titulo + " --");
+        String tituloCaja = String.format(" ELEGIR %S ", titulo.toUpperCase());
+        System.out.printf("\n╔═══════════════%s═════════════╗%n", tituloCaja);
+
         for (int i = 0; i < archivos.size(); i++) {
             String nombre = archivos.get(i).substring(resourceDir.length() + 1);
-            System.out.printf("[%d] %s%n", i + 1, nombre);
+            String linea = String.format("[%d] %s", i + 1, nombre);
+            System.out.printf("║ %-38s  ║%n", linea);
         }
+        System.out.println("╚═════════════════════════════════════════╝");
+
         int idx = leerEnteroEnRango("Opción", 1, archivos.size());
         return archivos.get(idx - 1);
     }
