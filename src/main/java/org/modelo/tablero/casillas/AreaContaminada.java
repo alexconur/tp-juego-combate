@@ -1,10 +1,15 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
+import org.modelo.tablero.FabricaCasillas;
 import org.modelo.unidades.Unidad;
 
 public class AreaContaminada extends Casilla implements Aplicable {
     private static final int HP_DISMINUIDO = 5;  // Valor hipotético
+
+    static {
+        FabricaCasillas.getInstancia().registrarTipoCasilla("AR", AreaContaminada::new);
+    }
 
     public AreaContaminada(int fila, int columna) {
         super(fila, columna);

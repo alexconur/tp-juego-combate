@@ -10,41 +10,27 @@ import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 
 public class Juego {
-    // *A* falta lógica de que un jugador se pueda rendir.
     private Tablero tablero;
     private List<Unidad> bando1EnTablero;
     private List<Unidad> bando2EnTablero;
     private List<Unidad> bando1Reserva;
     private List<Unidad> bando2Reserva;
+    private final Random rng;
     private Bando bandoActual;
     private boolean gameOver = false;
 
-    //Constructor
     public Juego() {
         this.tablero = null; // *X*: se reemplaza en ControladorInicio
+        this.rng = new Random();
         this.bando1EnTablero = new ArrayList<>();
         this.bando1Reserva = new ArrayList<>();
         this.bando2EnTablero = new ArrayList<>();
         this.bando2Reserva = new ArrayList<>();
 
         
-        Random random = new Random();
-        this.bandoActual = random.nextBoolean() ? Bando.REINO_DRUIDA : Bando.REINO_NIGROMANTICO;  //*M* rompe OCP, vale la pena ??
+        this.bandoActual = Bando.random(this.rng);
         System.out.println("Inicia el turno: " + this.bandoActual);
     }
-
-
-    // Cargar tablero
-    // public void cargarTablero() {
-    //     FabricaCasillas fabrica = new FabricaCasillas(); //rompe algo??? suspishus, idk
-
-    //     for (int i = 0; i < tablero.getFilas(); i++) {
-    //         for (int j = 0; j < tablero.getColumnas(); j++) {
-    //             //*M* acá hacemos algo con lo que nos dan desde los archivos (creo que tenemos como min un parametro en este método)
-    //         }
-    //     }
-
-    // }
 
     public Tablero getTablero() { return tablero; }
     public Bando getBandoActual() { return bandoActual; }

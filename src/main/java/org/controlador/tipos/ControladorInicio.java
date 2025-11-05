@@ -1,9 +1,9 @@
-// src/main/java/org/controlador/tipos/ControladorInicio.java
 package org.controlador.tipos;
 
 import java.util.List;
 
 import org.archivos.CargadorDeDatos;
+import org.controlador.Controlador;
 import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
@@ -11,7 +11,7 @@ import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaInicio;
 
-public class ControladorInicio {
+public class ControladorInicio implements Controlador {
 
     private final Juego juego;
     private final VistaInicio vInicio;
@@ -30,7 +30,7 @@ public class ControladorInicio {
 
         // 2) Seleccionar archivos (desde resources)
         VistaInicio.Selecciones sel = vInicio.seleccionarArchivos();
-        mapaPath     = sel.getMapaPath();
+        mapaPath = sel.getMapaPath();
         ejercitoPath = sel.getEjercitoPath();
 
         CargadorDeDatos cargador = new CargadorDeDatos();

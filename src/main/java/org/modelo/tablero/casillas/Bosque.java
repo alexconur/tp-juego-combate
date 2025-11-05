@@ -1,13 +1,18 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
+import org.modelo.tablero.FabricaCasillas;
 import org.modelo.unidades.Unidad;
 
 public class Bosque extends Casilla implements Aplicable {
     private static final int BONUS_DEFENSA = 5;  // Valor hipotético
     private static final int BONUS_MAGIA = 5;  // Valor hipotético
 
-
+    // *A* sé que static se ve feo pero no hay otra forma por ahora de no romper ocp
+    static {
+        FabricaCasillas.getInstancia().registrarTipoCasilla("BO", Bosque::new);
+    }
+    
     public Bosque(int fila, int columna) {
         super(fila, columna);
     }

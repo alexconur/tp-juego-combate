@@ -1,28 +1,41 @@
 package org.modelo.tablero;
 
-import org.modelo.tablero.casillas.Acantilado;
-import org.modelo.tablero.casillas.Agua;
-import org.modelo.tablero.casillas.AreaContaminada;
-import org.modelo.tablero.casillas.Bosque;
-import org.modelo.tablero.casillas.Castillo;
-import org.modelo.tablero.casillas.Enredadera;
-import org.modelo.tablero.casillas.Llanura;
-import org.modelo.tablero.casillas.Pantano;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 public class FabricaCasillas {
-    public Casilla crearCasilla(String tipoTerreno, int fila, int columna){
-        // *A* no me gusta esto de chequear tipos 
-        switch (tipoTerreno){
-            case "LLANURA": return new Llanura(fila, columna);
-            case "BOSQUE": return new Bosque(fila, columna);
-            case "PANTANO": return new Pantano(fila, columna);
-            case "CASTILLO": return new Castillo(fila, columna);
-            case "AREACONT": return new AreaContaminada(fila, columna);
-            case "AGUA": return new Agua(fila, columna);
-            case "ENREDADERA": return new Enredadera(fila, columna);
-            case "ACANTILADO": return new Acantilado(fila, columna);
-            default: 
-                throw new IllegalArgumentException("Tipo de terreno [" + tipoTerreno + "] no existe");
+
+    // *A* arreglé ocp con patrón Singleton
+    private static final FabricaCasillas instancia = new FabricaCasillas();
+    
+    // un Map que usa el código (ej: "LL") como clave y un constructor como valor.
+    private final Map<String, BiFunction<Integer, Integer, Casilla>> registro;
+
+    private FabricaCasillas() {
+        this.registro = new HashMap<>();
+    }
+
+    public static FabricaCasillas getInstancia() {
+        return instancia;
+    }
+
+    public void registrarTipoCasilla(String codigo, BiFunction<Integer, Integer, Casilla> constructor) {
+        if (codigo == null || constructor == null) {
+            throw new IllegalArgumentException("El código o el constructor no pueden ser nulos.");
+        }
+        registro.put(codigo.trim().toUpperCase(), constructor);
+    }
+
+    public Casilla crearCasilla(String tipoTerreno, int fila, int columna) {
+        String tipo = (tipoTerreno == null) ? "" : tipoTerreno.trim().toUpperCase();
+
+        // *A* busca el constructr en el Map
+        BiFunction<Integer, Integer, Casilla> constructor = registro.get(tipo);   
+        if (constructor != null) {
+            return constructor.apply(fila, columna);
+        } else {
+            throw new IllegalArgumentException("Tipo de terreno [" + tipoTerreno + "] no existe o no está registrado.");
         }
     }
 }

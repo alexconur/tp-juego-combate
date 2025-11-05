@@ -11,7 +11,6 @@ public final class CargadorDeDatos {
         return MapaLoader.cargar(mapaResourcePath);
     }
 
-    // Cargar Ejército
     public List<Unidad> cargarEjercito(String ejercitoResourcePath) {
         return EjercitoLoader.cargar(ejercitoResourcePath);
     }

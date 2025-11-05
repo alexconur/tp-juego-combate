@@ -1,9 +1,15 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
+import org.modelo.tablero.FabricaCasillas;
 import org.modelo.unidades.Unidad;
 
 public class Agua extends Casilla {
+
+    static {
+        FabricaCasillas.getInstancia().registrarTipoCasilla("AG", Agua::new);
+    }
+
     public Agua(int fila, int columna) {
         super(fila, columna);
     }

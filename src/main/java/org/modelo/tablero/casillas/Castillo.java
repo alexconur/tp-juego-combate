@@ -1,11 +1,17 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
+import org.modelo.tablero.FabricaCasillas;
 import org.modelo.unidades.Unidad;
 
 public class Castillo extends Casilla implements Aplicable {
     private static final int CURACION_FUERTE = 10; // Valor hipotético
     private static final int BONUS_DEFENSA = 5;  // Valor hipotético
+
+    static {
+        FabricaCasillas.getInstancia().registrarTipoCasilla("FO", Castillo::new);
+    }
+
     public Castillo(int fila, int columna) {
         super(fila, columna);
     }
