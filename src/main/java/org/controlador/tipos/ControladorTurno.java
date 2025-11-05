@@ -31,11 +31,13 @@ public class ControladorTurno implements Controlador {
         // Bucle principal del juego
         while (!juego.isGameOver()) {
             Bando bandoActual = juego.getBandoActual();
-            vTurno.mostrarEstado(juego);
             
             // Bucle de acciones para el jugador actual
             boolean turnoActivo = true;
             while (turnoActivo) {
+                vTurno.limpiarPantalla(); 
+                vTurno.mostrarEstado(juego);
+            
                 int opcion = vTurno.mostrarMenuPrincipal();
                 
                 switch (opcion) {  //*M* esto podria romper OCP, podria hacerse en un enum (??)
@@ -70,16 +72,10 @@ public class ControladorTurno implements Controlador {
                     turnoActivo = false;
                     break;
                 }
-                
-                // Si la opción no fue 'Terminar Turno', mostrar el estado actualizado
-                if (turnoActivo && !juego.isGameOver()) {
-                    vTurno.mostrarEstado(juego);
-                }
             }
             
             // Cambiar de turno
             if (!juego.isGameOver()) {
-                vTurno.limpiarPantalla();
                 juego.cambiarTurno();
             } else {
                 System.out.println("\n🏁 ¡El juego ha finalizado!");
