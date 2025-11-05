@@ -9,6 +9,7 @@ import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Unidad;
 import org.vista.TableroRenderer;
+import org.vista.Colores;
 
 public class VistaTurno {
     
@@ -18,16 +19,18 @@ public class VistaTurno {
         if (juego.isGameOver()) {
             return;
         }
-
-        System.out.println("\n=== ESTADO DEL JUEGO ===");
         System.out.println("\n══════════════════════════════════════════════");
-        System.out.println("TURNO DE: " + juego.getBandoActual());
+
+        String bandoColor = (juego.getBandoActual() == org.modelo.unidades.Bando.REINO_DRUIDA) ? Colores.ALIADO : Colores.ENEMIGO;
+
+
+        System.out.println("TURNO DE: " + bandoColor + juego.getBandoActual() + Colores.RESET);
         System.out.println("══════════════════════════════════════════════");
         
         Tablero tablero = juego.getTablero();
         System.out.println(TableroRenderer.render(tablero, juego.getBandoActual()));
         
-        System.out.println("\n--- Unidades en Tablero ---");
+        System.out.println("\n╔══════════════════════════ UNIDADES EN TABLERO ══════════════════════════╗");
 
         for (Unidad u : juego.getTodasUnidadesEnTablero()) {
             String bando = u.getBando().toString().substring(6, 12);
@@ -36,20 +39,29 @@ public class VistaTurno {
             String hp = u.getHp() + "/" + u.getMaxHp() + " HP";
             String estado = u.estaVivo() ? hp : "MUERTO";
             String acciones = "[Mov: " + (u.puedeMoverse() ? "SI" : "NO") + ", Act: " + (u.puedeActuar() ? "SI" : "NO") + "]";  
-            System.out.printf("[%s] %-18s %-10s %s %s%n", bando, u.getNombre(), pos, estado, acciones);
+
+            String colorBando;
+            if (u.estaVivo()){
+                colorBando = (u.getBando() ==  juego.getBandoActual()) ? Colores.ALIADO : Colores.ENEMIGO;
+            } else {
+                colorBando = Colores.VACIO_U;
+            }
+
+            String lineaUnidad = String.format("[%s] %-18s %-10s %-12s %s", bando, u.getNombre(), pos, estado, acciones);
+
+            // Imprimimos la línea dentro de los bordes ║ ... ║
+            System.out.println("║ " + colorBando + lineaUnidad + " " + Colores.RESET + " ║");
         }
-        System.out.println("---------------------------");
-    }
+        System.out.println("╚═════════════════════════════════════════════════════════════════════════╝");
+    }   
 
     public int mostrarMenuPrincipal() {
-        System.out.println("\n-- Menú de Acciones --");
-        System.out.println("1. Mover unidad");
-        System.out.println("2. Atacar / Curar");
-        System.out.println("3. Ver unidades / detalles");
-        System.out.println("4. Desplegar unidad (desde reserva)");
-        System.out.println("5. Preparar emboscada");
-        System.out.println("6. Terminar Turno");
-        System.out.println("7. Rendirse");
+        System.out.println("\n╔═══════════════════════ ACCIONES ═════════════════════════╗");
+        System.out.println("║ [1] Mover           [2] Atacar/Curar      [3] Ver menus  ║");
+        System.out.println("║ [4] Desplegar       [5] Emboscada                        ║");
+        System.out.println("║ [6] Terminar turno  [7] Rendirse                         ║");        
+        System.out.println("╚══════════════════════════════════════════════════════════╝");   
+        
         return leerEnteroEnRango("Opción", 1, 7);
     }
     
@@ -59,16 +71,30 @@ public class VistaTurno {
             return null;
         }
         
-        System.out.println("\n-- Seleccionar Unidad para " + prompt + " --");
-        System.out.println("[0] Cancelar");
+        System.out.println("\n╔═══ SELECCIONAR UNIDAD (" + prompt.toUpperCase() + ") ═══╗");
+        System.out.println("║ [0] Cancelar                   ║");
+
+        // Colorear la lista de selección
+        String colorLista = Colores.ALIADO; // Default a Aliado
+        if (!unidades.isEmpty() && unidades.get(0).getBando() != org.modelo.unidades.Bando.REINO_DRUIDA) { // Asunción simple
+             if(prompt.equalsIgnoreCase("Atacar")) {
+                colorLista = Colores.ENEMIGO;
+             }
+        }
+        if(prompt.equalsIgnoreCase("Atacar")) colorLista = Colores.ENEMIGO;
+        else if(prompt.equalsIgnoreCase("Curar") || prompt.equalsIgnoreCase("Mover")) colorLista = Colores.ALIADO;
+
         for (int i = 0; i < unidades.size(); i++) {
             Unidad u = unidades.get(i);
             Casilla c = u.getCasillaActual();
             String pos = (c != null) ? "(" + c.getFila() + "," + c.getColumna() + ")" : "(reserva)";
             String oculto = u.isOculto() ? " (OCULTA)" : "";
-            System.out.printf("[%d] %-18s %s%s%n", i + 1, u.getNombre(), pos, oculto);
+            
+            String linea = String.format("[%d] %-18s %s%s", i + 1, u.getNombre(), pos, oculto);
+            System.out.printf("║ %s%-30s%s ║%n", colorLista, linea, Colores.RESET);
         }
-        
+        System.out.println("╚══════════════════════════════════╝");
+
         int idx = leerEnteroEnRango("Opción", 0, unidades.size());
         if (idx == 0) return null;
         return unidades.get(idx - 1);
@@ -80,13 +106,15 @@ public class VistaTurno {
             return null;
         }
         
-        System.out.println("\n-- Seleccionar Unidad a Desplegar --");
-        System.out.println("[0] Cancelar");
+        System.out.println("\n╔═══ SELECCIONAR DE RESERVA ═══╗");
+        System.out.println("║ [0] Cancelar                 ║");        
+        
         for (int i = 0; i < unidades.size(); i++) {
-            System.out.printf("[%d] %s%n", i + 1, unidades.get(i).getNombre());
+            String linea = String.format("[%d] %s", i + 1, unidades.get(i).getNombre());
+            System.out.printf("║ %s%-30s%s ║%n", Colores.ALIADO, linea, Colores.RESET);
         }
-        
-        
+        System.out.println("╚══════════════════════════════╝");
+                
         int idx = leerEnteroEnRango("Opción", 0, unidades.size());
         if (idx == 0) return null;
         return unidades.get(idx - 1);
@@ -99,11 +127,20 @@ public class VistaTurno {
             return;
         }
 
-        System.out.println("\n--- Casillas alcanzables ---");
+        // Usamos la nueva caja
+        System.out.println("\n╔═══ CASILLAS ALCANZABLES ═══╗");
+        StringBuilder linea = new StringBuilder("║ ");        
         for (Casilla c : casillas) {
-            System.out.println("  (" + c.getFila() + ", " + c.getColumna() + ")");
+            String coord = String.format("(%d, %d) ", c.getFila(), c.getColumna());
+            if (linea.length() + coord.length() > 28) { // Controlar ancho de línea
+                System.out.println(linea.toString().trim() + " ║");
+                linea = new StringBuilder("║ ");
+            }
+            linea.append(coord);
         }
-        System.out.println("----------------------------\n");
+        // Imprimir la última línea con padding
+        System.out.printf("%s%-29s ║%n", Colores.ALIADO + linea.toString(), Colores.RESET);
+        System.out.println("╚══════════════════════════════╝");
     }
 
     public VistaInicio.Ubicacion pedirUbicacion(String mensaje) {
@@ -126,20 +163,24 @@ public class VistaTurno {
         while (true) {
             try {
                 System.out.print(prompt + ": ");
-                return sc.nextInt();
+                String linea = sc.nextLine();
+                return Integer.parseInt(linea.trim());
             } catch (InputMismatchException e) {
-                sc.nextLine();
                 System.out.println("Entrada inválida. Intente de nuevo.");
             }
         }
     }
 
-    private int leerEnteroEnRango(String prompt, int min, int max) {  //*M* ver forma de unificar esto para todas las vistas
+    private int leerEnteroEnRango(String prompt, int min, int max) {//*M* ver forma de unificar esto para todas las vistas
         int valor;
-        do {
+        while (true) {
             valor = leerEntero(prompt);
-        } while (valor < min || valor > max);
-        return valor;
+            if (valor >= min && valor <= max) {
+                return valor;
+            }
+            // Avisa al usuario que el número está fuera de rango
+            System.out.println("Opción fuera de rango (" + min + "-" + max + "). Intente de nuevo.");
+        }
     }
 
     public void limpiarPantalla() {
