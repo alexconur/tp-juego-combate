@@ -13,15 +13,16 @@ import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaInicio;
 import org.vista.tipos.VistaTurno;
-import org.vista.tipos.VistaUnidades;
 
 public class ControladorTurno implements Controlador {
     private final Juego juego;
     private final VistaTurno vTurno;
+    private final ControladorUnidades cUnidades;
 
-    public ControladorTurno(Juego juego, VistaTurno vTurno) {
+    public ControladorTurno(Juego juego, VistaTurno vTurno, ControladorUnidades cUnidades) {
         this.juego = juego;
         this.vTurno = vTurno;
+        this.cUnidades = cUnidades;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class ControladorTurno implements Controlador {
             // Bucle de acciones para el jugador actual
             boolean turnoActivo = true;
             while (turnoActivo) {
-                vTurno.limpiarPantalla(); 
+                vTurno.limpiarPantalla();
                 vTurno.mostrarEstado(juego);
             
                 int opcion = vTurno.mostrarMenuPrincipal();
@@ -48,8 +49,7 @@ public class ControladorTurno implements Controlador {
                         accionActuar(bandoActual);
                         break;
                     case 3: // Ver unidades / detalles
-                        ControladorUnidades cu = new ControladorUnidades(juego, new VistaUnidades());
-                        cu.ejecutar();
+                        cUnidades.ejecutar();
                         break;
                     case 4: // Desplegar
                         accionDesplegar(bandoActual);
@@ -57,10 +57,14 @@ public class ControladorTurno implements Controlador {
                     case 5: // Preparar Emboscada
                         accionPrepararEmboscada(bandoActual);
                         break;
-                    case 6: // Terminar Turno
+                    case 6: // Info Casillas
+                        vTurno.limpiarPantalla();
+                        infoCasillas();
+                        break;
+                    case 7: // Terminar Turno
                         turnoActivo = false;
                         break;
-                    case 7: // Rendirse
+                    case 8: // Rendirse
                         juego.rendirse(juego.getBandoActual());
                         turnoActivo = false;
                         break;    
@@ -88,6 +92,10 @@ public class ControladorTurno implements Controlador {
         vTurno.mostrarEstado(juego); // Mostrar estado final
     }
     
+    private void infoCasillas(){
+        vTurno.mostrarInfoCasillas();
+    }
+
     private void accionMover(Bando bando) {
         // 1. Filtrar unidades que pueden moverse
         List<Unidad> movibles = juego.getUnidadesEnTablero(bando).stream()

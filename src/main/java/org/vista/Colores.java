@@ -13,12 +13,13 @@ public class Colores {
 
     
     // --- COLORES DE TERRENOS ---
-    public static final String TERRENO_LLANURA_BG = "\u001B[102m"; // Verde brillante
-    public static final String TERRENO_BOSQUE_BG = "\u001B[42m";  // Verde
-    public static final String TERRENO_PANTANO_BG = "\u001B[43m"; // Marrón/Amarillo
+    public static final String TERRENO_LLANURA_BG = "\u001B[48;5;118m"; // Verde brillante
+    public static final String TERRENO_BOSQUE_BG = "\u001B[48;5;28m";  // Verde
+    public static final String TERRENO_PANTANO_BG = "\u001B[48;2;90;80;30m"; // Marrón/Amarillo
     public static final String TERRENO_CASTILLO_BG = "\u001B[100m"; // Gris brillante (Fuerte)
     public static final String TERRENO_AGUA_BG = "\u001B[44m";  // Azul
     public static final String TERRENO_PELIGROSO_BG = "\u001B[45m"; // Magenta (AreaContaminada)
-    public static final String TERRENO_INTRANSITABLE_BG = "\u001B[40m"; // Negro (Acantilado, Enredadera)
+    public static final String TERRENO_ACANTILADO_BG = "\u001B[40m"; // Negro (Acantilado, Enredadera)
+    public static final String TERRENO_ENREDADERA_BG = "\u001B[48;2;128;150;0m";
     public static final String TERRENO_DEFAULT_BG = "\u001B[40m";
 }

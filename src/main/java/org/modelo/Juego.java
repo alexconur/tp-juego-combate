@@ -26,10 +26,7 @@ public class Juego {
         this.bando1Reserva = new ArrayList<>();
         this.bando2EnTablero = new ArrayList<>();
         this.bando2Reserva = new ArrayList<>();
-
-        
         this.bandoActual = Bando.random(this.rng);
-        System.out.println("Inicia el turno: " + this.bandoActual);
     }
 
     public Tablero getTablero() { return tablero; }

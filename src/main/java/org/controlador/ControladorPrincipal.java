@@ -19,8 +19,8 @@ public class ControladorPrincipal implements Controlador {
         this.juego = juego;
         this.vista = vista;
         this.cInicio = new ControladorInicio(juego, vista.getvInicio());
-        this.cTurno = new ControladorTurno(juego, vista.getvTurno());
         this.cUnidades = new ControladorUnidades(juego, vista.getvUnidades());
+        this.cTurno = new ControladorTurno(juego, vista.getvTurno(), cUnidades);
     }
 
     @Override

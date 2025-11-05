@@ -12,8 +12,8 @@ import java.util.Scanner;
 
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
-import org.vista.TableroRenderer;
-import org.vista.Colores; 
+import org.vista.Colores;
+import org.vista.TableroRenderer; 
 
 public class VistaInicio {
 
@@ -70,7 +70,7 @@ public void mostrar() {
         String bandoNombre = bando.toString();
 
         System.out.println("\n╔═════════════ POSICIONAR LORD ═════════════╗");
-        System.out.printf("║ Jugador: %s%-31s%s ║%n", bandoColor, bandoNombre, Colores.RESET);
+        System.out.printf("║ Jugador: %s%-31s%s  ║%n", bandoColor, bandoNombre, Colores.RESET);
         System.out.println("║                                           ║");
         System.out.printf("║ Rango Filas:    0..%-22s ║%n", (filas - 1));
         System.out.printf("║ Rango Columnas: 0..%-22s ║%n", (columnas - 1));

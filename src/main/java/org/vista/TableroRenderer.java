@@ -1,10 +1,10 @@
 // src/main/java/org/vista/util/TableroAsciiRenderer.java
 package org.vista;
 
-import org.modelo.tablero.Tablero;
 import org.modelo.tablero.Casilla;
-import org.modelo.unidades.Unidad;
+import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
+import org.modelo.unidades.Unidad;
 
 public class TableroRenderer {
 
@@ -55,13 +55,13 @@ public class TableroRenderer {
             case "Castillo": 
                 return Colores.TERRENO_CASTILLO_BG;
             case "Enredadera": 
-                return Colores.TERRENO_INTRANSITABLE_BG;
+                return Colores.TERRENO_ENREDADERA_BG;
             case "AreaContaminada": 
                 return Colores.TERRENO_PELIGROSO_BG;
             case "Agua":
                 return Colores.TERRENO_AGUA_BG;
             case "Acantilado": 
-                return Colores.TERRENO_INTRANSITABLE_BG;
+                return Colores.TERRENO_ACANTILADO_BG;
             default: 
                 return Colores.TERRENO_DEFAULT_BG;
         }

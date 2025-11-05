@@ -8,8 +8,8 @@ import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Unidad;
-import org.vista.TableroRenderer;
 import org.vista.Colores;
+import org.vista.TableroRenderer;
 
 public class VistaTurno {
     
@@ -56,13 +56,13 @@ public class VistaTurno {
     }   
 
     public int mostrarMenuPrincipal() {
-        System.out.println("\n╔═══════════════════════ ACCIONES ═════════════════════════╗");
-        System.out.println("║ [1] Mover           [2] Atacar/Curar      [3] Ver menus  ║");
-        System.out.println("║ [4] Desplegar       [5] Emboscada                        ║");
-        System.out.println("║ [6] Terminar turno  [7] Rendirse                         ║");        
-        System.out.println("╚══════════════════════════════════════════════════════════╝");   
+        System.out.println("\n╔═════════════════════════ ACCIONES ═════════════════════════════════╗");
+        System.out.println("║ [1] Mover           [2] Atacar/Curar      [3] Ver unidades         ║");
+        System.out.println("║ [4] Desplegar       [5] Emboscada         [6] Informacion casillas ║");
+        System.out.println("║ [7] Terminar turno  [8] Rendirse                                   ║");        
+        System.out.println("╚════════════════════════════════════════════════════════════════════╝");   
         
-        return leerEnteroEnRango("Opción", 1, 7);
+        return leerEnteroEnRango("Opción", 1, 8);
     }
     
     public Unidad seleccionarUnidad(List<Unidad> unidades, String prompt) {
@@ -193,5 +193,36 @@ public class VistaTurno {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void mostrarInfoCasillas(){
+        final String RESET = Colores.RESET;
+        // ancho fijo del bloque visual (3 espacios coloreados)
+        String bloqueBosque  = Colores.TERRENO_BOSQUE_BG  + "   " + RESET;
+        String bloqueLlanura = Colores.TERRENO_LLANURA_BG + "   " + RESET;
+        String bloquePantano = Colores.TERRENO_PANTANO_BG + "   " + RESET;
+        String bloqueCastillo= Colores.TERRENO_CASTILLO_BG + "   " + RESET;
+        String bloqueAgua    = Colores.TERRENO_AGUA_BG    + "   " + RESET;
+        String bloqueAguaCont = Colores.TERRENO_PELIGROSO_BG + "   " + RESET;
+        String bloqueAcantilado = Colores.TERRENO_ACANTILADO_BG + "   " + RESET;
+        String bloqueEnredadera = Colores.TERRENO_ENREDADERA_BG + "   " + RESET;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n╔═══════════════════════ INFORMACIÓN DE CASILLAS ═══════════════════════╗\n");
+
+        // cada línea usa el bloque coloreado seguido de la descripción; formateo para alineación
+        sb.append(String.format("║ %s  Bosque: Aumenta 5 DEF y 5 MGC, permite emboscadas.               ║%n", bloqueBosque));
+        sb.append(String.format("║ %s  Llanura: Terreno abierto.                                        ║%n", bloqueLlanura));
+        sb.append(String.format("║ %s  Pantano: Reduce movimiento al minimo.                            ║%n", bloquePantano));
+        sb.append(String.format("║ %s  Castillo: Restaura 10 HP y aumenta DEF en 5.                     ║%n", bloqueCastillo));
+        sb.append(String.format("║ %s  Agua: no se puede atravesar.                                     ║%n", bloqueAgua));
+        sb.append(String.format("║ %s  Área contaminada: reduce 5 HP al final del turno.                ║%n", bloqueAguaCont));
+        sb.append(String.format("║ %s  Acantilado: no se puede avanzar.                                 ║%n", bloqueAcantilado));
+        sb.append(String.format("║ %s  Enredadera: no se puede recorrer.                                ║%n", bloqueEnredadera));
+        sb.append("╚═══════════════════════════════════════════════════════════════════════╝\n");
+
+        System.out.print(sb.toString());
+        System.out.println("Presione Enter para continuar...");
+        sc.nextLine();
     }
 }
