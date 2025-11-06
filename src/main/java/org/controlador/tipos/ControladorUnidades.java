@@ -26,11 +26,24 @@ public class ControladorUnidades implements Controlador {
         while (continuar) {
             int opcion = vUnidades.mostrarMenuPrincipal();
             switch (opcion) {
-                case 1 -> listarUnidadesEnTablero(bandoActual);
-                case 2 -> listarUnidadesEnReserva(bandoActual);
-                case 3 -> mostrarDetalleUnidad(bandoActual);
-                case 0 -> continuar = false;
-                default -> System.out.println("Opción inválida.");
+                case 1:
+                    vUnidades.limpiarPantalla();
+                    listarUnidadesEnTablero(bandoActual);
+                    break;
+                case 2:
+                    vUnidades.limpiarPantalla();
+                    listarUnidadesEnReserva(bandoActual);
+                    break;
+                case 3:
+                    vUnidades.limpiarPantalla();
+                    mostrarDetalleUnidad(bandoActual);
+                    break;
+                case 0:
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+                    break;
             }
         }
     }

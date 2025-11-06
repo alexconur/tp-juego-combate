@@ -3,6 +3,7 @@ package org.controlador.tipos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.controlador.Controlador;
@@ -18,6 +19,7 @@ public class ControladorTurno implements Controlador {
     private final Juego juego;
     private final VistaTurno vTurno;
     private final ControladorUnidades cUnidades;
+    private final Scanner sc = new Scanner(System.in);
 
     public ControladorTurno(Juego juego, VistaTurno vTurno, ControladorUnidades cUnidades) {
         this.juego = juego;
@@ -40,22 +42,28 @@ public class ControladorTurno implements Controlador {
                 vTurno.mostrarEstado(juego);
             
                 int opcion = vTurno.mostrarMenuPrincipal();
-                
+                boolean necesitaPausa = false; // Flag para controlar la pausa
+
                 switch (opcion) {  //*M* esto podria romper OCP, podria hacerse en un enum .. *A* lo intenté y me quedó feo
                     case 1: // Mover
                         accionMover(bandoActual);
+                        necesitaPausa=true;
                         break;
                     case 2: // Atacar / Curar
                         accionActuar(bandoActual);
+                        necesitaPausa=true;
                         break;
                     case 3: // Ver unidades / detalles
+                        vTurno.limpiarPantalla();
                         cUnidades.ejecutar();
                         break;
                     case 4: // Desplegar
                         accionDesplegar(bandoActual);
+                        necesitaPausa=true;
                         break;
                     case 5: // Preparar Emboscada
                         accionPrepararEmboscada(bandoActual);
+                        necesitaPausa=true;
                         break;
                     case 6: // Info Casillas
                         vTurno.limpiarPantalla();
@@ -70,12 +78,14 @@ public class ControladorTurno implements Controlador {
                         break;    
                     default:
                         System.out.println("Opción inválida. Intente de nuevo.");
+                        necesitaPausa=true;
                         break;
 
                 }
                 if (juego.isGameOver()) {
                     turnoActivo = false;
-                    break;
+                } else if(necesitaPausa){
+                    pausarParaContinuar();
                 }
             }
             
@@ -264,5 +274,10 @@ public class ControladorTurno implements Controlador {
 
         u.prepararEmboscada();
         vTurno.mostrarEmboscadaExitosa(u);
+    }
+
+    private void pausarParaContinuar(){
+        System.out.println("Presione Enter para continuar...");
+        sc.nextLine();
     }
 }
