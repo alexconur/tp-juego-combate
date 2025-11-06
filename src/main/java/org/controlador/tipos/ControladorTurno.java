@@ -125,7 +125,8 @@ public class ControladorTurno implements Controlador {
         List<Casilla> alcanzables = juego.getTablero().obtenerCasillasAlcanzables(u);
 
         // 4. Mostrar al jugador las casillas donde puede moverse
-        vTurno.mostrarCasillasDisponibles(alcanzables);
+        // Pasamos tablero y bando actual a la vista
+        vTurno.mostrarCasillasDisponibles(alcanzables, juego.getTablero(), bando);
 
         // 5. Pedir destino
         VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Seleccione destino para moverse");

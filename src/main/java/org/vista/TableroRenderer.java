@@ -6,11 +6,25 @@ import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collections;
+
 public class TableroRenderer {
 
     // Renderiza el tablero de juego en una sola vista unificada.
     public static String render(Tablero tablero, Bando bandoActual) {
+        return render(tablero, bandoActual, null);
+    }
+
+    public static String render(Tablero tablero, Bando bandoActual, List<Casilla> casillasResaltadas) {
         StringBuilder sb = new StringBuilder();
+
+        // Convertir la lista a un Set para búsquedas
+        final Set<Casilla> setResaltadas = (casillasResaltadas == null)
+                ? Collections.emptySet()
+                : new HashSet<>(casillasResaltadas);
 
         // Cabeceras COLUMNAS
         sb.append("   ");
@@ -24,14 +38,16 @@ public class TableroRenderer {
             sb.append(String.format("%-2s ", fila));
 
             for(int col=0; col<tablero.getColumnas(); col++){
-                Casilla casilla = tablero.getCasilla(fila, col);
-                // Obtenemos el color rde fondo para el terreno
-                String bg = getSimboloTerrenoBG(casilla);
-
-                // obtenemos el caracter y color de frente para la unidad
+                Casilla casilla = tablero.getCasilla(fila, col);                
+                String bg; // Obtenemos el color del fondo actual
+                // Si la casilla está en el set de resaltadas, usamos el nuevo color
+                if (setResaltadas.contains(casilla)) {
+                    bg = Colores.TERRENO_ALCANZABLE_BG;
+                } else {
+                    bg = getSimboloTerrenoBG(casilla);
+                }
+                // obtenemos el caracter y color de frente para la unidad. Luego combinamos y reseteamos
                 String fg = getSimboloUnidadFG(casilla, bandoActual);
-
-                // combinamos y resetear
                 sb.append(bg).append(fg).append(Colores.RESET);
             }
             sb.append("\n");
@@ -40,7 +56,7 @@ public class TableroRenderer {
         return sb.toString();
     }
 
-        // Devuelve el código ANSI de color de FONDO para un tipo de casilla.
+    // Devuelve el código ANSI de color de FONDO para un tipo de casilla.
     private static String getSimboloTerrenoBG(Casilla casilla) {
         if (casilla == null) return Colores.TERRENO_DEFAULT_BG;
         String tipo = casilla.getClass().getSimpleName();

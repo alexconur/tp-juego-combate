@@ -11,6 +11,8 @@ import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.vista.TableroRenderer;
 
+import org.modelo.unidades.Bando;
+
 public class VistaTurno {
     
     private final Scanner sc = new Scanner(System.in);
@@ -121,26 +123,16 @@ public class VistaTurno {
     }
 
     // Muestra las casillas a las que puede moverse la unidad seleccionada
-    public void mostrarCasillasDisponibles(List<Casilla> casillas) {
+    public void mostrarCasillasDisponibles(List<Casilla> casillas,Tablero tablero, Bando bandoActual) {
         if (casillas == null || casillas.isEmpty()) {
             System.out.println("No hay casillas alcanzables para esta unidad.");
             return;
         }
 
         // Usamos la nueva caja
-        System.out.println("\n╔═══ CASILLAS ALCANZABLES ═══╗");
-        StringBuilder linea = new StringBuilder("║ ");        
-        for (Casilla c : casillas) {
-            String coord = String.format("(%d, %d) ", c.getFila(), c.getColumna());
-            if (linea.length() + coord.length() > 28) { // Controlar ancho de línea
-                System.out.println(linea.toString().trim() + " ║");
-                linea = new StringBuilder("║ ");
-            }
-            linea.append(coord);
-        }
-        // Imprimir la última línea con padding
-        System.out.printf("%s%-29s ║%n", Colores.ALIADO + linea.toString(), Colores.RESET);
-        System.out.println("╚══════════════════════════════╝");
+        System.out.println("\n═════════ CASILLAS ALCANZABLES ═════════");
+        System.out.println(TableroRenderer.render(tablero, bandoActual, casillas));
+        System.out.println("═════════════════════════════════════════");
     }
 
     public VistaInicio.Ubicacion pedirUbicacion(String mensaje) {

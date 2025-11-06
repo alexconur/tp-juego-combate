@@ -11,6 +11,8 @@ public class Colores {
     public static final String ALIADO_OCULTO = "\u001B[2;94m"; // Azul tenue
     public static final String VACIO_U = "\u001B[1;90m"; // Gris (para el '·' de vacío)
 
+    // --- COLOR TERRENO TRANSITABLE ---
+    public static final String TERRENO_ALCANZABLE_BG = "\u001B[103m"; // Fondo Amarillo brillante
     
     // --- COLORES DE TERRENOS ---
     public static final String TERRENO_LLANURA_BG = "\u001B[48;5;118m"; // Verde brillante
