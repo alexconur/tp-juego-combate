@@ -4,7 +4,6 @@ import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.modelo.equipamiento.Equipamiento;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -28,7 +27,8 @@ public class VistaUnidades {
     public void mostrarListaUnidades(String titulo, List<Unidad> unidades) {
 
         String tituloCaja = String.format(" %S ", titulo); // %S lo pone en mayúsculas
-        System.out.printf("\n╔═══════════%s═══════════╗\n", tituloCaja);
+        // Cuadro UNIDADES EN RESERVA
+        System.out.printf("\n╔═════════════════%s════════════════╗\n", tituloCaja);
         imprimirLineasDeUnidades(unidades, false); // false = no mostrar índices
         System.out.println("╚══════════════════════════════════════════════════════╝");
     }      
@@ -39,7 +39,7 @@ public class VistaUnidades {
             System.out.println("No hay unidades disponibles.");
             return null;
         }
-        System.out.println("\n╔══════════ SELECCIONAR UNIDAD ══════════╗");
+        System.out.println("\n╔══════════════════ SELECCIONAR UNIDAD ════════════════╗");
         System.out.println("║ [0] Cancelar                                         ║");
         imprimirLineasDeUnidades(unidades, true); // true = mostrar índices [1], [2], ...
         System.out.println("╚══════════════════════════════════════════════════════╝");
@@ -153,6 +153,18 @@ public class VistaUnidades {
                 return valor;
             }
             System.out.println("Opción fuera de rango (" + min + "-" + max + "). Intente de nuevo.");
+        }
+    }
+
+    public void limpiarPantalla() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
