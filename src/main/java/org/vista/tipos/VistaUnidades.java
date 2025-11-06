@@ -62,7 +62,7 @@ public class VistaUnidades {
                     : "(reserva)";
             String estado = (u.estaVivo() ? "VIVO" : "MUERTO");
             
-            String color = (u.estaVivo()) ? Colores.ALIADO : Colores.VACIO_U;
+            String color = (u.estaVivo()) ? Colores.colorParaBando(u.getBando()) : Colores.VACIO_U;
             String prefijo = (conIndices) ? String.format("[%d] ", i++) : "";
             
             // Formateamos la línea

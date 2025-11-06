@@ -20,7 +20,7 @@ public class ControladorUnidades implements Controlador {
 
     @Override
     public void ejecutar() {
-        Bando bandoActual = juego.getBandoActual();
+        //Bando bandoActual = juego.getBandoActual();
         boolean continuar = true;
 
         while (continuar) {
@@ -28,15 +28,15 @@ public class ControladorUnidades implements Controlador {
             switch (opcion) {
                 case 1:
                     vUnidades.limpiarPantalla();
-                    listarUnidadesEnTablero(bandoActual);
+                    listarUnidadesEnTablero();
                     break;
                 case 2:
                     vUnidades.limpiarPantalla();
-                    listarUnidadesEnReserva(bandoActual);
+                    listarUnidadesEnReserva();
                     break;
                 case 3:
                     vUnidades.limpiarPantalla();
-                    mostrarDetalleUnidad(bandoActual);
+                    mostrarDetalleUnidad();
                     break;
                 case 0:
                     continuar = false;
@@ -50,8 +50,8 @@ public class ControladorUnidades implements Controlador {
 
 
     // Mostrar todas las unidades del jugador en tablero
-    private void listarUnidadesEnTablero(Bando bando) {
-        List<Unidad> unidades = juego.getUnidadesEnTablero(bando);
+    private void listarUnidadesEnTablero() {
+        List<Unidad> unidades = juego.getTodasUnidadesEnTablero();
         if (unidades.isEmpty()) {
             System.out.println("No hay unidades desplegadas actualmente.");
             return;
@@ -60,8 +60,8 @@ public class ControladorUnidades implements Controlador {
     }
 
     // Mostrar unidades en reserva
-    private void listarUnidadesEnReserva(Bando bando) {
-        List<Unidad> reserva = juego.getUnidadesEnReserva(bando);
+    private void listarUnidadesEnReserva() {
+        List<Unidad> reserva = juego.getTodasUnidadesEnReserva();
         if (reserva.isEmpty()) {
             System.out.println("No hay unidades en reserva.");
             return;
@@ -71,8 +71,8 @@ public class ControladorUnidades implements Controlador {
 
 
     // Ver detalle completo de una unidad
-    private void mostrarDetalleUnidad(Bando bando) {
-        List<Unidad> unidades = juego.getUnidadesEnTablero(bando);
+    private void mostrarDetalleUnidad() {
+        List<Unidad> unidades = juego.getTodasUnidadesEnTablero();
         Unidad seleccionada = vUnidades.seleccionarUnidadViva(unidades);
         if (seleccionada != null) {
             vUnidades.mostrarDetalleUnidad(seleccionada);

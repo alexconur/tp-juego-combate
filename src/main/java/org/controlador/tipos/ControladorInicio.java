@@ -61,7 +61,7 @@ public class ControladorInicio implements Controlador {
                 System.out.println("✔ Lord " + lordJ1.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
                 break;
             }
-            System.out.println(Colores.ENEMIGO + "¡Ubicación inválida! La casilla no es transitable o está ocupada." + Colores.RESET);
+            System.out.println(Colores.WARNING + "¡Ubicación inválida! La casilla no es transitable o está ocupada." + Colores.RESET);
         }
 
         // 6) Posicionar Lord del Jugador 2
@@ -84,7 +84,7 @@ public class ControladorInicio implements Controlador {
                 System.out.println("✔ Lord " + lordJ2.getNombre() + " desplegado en (" + ubi2.getFila() + "," + ubi2.getColumna() + ").");
                 break;
             }
-            System.out.println(Colores.ENEMIGO + "¡Ubicación inválida! La casilla no es transitable o está ocupada." + Colores.RESET);
+            System.out.println(Colores.WARNING + "¡Ubicación inválida! La casilla no es transitable o está ocupada." + Colores.RESET);
         }        
     }
 }

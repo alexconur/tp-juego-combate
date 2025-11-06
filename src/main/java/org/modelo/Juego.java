@@ -84,6 +84,12 @@ public class Juego {
     
     public List<Unidad> getUnidadesEnReserva(Bando bando) { return (bando == Bando.REINO_DRUIDA) ? bando1Reserva : bando2Reserva; }
     
+    public List<Unidad> getTodasUnidadesEnReserva() {
+        List<Unidad> todas = new ArrayList<>(bando1Reserva);
+        todas.addAll(bando2Reserva);
+        return todas;
+    }
+
     public List<Unidad> getTodasUnidadesEnTablero() {
         List<Unidad> todas = new ArrayList<>(bando1EnTablero);
         todas.addAll(bando2EnTablero);

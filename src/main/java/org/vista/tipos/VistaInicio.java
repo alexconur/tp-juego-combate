@@ -66,7 +66,7 @@ public void mostrar() {
     // --- pide Fila/Columna dentro del rango [0..filas-1], [0..columnas-1] ---
     public Ubicacion pedirUbicacionLord(Bando bando, int filas, int columnas) {
 
-        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.ALIADO : Colores.ENEMIGO;
+        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
         String bandoNombre = bando.toString();
 
         System.out.println("\n╔═════════════ POSICIONAR LORD ═════════════╗");
@@ -89,9 +89,9 @@ public void mostrar() {
             try {
                 int v = Integer.parseInt(s);
                 if (v >= min && v <= max) return v;
-                System.out.println(Colores.ENEMIGO + "Opción fuera de rango." + Colores.RESET);
+                System.out.println(Colores.WARNING + "Opción fuera de rango." + Colores.RESET);
             } catch (NumberFormatException ignored) { 
-                System.out.println(Colores.ENEMIGO + "Entrada inválida, probá de nuevo." + Colores.RESET);
+                System.out.println(Colores.WARNING + "Entrada inválida, probá de nuevo." + Colores.RESET);
             }
         }
     }

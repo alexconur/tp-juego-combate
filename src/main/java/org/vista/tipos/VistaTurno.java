@@ -7,11 +7,10 @@ import java.util.Scanner;
 import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
+import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.vista.TableroRenderer;
-
-import org.modelo.unidades.Bando;
 
 public class VistaTurno {
     
@@ -23,7 +22,7 @@ public class VistaTurno {
         }
         System.out.println("\n══════════════════════════════════════════════");
 
-        String bandoColor = (juego.getBandoActual() == org.modelo.unidades.Bando.REINO_DRUIDA) ? Colores.ALIADO : Colores.ENEMIGO;
+        String bandoColor = (juego.getBandoActual() == org.modelo.unidades.Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
 
 
         System.out.println("TURNO DE: " + bandoColor + juego.getBandoActual() + Colores.RESET);
@@ -44,7 +43,7 @@ public class VistaTurno {
 
             String colorBando;
             if (u.estaVivo()){
-                colorBando = (u.getBando() ==  juego.getBandoActual()) ? Colores.ALIADO : Colores.ENEMIGO;
+                colorBando = (u.getBando() ==  Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
             } else {
                 colorBando = Colores.VACIO_U;
             }
@@ -67,7 +66,7 @@ public class VistaTurno {
         return leerEnteroEnRango("Opción", 1, 8);
     }
     
-    public Unidad seleccionarUnidad(List<Unidad> unidades, String prompt) {
+    public Unidad seleccionarUnidad(List<Unidad> unidades, String prompt, Juego juego) {
         if (unidades.isEmpty()) {
             System.out.println("\nNo hay unidades disponibles para " + prompt + ".");
             return null;
@@ -77,14 +76,16 @@ public class VistaTurno {
         System.out.println("║ [0] Cancelar                   ║");
 
         // Colorear la lista de selección
-        String colorLista = Colores.ALIADO; // Default a Aliado
+        Bando bandoActual = juego.getBandoActual();
+        Bando bandoEnemigo = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
+        String colorLista = Colores.colorParaBando(bandoActual); // Default a Aliado
         if (!unidades.isEmpty() && unidades.get(0).getBando() != org.modelo.unidades.Bando.REINO_DRUIDA) { // Asunción simple
              if(prompt.equalsIgnoreCase("Atacar")) {
-                colorLista = Colores.ENEMIGO;
+                colorLista = Colores.colorParaBando(bandoEnemigo);
              }
         }
-        if(prompt.equalsIgnoreCase("Atacar")) colorLista = Colores.ENEMIGO;
-        else if(prompt.equalsIgnoreCase("Curar") || prompt.equalsIgnoreCase("Mover")) colorLista = Colores.ALIADO;
+        if(prompt.equalsIgnoreCase("Atacar")) colorLista = Colores.colorParaBando(bandoEnemigo);
+        else if(prompt.equalsIgnoreCase("Curar") || prompt.equalsIgnoreCase("Mover")) colorLista = Colores.colorParaBando(bandoActual);
 
         for (int i = 0; i < unidades.size(); i++) {
             Unidad u = unidades.get(i);
@@ -102,7 +103,7 @@ public class VistaTurno {
         return unidades.get(idx - 1);
     }
     
-    public Unidad seleccionarUnidadReserva(List<Unidad> unidades) {
+    public Unidad seleccionarUnidadReserva(List<Unidad> unidades, Juego juego) {
         if (unidades.isEmpty()) {
             System.out.println("No hay unidades en la reserva.");
             return null;
@@ -113,7 +114,7 @@ public class VistaTurno {
         
         for (int i = 0; i < unidades.size(); i++) {
             String linea = String.format("[%d] %s", i + 1, unidades.get(i).getNombre());
-            System.out.printf("║ %s%-30s%s ║%n", Colores.ALIADO, linea, Colores.RESET);
+            System.out.printf("║ %s%-30s%s ║%n", Colores.colorParaBando(juego.getBandoActual()), linea, Colores.RESET);
         }
         System.out.println("╚══════════════════════════════╝");
                 
@@ -157,7 +158,7 @@ public class VistaTurno {
                 System.out.print(prompt + ": ");
                 String linea = sc.nextLine();
                 return Integer.parseInt(linea.trim());
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException | NumberFormatException e) {
                 System.out.println("Entrada inválida. Intente de nuevo.");
             }
         }

@@ -118,7 +118,7 @@ public class ControladorTurno implements Controlador {
         }
         
         // 2. Vista selecciona unidad
-        Unidad u = vTurno.seleccionarUnidad(movibles, "Mover");
+        Unidad u = vTurno.seleccionarUnidad(movibles, "Mover", juego);
         if (u == null) return; // Canceló
 
         // 3. Calcular casillas alcanzables usando BFS
@@ -153,7 +153,7 @@ public class ControladorTurno implements Controlador {
         if (actuables.isEmpty()) return;
 
         // 2. Vista selecciona unidad
-        Unidad u = vTurno.seleccionarUnidad(actuables, "Atacar/Curar");
+        Unidad u = vTurno.seleccionarUnidad(actuables, "Atacar/Curar", juego);
         if (u == null) return; // Canceló
 
         // 3. Determinar si es ofensivo o de curación
@@ -176,7 +176,7 @@ public class ControladorTurno implements Controlador {
         }
 
         // 5. Vista selecciona objetivo
-        Unidad objetivo = vTurno.seleccionarUnidad(objetivos, esCuracion ? "Curar" : "Atacar");
+        Unidad objetivo = vTurno.seleccionarUnidad(objetivos, esCuracion ? "Curar" : "Atacar", juego);
         if (objetivo == null) return;
 
         // Validar rango
@@ -229,7 +229,7 @@ public class ControladorTurno implements Controlador {
         VistaInicio.Ubicacion ubi = null;
         boolean desplegada = false;
         while (!desplegada && !reserva.isEmpty()) {
-            Unidad u = vTurno.seleccionarUnidadReserva(reserva);
+            Unidad u = vTurno.seleccionarUnidadReserva(reserva, juego);
             if (u == null) return; // Canceló
 
             ubi = vTurno.pedirUbicacion("Desplegar en (fila, columna)");
@@ -264,7 +264,7 @@ public class ControladorTurno implements Controlador {
             return;
         }
 
-        Unidad u = vTurno.seleccionarUnidad(disponibles, "Preparar emboscada");
+        Unidad u = vTurno.seleccionarUnidad(disponibles, "Preparar emboscada", juego);
         if (u == null) return;
 
         Casilla c = u.getCasillaActual();

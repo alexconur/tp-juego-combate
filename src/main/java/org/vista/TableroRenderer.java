@@ -1,15 +1,15 @@
 // src/main/java/org/vista/util/TableroAsciiRenderer.java
 package org.vista;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
-
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
 
 public class TableroRenderer {
 
@@ -63,7 +63,7 @@ public class TableroRenderer {
 
         switch (tipo) {
             case "Bosque": 
-                return Colores.TERRENO_BOSQUE_BG;
+                return Colores.TERRENO_BOSQUE_BG; 
             case "Llanura": 
                 return Colores.TERRENO_LLANURA_BG;
             case "Pantano": 
@@ -95,21 +95,18 @@ public class TableroRenderer {
         }
 
         String inicial = u.getNombre().substring(0, 1).toUpperCase();
-        
-        if (u.getBando() == bandoActual) {
-            // Es Aliado
-            if (u.isOculto()) {
-                return Colores.ALIADO_OCULTO + " " + inicial + " ";
-            } else {
-                return Colores.ALIADO + " " + inicial + " ";
-            }
-        } else {
-            // Es Enemigo
-            if (u.isOculto()) {
-                return Colores.VACIO_U + " · "; // Enemigo oculto se ve como vacío
-            } else {
-                return Colores.ENEMIGO + " " + inicial + " ";
-            }
+        boolean oculto = u.isOculto();
+        boolean esAliado = (u.getBando() == bandoActual);
+
+        String colorNormal = (u.getBando() == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+        String colorOculto = (u.getBando() == Bando.REINO_DRUIDA) ? Colores.DRUIDA_OCULTO : Colores.NIGROMANTICO_OCULTO;
+
+        if (oculto) {
+            // aliado oculto muestra inicial en color tenue; enemigo oculto aparece como vacío
+            return esAliado ? (colorOculto + " " + inicial + " ") : (Colores.VACIO_U + " · ");
         }
+
+        // unidad visible: mostrar inicial con el color correspondiente a su bando
+        return colorNormal + " " + inicial + " ";
     }
 }
