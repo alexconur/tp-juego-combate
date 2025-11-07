@@ -16,8 +16,6 @@ public class Llanura extends Casilla {
     @Override
     public boolean esTransitable() { return true; }
     @Override
-    public int getCostoMovimiento() { return 1; }
-    @Override
     public String getTipoTerreno() {
         return "Llanura";
     }

@@ -115,9 +115,19 @@ public class Tablero {
     public List<Casilla> obtenerCasillasAlcanzables(Unidad unidad) {
         List<Casilla> alcanzables = new ArrayList<>();
         if (unidad == null || unidad.getCasillaActual() == null) return alcanzables;
-
-        int maxMovimiento = unidad.getMovimientoRestante(); // o getMov() si preferís el base
+        
         Casilla origen = unidad.getCasillaActual();
+        
+        if ("Pantano".equals(origen.getTipoTerreno())) {
+            for (Casilla vecino : obtenerVecinos(origen)) {
+                if (vecino != null && vecino.esTransitable() && !vecino.estaOcupada()) {
+                    alcanzables.add(vecino);
+                }
+            }
+            return alcanzables;
+        }
+        
+        int maxMovimiento = unidad.getMovimientoRestante();
 
         // Estructuras BFS
         Queue<Casilla> cola = new LinkedList<>();
@@ -145,7 +155,7 @@ public class Tablero {
                 // Verificamos si es transitable y no ocupada
                 if (!vecino.esTransitable() || vecino.estaOcupada()) continue;
 
-                int nuevoCosto = distanciaActual + vecino.getCostoMovimiento();
+                int nuevoCosto = distanciaActual + 1;
                 if (nuevoCosto <= maxMovimiento && (!distancias.containsKey(vecino) || nuevoCosto < distancias.get(vecino))) {
                     distancias.put(vecino, nuevoCosto);
                     cola.add(vecino);

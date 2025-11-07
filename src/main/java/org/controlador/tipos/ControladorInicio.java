@@ -1,6 +1,7 @@
 package org.controlador.tipos;
 
 import java.util.List;
+import java.util.Scanner;
 
 import org.archivos.CargadorDeDatos;
 import org.controlador.Controlador;
@@ -11,8 +12,6 @@ import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.vista.tipos.VistaInicio;
-
-import java.util.Scanner;
 
 public class ControladorInicio implements Controlador {
     private final Scanner sc = new Scanner(System.in);
@@ -126,8 +125,6 @@ public class ControladorInicio implements Controlador {
                 boolean desplegada = juego.desplegarUnidad(unidadADesplegar, ubi.getFila(), ubi.getColumna());
     
                 if (desplegada) {
-                    System.out.println("✔ " + unidadADesplegar.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
-    
                     // 4. Preguntar por modo Oculto
                     // (Se comprueba el tipo de terreno sin usar instanceof)
                     Casilla c = tablero.getCasilla(ubi.getFila(), ubi.getColumna());
@@ -139,6 +136,8 @@ public class ControladorInicio implements Controlador {
                             System.out.println("🕵️ " + unidadADesplegar.getNombre() + " se ha desplegado en modo oculto.");
                         }
                     }
+
+                    System.out.println("✔ " + unidadADesplegar.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
                 } else {
                     // El despliegue falló (Juego.java ya imprimió el error)
                     System.out.println(Colores.WARNING + "Despliegue fallido. Intente en otra casilla." + Colores.RESET);

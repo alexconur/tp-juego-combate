@@ -1,6 +1,6 @@
 # bando,nombre,tipo,HP,ATK,DEF,MGC,MOV,equipamiento
 REINO_DRUIDA,Elendir,LORD,28,10,6,8,5,Espada de Hierro|ARMA|ESPADA|5|1|999
-REINO_DRUIDA,Guardabosques,UNIDAD,20,7,4,2,5,Arco Simple|ARMA|ARCO|3|2|999
+REINO_DRUIDA,Guardabosques,UNIDAD,20,7,4,2,3,Arco Simple|ARMA|ARCO|3|2|999
 REINO_DRUIDA,Lancero Verde,UNIDAD,22,8,5,1,5,Lanza Corta|ARMA|LANZA|5|1|999
 REINO_DRUIDA,Sanador del Roble,UNIDAD,18,2,3,0,5,Báculo de Sanacion|BACULO|CURACION|10|1|30
 

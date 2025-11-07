@@ -18,8 +18,6 @@ public class AreaContaminada extends Casilla implements Aplicable {
     @Override
     public boolean esTransitable() { return true; }
     @Override
-    public int getCostoMovimiento() { return 1; }
-    @Override
     public void aplicarEfectoAlEntrar(Unidad unidad) {}
     @Override
     public String getTipoTerreno() {

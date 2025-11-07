@@ -17,8 +17,6 @@ public class Agua extends Casilla {
     @Override
     public boolean esTransitable() { return false; }
     @Override
-    public int getCostoMovimiento() { return 1; }
-    @Override
     public String getTipoTerreno() {
         return "Agua";
     }

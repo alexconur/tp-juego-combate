@@ -19,8 +19,6 @@ public class Castillo extends Casilla implements Aplicable {
     @Override
     public boolean esTransitable() { return true; }
     @Override
-    public int getCostoMovimiento() { return 1; } // costo normal
-    @Override
     public String getTipoTerreno() {
         return "Castillo";
     }

@@ -249,6 +249,7 @@ public class Unidad {
         }
 
         try {
+            
             // Tablero se encarga de validar el movimiento y de realizarlo
             tablero.moverUnidad(this, nuevaFila, nuevaColumna);
 

@@ -1,4 +1,3 @@
-// *NUEVO* - Archivo completo
 package org.controlador.tipos;
 
 import java.util.ArrayList;
@@ -129,7 +128,7 @@ public class ControladorTurno implements Controlador {
         vTurno.mostrarCasillasDisponibles(alcanzables, juego.getTablero(), bando);
 
         // 5. Pedir destino
-        VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Seleccione destino para moverse");
+        VistaInicio.Ubicacion ubi = vTurno.pedirUbicacion("Seleccione destino para moverse. Tus movimientos posibles están marcados en el tablero.");
         Casilla destino = juego.getTablero().getCasilla(ubi.getFila(), ubi.getColumna());
 
         // 6. Validar destino
