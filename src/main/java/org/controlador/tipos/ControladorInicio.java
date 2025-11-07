@@ -12,7 +12,10 @@ import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.vista.tipos.VistaInicio;
 
+import java.util.Scanner;
+
 public class ControladorInicio implements Controlador {
+    private final Scanner sc = new Scanner(System.in);
 
     private final Juego juego;
     private final VistaInicio vInicio;
@@ -85,6 +88,62 @@ public class ControladorInicio implements Controlador {
                 break;
             }
             System.out.println(Colores.WARNING + "¡Ubicación inválida! La casilla no es transitable o está ocupada." + Colores.RESET);
-        }        
+        }
+        // FASE DE DESPLIEGUE (El bandoJ1 es el que empieza)
+        faseDeDespliegue(bandoJ1, tablero);
+        faseDeDespliegue(bandoJ2, tablero);
+        
+        System.out.println("\n¡Todo listo para la batalla!");
+        // (Pausa para que el jugador lea antes de que ControladorTurno limpie la pantalla)
+        System.out.println("Presione Enter para continuar...");
+        sc.nextLine();
     }
+
+    private void faseDeDespliegue(Bando bando, Tablero tablero) {
+            System.out.println("\n--- FASE DE DESPLIEGUE: " + bando + " ---");
+            
+            while (true) {
+                List<Unidad> enReserva = juego.getUnidadesEnReserva(bando);
+                if (enReserva.isEmpty()) {
+                    System.out.println("No quedan unidades en la reserva.");
+                    break;
+                }
+    
+                // 1. Mostrar tablero y pedir unidad
+                vInicio.mostrarTablero(tablero, bando);
+                Unidad unidadADesplegar = vInicio.seleccionarUnidadDeReserva(bando, enReserva);
+    
+                if (unidadADesplegar == null) {
+                    System.out.println("Terminando fase de despliegue para " + bando);
+                    break; // El jugador eligió [0] Terminar
+                }
+    
+                // 2. Pedir ubicación
+                // (Usamos pedirUbicacionLord, pero es solo para pedir fila/columna)
+                VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionLord(bando, tablero.getFilas(), tablero.getColumnas());
+                
+                // 3. Intentar desplegar (Juego.desplegarUnidad ahora valida adyacencia)
+                boolean desplegada = juego.desplegarUnidad(unidadADesplegar, ubi.getFila(), ubi.getColumna());
+    
+                if (desplegada) {
+                    System.out.println("✔ " + unidadADesplegar.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
+    
+                    // 4. Preguntar por modo Oculto
+                    // (Se comprueba el tipo de terreno sin usar instanceof)
+                    Casilla c = tablero.getCasilla(ubi.getFila(), ubi.getColumna());
+                    if (c != null && c.getTipoTerreno().equals("Bosque")) {
+                        
+                        boolean ocultar = vInicio.pedirConfirmacion("¿Desplegar esta unidad en modo oculto?");
+                        if (ocultar) {
+                            unidadADesplegar.setOculto(true);
+                            System.out.println("🕵️ " + unidadADesplegar.getNombre() + " se ha desplegado en modo oculto.");
+                        }
+                    }
+                } else {
+                    // El despliegue falló (Juego.java ya imprimió el error)
+                    System.out.println(Colores.WARNING + "Despliegue fallido. Intente en otra casilla." + Colores.RESET);
+                    // La unidad no se quita de la reserva, el bucle principal se repite
+                }
+            }
+        }
 }

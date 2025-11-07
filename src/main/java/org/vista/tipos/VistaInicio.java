@@ -13,7 +13,9 @@ import java.util.Scanner;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.vista.Colores;
-import org.vista.TableroRenderer; 
+import org.vista.TableroRenderer;
+
+import org.modelo.unidades.Unidad;
 
 public class VistaInicio {
 
@@ -81,6 +83,46 @@ public void mostrar() {
         
         return new Ubicacion(f, c);
     }
+
+    // Muestra las unidades en reserva y permite al jugador seleccionar una, o 0 para terminar la fase.
+    public Unidad seleccionarUnidadDeReserva(Bando bando, List<Unidad> unidades) {
+        if (unidades.isEmpty()) {
+            System.out.println("No hay más unidades en la reserva.");
+            return null;
+        }
+        
+        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+        String bandoNombre = bando.toString();
+        
+        System.out.println("\n╔═══ DESPLEGAR UNIDADES DE RESERVA ═══╗");
+        System.out.printf("║ JUGADOR: %s%-24s%s ║%n", bandoColor, bandoNombre, Colores.RESET);
+        System.out.println("║─────────────────────────────────────║");
+        System.out.println("║ [0] TERMINAR FASE DE DESPLIEGUE     ║");
+        
+        int i = 1;
+        for (Unidad u : unidades) {
+            // Mostramos el equipamiento para ayudar a decidir
+            String eq = (u.getEquipamiento() != null) ? u.getEquipamiento().getNombre() : "Puño limpio";
+            String linea = String.format("[%d] %-15s (%s)", i++, u.getNombre(), eq);
+            System.out.printf("║ %s%-35s%s ║%n", bandoColor, linea, Colores.RESET);
+        }
+        System.out.println("╚═════════════════════════════════════╝");
+                
+        int idx = leerEnteroEnRango("Opción", 0, unidades.size());
+        if (idx == 0) return null; // [0] TERMINAR FASE
+        return unidades.get(idx - 1);
+    }
+
+    public boolean pedirConfirmacion(String prompt) {
+        while (true) {
+            System.out.print(prompt + " (s/n): ");
+            String linea = in.nextLine().trim().toLowerCase();
+            if (linea.equals("s")) return true;
+            if (linea.equals("n")) return false;
+            System.out.println(Colores.WARNING + "Respuesta inválida. Intente de nuevo." + Colores.RESET);
+        }
+    }
+
 
     private int leerEnteroEnRango(String etiqueta, int min, int max) {
         while (true) {
