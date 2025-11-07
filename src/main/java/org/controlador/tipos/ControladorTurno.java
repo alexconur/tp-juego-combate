@@ -232,7 +232,8 @@ public class ControladorTurno implements Controlador {
             Unidad u = vTurno.seleccionarUnidadReserva(reserva, juego);
             if (u == null) return; // Canceló
 
-            ubi = vTurno.pedirUbicacion("Desplegar en (fila, columna)");
+            System.out.println("");
+            ubi = vTurno.pedirUbicacion("Desplegar en (fila, columna) adyacente a Lord");
             
             // Intentar desplegar
             desplegada = juego.desplegarUnidad(u, ubi.getFila(), ubi.getColumna());

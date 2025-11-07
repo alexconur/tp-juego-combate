@@ -51,19 +51,36 @@ public class Juego {
         
         try {
             // *CORRECCIÓN IMPORTANTE*: La casilla debe obtenerse del tablero
-            if (tablero.getCasilla(fila, columna) == null) {
-                 System.out.println("Error al desplegar: Casilla (" + fila + "," + columna + ") es nula.");
-                 return false;
-            }
-            
-            if (tablero.getCasilla(fila, columna).estaOcupada()) {
-            System.out.println("Error al desplegar: Casilla (" + fila + "," + columna + ") ya está ocupada.");
+            Casilla destino = tablero.getCasilla(fila, columna);
+            if (destino == null) {
+                System.out.println("Error: Casilla (" + fila + "," + columna + ") no existe.");
                 return false;
             }
 
+            if (destino.estaOcupada()) {
+                System.out.println("Error: Casilla (" + fila + "," + columna + ") ya está ocupada.");
+                return false;
+            }
 
-            tablero.getCasilla(fila, columna).ocupar(unidad);
-            
+            if (!unidad.isLord()){
+                Unidad lord = getLordEnTablero(unidad.getBando());
+                if (lord == null) {
+                    System.out.println("Error: No se encontró al Lord del " + unidad.getBando() + ".");
+                    return false;
+                }
+    
+                Casilla casillaLord = lord.getCasillaActual();
+                int distFila = Math.abs(casillaLord.getFila() - fila);
+                int distCol = Math.abs(casillaLord.getColumna() - columna);
+ 
+                int radioPermitido = 1;
+                if (Math.max(distFila, distCol) > radioPermitido) {
+                    return false;
+                }
+            }
+
+            destino.ocupar(unidad);
+
             if (unidad.getBando() == Bando.REINO_DRUIDA) {
                 bando1Reserva.remove(unidad);
                 bando1EnTablero.add(unidad);
@@ -71,7 +88,7 @@ public class Juego {
                 bando2Reserva.remove(unidad);
                 bando2EnTablero.add(unidad);
             }
-            
+
             return true;
         } catch (Exception e) {
             System.out.println("Error al desplegar unidad ("+ unidad.getNombre() +") en (" + fila + "," + columna + "): " + e.getMessage());
@@ -123,6 +140,14 @@ public class Juego {
         if (isGameOver()) {
             System.out.println("🏁 ¡La partida ha terminado!");
         }
+    }
+
+    private Unidad getLordEnTablero(Bando bando) {
+        List<Unidad> lista = getUnidadesEnTablero(bando);
+        for (Unidad u : lista) {
+            if (u.isLord()) return u;
+        }
+        return null;
     }
 
     private void prepararUnidadesFinTurno(Bando bando) {
