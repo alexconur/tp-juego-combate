@@ -49,7 +49,7 @@ public final class EjercitoLoader {
         switch (tipoEq.toUpperCase()) {
             case "ARMA" -> eq = new Arma(nombreEq, TipoArma.valueOf(subtipo.toUpperCase()), potencia, alcance, usos);
             case "GRIMORIO" -> eq = new Grimorio(nombreEq, potencia, alcance, usos);
-            case "BACULO" -> eq = new Baculo(nombreEq, TipoBaculo.valueOf(subtipo.toUpperCase()), 0, usos, potencia);
+            case "BACULO" -> eq = new Baculo(nombreEq, TipoBaculo.valueOf(subtipo.toUpperCase()), potencia, usos, potencia);
             default -> throw new IllegalArgumentException("Tipo de equipamiento desconocido: " + tipoEq);
         }
       }

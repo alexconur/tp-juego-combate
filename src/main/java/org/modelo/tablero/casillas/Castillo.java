@@ -35,7 +35,6 @@ public class Castillo extends Casilla implements Aplicable {
         
         // 2. Aumenta la defensa
         // (agregar lógica en Unidad para manejar bonus temporales)
-        unidad.recibirCuracion(CURACION_FUERTE);
         unidad.aplicarBonusTemporal("DEF", BONUS_DEFENSA);
         System.out.println(unidad.getNombre() + " se cura " + CURACION_FUERTE + " HP en el fuerte.");
     }
