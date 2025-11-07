@@ -44,7 +44,7 @@ public class TableroRenderer {
                 if (setResaltadas.contains(casilla)) {
                     bg = Colores.TERRENO_ALCANZABLE_BG;
                 } else {
-                    bg = getSimboloTerrenoBG(casilla);
+                    bg = getSimboloTerrenoBG(casilla, bandoActual);
                 }
                 // obtenemos el caracter y color de frente para la unidad. Luego combinamos y reseteamos
                 String fg = getSimboloUnidadFG(casilla, bandoActual);
@@ -57,9 +57,15 @@ public class TableroRenderer {
     }
 
     // Devuelve el código ANSI de color de FONDO para un tipo de casilla.
-    private static String getSimboloTerrenoBG(Casilla casilla) {
+    private static String getSimboloTerrenoBG(Casilla casilla, Bando bandoActual) {
         if (casilla == null) return Colores.TERRENO_DEFAULT_BG;
         String tipo = casilla.getClass().getSimpleName();
+
+        // Si hay una unidad enemiga oculta, mostrar fondo de Enredadera
+        Unidad u = casilla.getOcupante();
+        if (u != null && u.isOculto() && u.getBando() != bandoActual) {
+                return Colores.TERRENO_ENREDADERA_BG;
+        }
 
         switch (tipo) {
             case "Bosque": 
