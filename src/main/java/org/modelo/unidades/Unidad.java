@@ -13,6 +13,7 @@ public class Unidad {
     private Equipamiento equipamiento;
     private Bando bando;
     private boolean esLord;
+    private boolean haSidoRevelada = false;
 
     // Atributos para buffs temporales
     private int bonusAtkTemporal;
@@ -110,6 +111,7 @@ public class Unidad {
     public void revelar() {
         if (this.oculto) {
             this.oculto = false;
+            this.haSidoRevelada = true; 
         }
     }
 
@@ -148,11 +150,14 @@ public class Unidad {
         // Lógica de Puño Limpio (Rango 1)
         if (equipamiento == null || !equipamiento.esOfensivo() || equipamiento.estaRoto()) {
             // Solo puede atacar adyacente
-            if (this.casillaActual.getFila() - objetivo.getCasillaActual().getFila() > 1 ||
-                this.casillaActual.getColumna() - objetivo.getCasillaActual().getColumna() > 1) {
+            int dist = Math.max(Math.abs(this.casillaActual.getFila() - objetivo.getCasillaActual().getFila()),
+                                Math.abs(this.casillaActual.getColumna() - objetivo.getCasillaActual().getColumna()));
+
+            if (dist > 1) {
                 System.out.println("El objetivo está fuera de rango para atacar a puño limpio.");
                 return;
             }
+            
             int danio = this.getAtkTotal() - objetivo.getDef();
             objetivo.recibirDanio(Math.max(0, danio));
         } else {
@@ -193,7 +198,7 @@ public class Unidad {
 
     // Emboscada -------------
     public boolean puedePrepararEmboscada() {
-        return !this.oculto && !this.yaAtaco() && !this.yaSeMovio();
+        return !this.haSidoRevelada && !this.oculto && !this.yaAtaco() && !this.yaSeMovio();
     }
 
     public void prepararEmboscada() {
