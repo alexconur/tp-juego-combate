@@ -81,6 +81,8 @@ public abstract class Casilla {
         }
     }
 
+    public boolean permiteEmboscada() { return false; }
+
     // --- Métodos de Efectos ---
     // Define si una unidad puede transitar la casilla o no.
     public abstract boolean esTransitable();

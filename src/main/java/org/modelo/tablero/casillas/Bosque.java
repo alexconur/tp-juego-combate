@@ -22,7 +22,7 @@ public class Bosque extends Casilla {
     @Override
     public boolean esTransitable() { return true; }
     @Override
-    public String getTipoTerreno() {
-        return "Bosque";
-    }
+    public String getTipoTerreno() { return "Bosque"; }
+    @Override    
+    public boolean permiteEmboscada() { return true; }
 }
