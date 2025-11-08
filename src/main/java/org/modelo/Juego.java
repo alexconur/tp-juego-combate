@@ -116,32 +116,30 @@ public class Juego {
     }
 
     public void cambiarTurno() {
-        // Prepara las unidades del bando actual ANTES de cambiar
+
+        aplicarEfectosFinDeTurno();
+
         prepararUnidadesFinTurno(bandoActual);
 
-        bandoActual = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
-        this.numeroTurno++;
+        // Cambiar el bando actual
+        bandoActual = (bandoActual == Bando.REINO_DRUIDA)
+                ? Bando.REINO_NIGROMANTICO
+                : Bando.REINO_DRUIDA;
 
+        this.numeroTurno++;
 
         System.out.println("--- Turno del " + bandoActual + " ---");
         System.out.flush();
-        Bando bandoAnterior = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
 
-        //  Preparar unidades del nuevo bando
-        //  Incluye bonus de defensa si descansaron
+        // Preparar unidades del NUEVO bando
         for (Unidad u : getUnidadesEnTablero(bandoActual)) {
-            u.prepararParaNuevoTurno();  // <-- este método aplica el bonus defensivo
+            u.prepararParaNuevoTurno();
         }
 
-        // Limpiar los bonus temporales del bando anterior
-        for (Unidad u : getUnidadesEnTablero(bandoAnterior)) {
-            u.resetearBonusTemporales();
-        }
-
-        // Aplicar efectos pasivos de posición
+        // Efectos pasivos de posición que se aplican AL COMENZAR el turno
         aplicarBonosDePosicion(bandoActual);
 
-        // Verificar fin de juego
+        // Fin del juego
         if (isGameOver()) {
             System.out.println("🏁 ¡La partida ha terminado!");
         }
@@ -155,15 +153,25 @@ public class Juego {
         return null;
     }
 
-    private void prepararUnidadesFinTurno(Bando bando) {
-        // *IMPORTANTE*: Llama a prepararParaNuevoTurno al FINAL del turno
-        for (Unidad u : getUnidadesEnTablero(bando)) {
-            if (!u.estaVivo()) continue;
-            Casilla c = u.getCasillaActual();
-            if (c != null) {
-                c.notificarFinDeTurno();
+
+    private void aplicarEfectosFinDeTurno() {
+        for (int i = 0; i < tablero.getFilas(); i++) {
+            for (int j = 0; j < tablero.getColumnas(); j++) {
+                Casilla c = tablero.getCasilla(i, j);
+                if (c != null) c.notificarFinDeTurno();   // *M* A chequear si va acá o en prepararUnidadesFinTurno, o si se puede hacer mejor
             }
         }
+    }
+
+    private void prepararUnidadesFinTurno(Bando bando) {
+        // *IMPORTANTE*: Llama a prepararParaNuevoTurno al FINAL del turno
+        // for (Unidad u : getUnidadesEnTablero(bando)) {
+        //     if (!u.estaVivo()) continue;
+        //     Casilla c = u.getCasillaActual();          *M* A chequear si esto lo tenemos que sacar o no
+        //     if (c != null) {
+        //         c.notificarFinDeTurno();                   
+        //     }
+        // }
     }
 
     private void aplicarBonosDePosicion(Bando bando) {

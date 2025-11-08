@@ -117,21 +117,22 @@ public class Unidad {
 
     // Resetea los flags de acción al inicio de un nuevo turno.
     public void prepararParaNuevoTurno() {
-        // Si descansó, aplica bonus defensivo
+
+        // siempre hay q limpiar todos los bonus temporales
+        // Esto borra el DEF del castillo que SOLO debe durar el turno del rival
+        this.resetearBonusTemporales();
+
+        // Si descansó el turno pasado, aplico el bonus de descanso recién ahora
         if (this.descansoTurno) {
             this.aplicarBonusTemporal("DEF", BONUS_DEF_DESCANSO);
             System.out.println(nombre + " recibe +" + BONUS_DEF_DESCANSO + " DEF por descansar el turno anterior.");
-        } else {
-            // Si no descansó, limpia cualquier bonus anterior
-            this.resetearBonusTemporales();
         }
 
-        // Resetear acciones para el nuevo turno
+        // Resetear acciones
         this.ataqueRealizado = false;
         this.movimientoRestante = this.mov;
 
-        // Ahora vuelve a marcarse como descansando,
-        // y perderá ese estado si ataca o se mueve
+        // Al iniciar el turno, se considera descansando HASTA que haga algo
         this.descansoTurno = true;
     }
 
@@ -255,6 +256,7 @@ public class Unidad {
 
             // Revelar la unidad (por si estaba oculta)
             revelar();
+            this.descansoTurno = false;
 
             // Si tenía bonus defensivo (por haber descansado), lo pierde al moverse
             if (this.bonusDefTemporal > 0) {
@@ -262,8 +264,6 @@ public class Unidad {
                 this.resetearBonusTemporales();
             }
 
-            // Ya no se considera que descansó
-            this.descansoTurno = false;
             this.movimientoRestante = 0;
 
         } catch (org.modelo.tablero.excepciones.CasillaOcupadaException e) {
