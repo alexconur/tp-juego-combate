@@ -24,13 +24,8 @@ public class Tablero {
         this.casillas = new Casilla[filas][columnas];
     }
 
-    public int getFilas(){
-        return filas;
-    }
-
-    public int getColumnas(){
-        return columnas;
-    }
+    public int getFilas(){ return filas; }
+    public int getColumnas(){ return columnas; }
 
 
     // Devuelve la casilla en la posicion dada. Incluye chequeo de limites
@@ -155,4 +150,14 @@ public class Tablero {
 
         return alcanzables;
     }
+
+    // Verifica si dos casillas estan dentro de un radio de adyacencia.
+    public boolean esAdyacente(Casilla c1, Casilla c2, int radio){
+        if (c1 == null || c2 == null) return false;
+        int distFila = Math.abs(c1.getFila() - c2.getFila());
+        int distCol = Math.abs(c1.getColumna() - c2.getColumna());
+
+        return Math.max(distFila, distCol) <= radio;
+    }
+
 }

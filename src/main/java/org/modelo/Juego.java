@@ -71,12 +71,11 @@ public class Juego {
                     return false;
                 }
     
-                Casilla casillaLord = lord.getCasillaActual();
-                int distFila = Math.abs(casillaLord.getFila() - fila);
-                int distCol = Math.abs(casillaLord.getColumna() - columna);
- 
+                Casilla casillaLord = lord.getCasillaActual(); 
                 int radioPermitido = 1;
-                if (Math.max(distFila, distCol) > radioPermitido) {
+
+                if (!tablero.esAdyacente(casillaLord, destino, radioPermitido)) {
+                    System.out.println("Error: La unidad debe desplegarse adyacente al Lord.");
                     return false;
                 }
             }
