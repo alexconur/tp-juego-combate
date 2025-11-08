@@ -2,7 +2,6 @@ package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.FabricaCasillas;
-import org.modelo.unidades.Unidad;
 
 public class Enredadera extends Casilla {
 
@@ -11,7 +10,7 @@ public class Enredadera extends Casilla {
     }
 
     public Enredadera(int fila, int columna) {
-        super(fila, columna);
+        super(fila, columna, null, null, null);
     }
 
     @Override
@@ -20,13 +19,4 @@ public class Enredadera extends Casilla {
     public String getTipoTerreno() {
         return "Enredadera";
     }
-    @Override
-    public void aplicarEfectoAlEntrar(Unidad unidad) {}
-
-    @Override
-    public void aplicarEfectoFinDeTurno(Unidad unidad) {}
-    @Override
-    public void aplicarEfectoDePosicion(Unidad unidad) {}
-    @Override
-    public void revertirEfectoDePosicion(Unidad unidad) {} 
 }

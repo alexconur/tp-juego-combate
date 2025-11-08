@@ -24,8 +24,9 @@ public class VistaTurno {
 
         String bandoColor = (juego.getBandoActual() == org.modelo.unidades.Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
 
-
+        System.out.println("TURNO NÚMERO: " + juego.getNumeroTurno());
         System.out.println("TURNO DE: " + bandoColor + juego.getBandoActual() + Colores.RESET);
+        
         System.out.println("══════════════════════════════════════════════");
         
         Tablero tablero = juego.getTablero();
@@ -204,7 +205,7 @@ public class VistaTurno {
         sb.append("\n╔═══════════════════════ INFORMACIÓN DE CASILLAS ═══════════════════════╗\n");
 
         // cada línea usa el bloque coloreado seguido de la descripción; formateo para alineación
-        sb.append(String.format("║ %s  Bosque: Aumenta 5 DEF y 5 MGC, permite emboscadas.               ║%n", bloqueBosque));
+        sb.append(String.format("║ %s  Bosque: Aumenta 5 ATK y 5 MGC, permite emboscadas.               ║%n", bloqueBosque));
         sb.append(String.format("║ %s  Llanura: Terreno abierto.                                        ║%n", bloqueLlanura));
         sb.append(String.format("║ %s  Pantano: Reduce movimiento al minimo.                            ║%n", bloquePantano));
         sb.append(String.format("║ %s  Castillo: Restaura 10 HP y aumenta DEF en 5.                     ║%n", bloqueCastillo));

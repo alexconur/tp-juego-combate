@@ -11,13 +11,14 @@ import org.modelo.unidades.Unidad;
 
 public class Juego {
     private Tablero tablero;
-    private List<Unidad> bando1EnTablero;
-    private List<Unidad> bando2EnTablero;
-    private List<Unidad> bando1Reserva;
-    private List<Unidad> bando2Reserva;
+    final private List<Unidad> bando1EnTablero;
+    final private List<Unidad> bando2EnTablero;
+    final private List<Unidad> bando1Reserva;
+    final private List<Unidad> bando2Reserva;
     private final Random rng;
     private Bando bandoActual;
     private boolean gameOver = false;
+    private int numeroTurno;
 
     public Juego() {
         this.tablero = null; // *X*: se reemplaza en ControladorInicio
@@ -31,6 +32,7 @@ public class Juego {
 
     public Tablero getTablero() { return tablero; }
     public Bando getBandoActual() { return bandoActual; }
+    public int getNumeroTurno() { return numeroTurno; }
     public void reemplazarTablero(Tablero nuevo) { this.tablero = nuevo; }
 
     // Carga las unidades en las reservas
@@ -50,7 +52,7 @@ public class Juego {
         if (unidad == null || tablero == null) return false;
         
         try {
-            // *CORRECCIÓN IMPORTANTE*: La casilla debe obtenerse del tablero
+            // *A* todo este bloque rompe mucho POLK y TDA
             Casilla destino = tablero.getCasilla(fila, columna);
             if (destino == null) {
                 System.out.println("Error: Casilla (" + fila + "," + columna + ") no existe.");
@@ -118,6 +120,9 @@ public class Juego {
         prepararUnidadesFinTurno(bandoActual);
 
         bandoActual = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
+        this.numeroTurno++;
+
+
         System.out.println("--- Turno del " + bandoActual + " ---");
         System.out.flush();
         Bando bandoAnterior = (bandoActual == Bando.REINO_DRUIDA) ? Bando.REINO_NIGROMANTICO : Bando.REINO_DRUIDA;
@@ -156,19 +161,10 @@ public class Juego {
             if (!u.estaVivo()) continue;
             Casilla c = u.getCasillaActual();
             if (c != null) {
-                c.aplicarEfectoFinDeTurno(u);
+                c.notificarFinDeTurno();
             }
         }
     }
-    
-    // private void prepararUnidadesNuevoTurno(Bando bando) {
-    //     // *X*: Aquí iría lógica si algo debe aplicarse al INICIO del turno
-    //     for (Unidad u : getUnidadesEnTablero(bando)) {
-    //         if (u.estaVivo()) {
-    //             u.prepararParaNuevoTurno(); // resetea acción/mov y limpia bonus temporales
-    //         }
-    //     }
-    // }
 
     private void aplicarBonosDePosicion(Bando bando) {
         for (Unidad u : getUnidadesEnTablero(bando)) {

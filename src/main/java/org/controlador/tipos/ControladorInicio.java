@@ -100,6 +100,7 @@ public class ControladorInicio implements Controlador {
 
     private void faseDeDespliegue(Bando bando, Tablero tablero) {
             System.out.println("\n--- FASE DE DESPLIEGUE: " + bando + " ---");
+            System.out.println("\n--Las unidades de tu bando solo pueden desplegarse en casillas adyacentes a su Lord--");
             
             while (true) {
                 List<Unidad> enReserva = juego.getUnidadesEnReserva(bando);

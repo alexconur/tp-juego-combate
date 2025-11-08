@@ -83,7 +83,6 @@ public class Tablero {
         // 3. Mover la unidad a la nueva posición
         destino.ocupar(unidad);
         unidad.setCasillaActual(destino);
-
     }
 
     // Devuelve las casillas vecinas (en las 8 direcciones posibles)

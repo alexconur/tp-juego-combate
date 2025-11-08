@@ -1,5 +1,8 @@
 package org.modelo.tablero;
 
+import org.modelo.tablero.casillas.EfectoAlEntrar;
+import org.modelo.tablero.casillas.EfectoDePosicion;
+import org.modelo.tablero.casillas.EfectoFinDeTurno;
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
 import org.modelo.tablero.excepciones.CasillaOcupadaException;
 import org.modelo.unidades.Unidad;
@@ -10,11 +13,20 @@ public abstract class Casilla {
     private int columna;
     private Unidad ocupante;
 
+    private final EfectoAlEntrar efectoAlEntrar;
+    private final EfectoFinDeTurno efectoFinDeTurno;
+    private final EfectoDePosicion efectoDePosicion;
+
     // Constructor
-    protected Casilla(int fila, int columna) {
+    protected Casilla(int fila, int columna, EfectoAlEntrar efectoAlEntrar,
+                      EfectoFinDeTurno efectoFinDeTurno,
+                      EfectoDePosicion efectoDePosicion) {
         this.fila = fila;
         this.columna = columna;
         this.ocupante = null;
+        this.efectoAlEntrar = efectoAlEntrar;
+        this.efectoFinDeTurno = efectoFinDeTurno;
+        this.efectoDePosicion = efectoDePosicion;
     }
 
     // --- Métodos de Estado y Posición ---
@@ -23,10 +35,7 @@ public abstract class Casilla {
     public int getColumna() { return this.columna; }
     public Unidad getOcupante() { return this.ocupante; }
     public boolean estaOcupada() { return ocupante != null; }
-
-    public String getTipoTerreno() {
-        return this.getClass().getSimpleName();
-    }
+    public String getTipoTerreno() { return this.getClass().getSimpleName(); }
 
     // --- Métodos de Ocupación ---
     // Coloca una unidad en esta casilla.
@@ -45,7 +54,6 @@ public abstract class Casilla {
         // La casilla le informa a la unidad dónde está.
         if (unidad != null) {
             unidad.setCasillaActual(this); 
-            this.aplicarEfectoAlEntrar(unidad); // Aplicar efectos INMEDIATOS al entrar
         }
     }
 
@@ -55,32 +63,25 @@ public abstract class Casilla {
         // La unidad ya no está en ninguna casilla (hasta que ocupe otra)
         if (unidadQueSeVa != null) {
             unidadQueSeVa.setCasillaActual(null);
-            // Revertir efectos de posición (si es necesario)
-            this.revertirEfectoDePosicion(unidadQueSeVa);
         }
         
         this.ocupante = null;
         return unidadQueSeVa;
     }
 
+    public void notificarFinDeTurno() {
+        if (ocupante != null && efectoFinDeTurno != null) {
+            efectoFinDeTurno.aplicar(ocupante, this);
+        }
+    }
+
+    public void aplicarEfectoDePosicion(Unidad unidad) {
+        if (efectoDePosicion != null) {
+            efectoDePosicion.aplicar(unidad);
+        }
+    }
+
     // --- Métodos de Efectos ---
     // Define si una unidad puede transitar la casilla o no.
     public abstract boolean esTransitable();
-
-    // *I* Ya está la interfaz, habría que ver que Casilla no use estos métodos 
-    //  en desocupar y ocupar como para poder sacarlos.
-    //  P/D: Si dejamos ocupante como protected creo no haría falta pasar Unidad por parám.
-
-    // Aplica efectos que ocurren cuando una unidad ENTRA a la casilla.
-    public abstract void aplicarEfectoAlEntrar(Unidad unidad);
-
-    // Aplica efectos que ocurren al FINALIZAR EL TURNO en esta casilla.
-    public abstract void aplicarEfectoFinDeTurno(Unidad unidad);
-    
-    // Modifica las estadísticas de una unidad MIENTRAS ESTÉ parada aquí.
-        // Este método es llamado por la Unidad en sus getters (getAtkTotal()).
-    public abstract void aplicarEfectoDePosicion(Unidad unidad);
-
-    // Revierte los efectos de posición cuando la unidad se va.
-    public abstract void revertirEfectoDePosicion(Unidad unidad);
 }

@@ -238,9 +238,6 @@ public class ControladorTurno implements Controlador {
             desplegada = juego.desplegarUnidad(u, ubi.getFila(), ubi.getColumna());
             if (!desplegada) {
                 System.out.println("Despliegue fallido. Puede seleccionar otra unidad o cancelar.");
-                // Remover esta unidad de la lista temporal para no repetir automáticamente
-                // Si querés permitir reintentos con la misma unidad, no hagas esto
-                // reserva.remove(u);
             }
         }
 

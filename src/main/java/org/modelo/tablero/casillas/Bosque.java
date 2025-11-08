@@ -2,9 +2,8 @@ package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.FabricaCasillas;
-import org.modelo.unidades.Unidad;
 
-public class Bosque extends Casilla implements Aplicable {
+public class Bosque extends Casilla {
     private static final int BONUS_ATAQUE = 5;  // Valor hipotético
     private static final int BONUS_MAGIA = 5;  // Valor hipotético
 
@@ -14,7 +13,10 @@ public class Bosque extends Casilla implements Aplicable {
     }
     
     public Bosque(int fila, int columna) {
-        super(fila, columna);
+        super(fila, columna, null, null, (unidad) -> {
+            unidad.aplicarBonusTemporal("ATK", BONUS_ATAQUE);
+            unidad.aplicarBonusTemporal("MGC", BONUS_MAGIA);
+        });
     }
 
     @Override
@@ -23,16 +25,4 @@ public class Bosque extends Casilla implements Aplicable {
     public String getTipoTerreno() {
         return "Bosque";
     }
-    @Override
-    public void aplicarEfectoAlEntrar(Unidad unidad) {}
-    @Override
-    public void aplicarEfectoFinDeTurno(Unidad unidad) {}
-    @Override
-    public void aplicarEfectoDePosicion(Unidad unidad) {
-        // Aumento BONUS
-        unidad.aplicarBonusTemporal("ATK", BONUS_ATAQUE);
-        unidad.aplicarBonusTemporal("MGC", BONUS_MAGIA);
-    }
-    @Override
-    public void revertirEfectoDePosicion(Unidad unidad) {} 
 }
