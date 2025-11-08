@@ -4,6 +4,13 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.archivos.CargadorDeDatos;
+import org.archivos.EjercitoLoader;
+import org.archivos.factories.EquipamientoDefault;
+import org.archivos.factories.EquipamientoFactory;
+import org.archivos.factories.EstrategiaDefault;
+import org.archivos.factories.EstrategiaFactory;
+import org.archivos.factories.UnidadDefault;
+import org.archivos.factories.UnidadFactory;
 import org.controlador.Controlador;
 import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
@@ -12,6 +19,7 @@ import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.vista.tipos.VistaInicio;
+
 
 public class ControladorInicio implements Controlador {
     private final Scanner sc = new Scanner(System.in);
@@ -30,12 +38,17 @@ public class ControladorInicio implements Controlador {
     public void ejecutar() {
         vInicio.mostrar();
 
-        // 2) Seleccionar archivos
         VistaInicio.Selecciones sel = vInicio.seleccionarArchivos();
         mapaPath = sel.getMapaPath();
         ejercitoPath = sel.getEjercitoPath();
 
-        CargadorDeDatos cargador = new CargadorDeDatos();
+        EstrategiaFactory estrategiaFactory = new EstrategiaDefault();
+        EquipamientoFactory equipamientoFactory = new EquipamientoDefault(estrategiaFactory);
+        UnidadFactory unidadFactory = new UnidadDefault();
+
+        EjercitoLoader ejercitoLoader = new EjercitoLoader(unidadFactory, equipamientoFactory);
+
+        CargadorDeDatos cargador = new CargadorDeDatos(ejercitoLoader);
 
         // 3) Cargar el mapa en el modelo
         Tablero tablero = cargador.cargarMapa(mapaPath);

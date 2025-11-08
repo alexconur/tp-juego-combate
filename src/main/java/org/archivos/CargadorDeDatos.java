@@ -7,11 +7,17 @@ import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Unidad; 
 
 public final class CargadorDeDatos {
+    private final EjercitoLoader ejercitoLoader;
+
+    public CargadorDeDatos(EjercitoLoader ejercitoLoader) {
+        this.ejercitoLoader = ejercitoLoader;
+    }
+
     public Tablero cargarMapa(String mapaResourcePath) {
         return MapaLoader.cargar(mapaResourcePath);
     }
 
     public List<Unidad> cargarEjercito(String ejercitoResourcePath) {
-        return EjercitoLoader.cargar(ejercitoResourcePath);
+        return this.ejercitoLoader.cargar(ejercitoResourcePath);
     }
 }

@@ -1,5 +1,6 @@
 package org.modelo.tablero;
 
+import org.modelo.tablero.casillas.EfectoAlEntrar;
 import org.modelo.tablero.casillas.EfectoDePosicion;
 import org.modelo.tablero.casillas.EfectoFinDeTurno;
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
@@ -14,14 +15,16 @@ public abstract class Casilla {
 
     private final EfectoFinDeTurno efectoFinDeTurno;
     private final EfectoDePosicion efectoDePosicion;
+    private final EfectoAlEntrar efectoAlEntrar;
 
     // Constructor
-    protected Casilla(int fila, int columna,
+    protected Casilla(int fila, int columna, EfectoAlEntrar efectoAlEntrar,
                       EfectoFinDeTurno efectoFinDeTurno,
                       EfectoDePosicion efectoDePosicion) {
         this.fila = fila;
         this.columna = columna;
         this.ocupante = null;
+        this.efectoAlEntrar = efectoAlEntrar;
         this.efectoFinDeTurno = efectoFinDeTurno;
         this.efectoDePosicion = efectoDePosicion;
     }
@@ -75,6 +78,12 @@ public abstract class Casilla {
     public void aplicarEfectoDePosicion(Unidad unidad) {
         if (efectoDePosicion != null) {
             efectoDePosicion.aplicar(unidad);
+        }
+    }
+
+    public void aplicarEfectoAlEntrar(Unidad unidad) {
+        if (efectoAlEntrar != null) {
+            efectoAlEntrar.aplicar(unidad);
         }
     }
 
