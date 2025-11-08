@@ -114,6 +114,16 @@ public abstract class Unidad {
         }
     }
 
+    // Calcula la distancia a otra unidad
+    public int distanciaA(Unidad objetivo) {
+        if (this.casillaActual == null || objetivo == null || objetivo.getCasillaActual() == null) {
+            return Integer.MAX_VALUE;
+        }
+        Casilla c1 = this.casillaActual;
+        Casilla c2 = objetivo.getCasillaActual();
+        return Math.max(Math.abs(c1.getFila() - c2.getFila()), Math.abs(c1.getColumna() - c2.getColumna()));
+    }
+
     // Resetea los flags de acción al inicio de un nuevo turno.
     public void prepararParaNuevoTurno() {
 
@@ -123,7 +133,7 @@ public abstract class Unidad {
 
         // Si descansó el turno pasado, aplico el bonus de descanso recién ahora
         if (this.descansoTurno) {
-            this.aplicarBonusTemporal("DEF", BONUS_DEF_DESCANSO);
+            this.aplicarBonusDefTemporal(BONUS_DEF_DESCANSO);
             System.out.println(nombre + " recibe +" + BONUS_DEF_DESCANSO + " DEF por descansar el turno anterior.");
         }
 
@@ -150,8 +160,7 @@ public abstract class Unidad {
         // Lógica de Puño Limpio (Rango 1)
         if (equipamiento == null || !equipamiento.esOfensivo() || equipamiento.estaRoto()) {
             // Solo puede atacar adyacente
-            int dist = Math.max(Math.abs(this.casillaActual.getFila() - objetivo.getCasillaActual().getFila()),
-                                Math.abs(this.casillaActual.getColumna() - objetivo.getCasillaActual().getColumna()));
+            int dist = this.distanciaA(objetivo);
 
             if (dist > 1) {
                 System.out.println("El objetivo está fuera de rango para atacar a puño limpio.");
@@ -162,8 +171,7 @@ public abstract class Unidad {
             objetivo.recibirDanio(Math.max(0, danio));
         } else {
             // Chequeo de rango del equipamiento
-            int dist = Math.max(Math.abs(this.casillaActual.getFila() - objetivo.getCasillaActual().getFila()),
-                                Math.abs(this.casillaActual.getColumna() - objetivo.getCasillaActual().getColumna()));
+            int dist = this.distanciaA(objetivo);
             
             if (dist > equipamiento.getRango()) {
                  System.out.println("El objetivo está fuera de rango del equipamiento (Rango: " + equipamiento.getRango() + ", Dist: " + dist + ")");
@@ -208,15 +216,9 @@ public abstract class Unidad {
         }
     }
 
-    // --- Metodos para aplicar y resetear los bonus ---
-    // *X*: Cambiar switch
-    public void aplicarBonusTemporal(String stat, int valor) {
-        switch (stat) {
-            case "ATK": this.bonusAtkTemporal += valor; break;
-            case "DEF": this.bonusDefTemporal += valor; break;
-            case "MGC": this.bonusMgcTemporal += valor; break;
-        }
-    }
+    public void aplicarBonusAtkTemporal(int valor) { this.bonusAtkTemporal += valor; }
+    public void aplicarBonusDefTemporal(int valor) { this.bonusDefTemporal += valor; }
+    public void aplicarBonusMgcTemporal(int valor) { this.bonusMgcTemporal += valor; }
 
     public void resetearBonusTemporales() {
         this.bonusAtkTemporal = 0;

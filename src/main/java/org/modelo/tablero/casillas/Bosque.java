@@ -14,8 +14,8 @@ public class Bosque extends Casilla {
     
     public Bosque(int fila, int columna) {
         super(fila, columna, null, null, (unidad) -> {
-            unidad.aplicarBonusTemporal("ATK", BONUS_ATAQUE);
-            unidad.aplicarBonusTemporal("MGC", BONUS_MAGIA);
+            unidad.aplicarBonusAtkTemporal(BONUS_ATAQUE);
+            unidad.aplicarBonusMgcTemporal(BONUS_MAGIA);
         });
     }
 

@@ -14,7 +14,7 @@ public class Castillo extends Casilla {
     public Castillo(int fila, int columna) {
         super(fila, columna, null, (unidad, casilla) -> {
                   unidad.recibirCuracion(CURACION_FUERTE);
-                  unidad.aplicarBonusTemporal("DEF", BONUS_DEFENSA);
+                  unidad.aplicarBonusDefTemporal(BONUS_DEFENSA);
                   System.out.println(unidad.getNombre() + " se cura " + CURACION_FUERTE + " HP en el fuerte.");
               }, null);
     }

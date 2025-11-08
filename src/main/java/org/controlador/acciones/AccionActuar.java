@@ -57,10 +57,7 @@ public class AccionActuar implements Accion {
 
         // Validar rango
         int rango = u.getEquipamiento().getRango();
-        int dist = Math.max(
-                Math.abs(u.getCasillaActual().getFila() - objetivo.getCasillaActual().getFila()),
-                Math.abs(u.getCasillaActual().getColumna() - objetivo.getCasillaActual().getColumna())
-        );
+        int dist = u.distanciaA(objetivo);
 
         if (dist > rango) {
             System.out.println("Objetivo fuera de rango (" + rango + ").");
