@@ -132,8 +132,7 @@ public class ControladorInicio implements Controlador {
                 }
     
                 // 2. Pedir ubicación
-                // (Usamos pedirUbicacionLord, pero es solo para pedir fila/columna)
-                VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionLord(bando, tablero.getFilas(), tablero.getColumnas());
+                VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionUnidad(unidadADesplegar, bando, tablero.getFilas(), tablero.getColumnas());
                 
                 // 3. Intentar desplegar (Juego.desplegarUnidad ahora valida adyacencia)
                 boolean desplegada = juego.desplegarUnidad(unidadADesplegar, ubi.getFila(), ubi.getColumna());

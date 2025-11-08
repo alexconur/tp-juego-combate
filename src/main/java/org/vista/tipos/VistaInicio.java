@@ -12,10 +12,9 @@ import java.util.Scanner;
 
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
+import org.modelo.unidades.Unidad;
 import org.vista.Colores;
 import org.vista.TableroRenderer;
-
-import org.modelo.unidades.Unidad;
 
 public class VistaInicio {
 
@@ -74,6 +73,27 @@ public void mostrar() {
         System.out.println("\n╔═════════════ POSICIONAR LORD ═════════════╗");
         System.out.printf("║ Jugador: %s%-31s%s  ║%n", bandoColor, bandoNombre, Colores.RESET);
         System.out.println("║                                           ║");
+        System.out.printf("║ Rango Filas:    0..%-22s ║%n", (filas - 1));
+        System.out.printf("║ Rango Columnas: 0..%-22s ║%n", (columnas - 1));
+        System.out.println("╚═══════════════════════════════════════════╝");
+
+        int f = leerEnteroEnRango("Fila", 0, filas - 1);
+        int c = leerEnteroEnRango("Columna", 0, columnas - 1);
+        
+        return new Ubicacion(f, c);
+    }
+
+    public Ubicacion pedirUbicacionUnidad(Unidad unidad, Bando bando, int filas, int columnas) {
+        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+        String bandoNombre = bando.toString();
+        String nombreUnidad = unidad.getNombre();
+
+        System.out.println("\n╔════════════ POSICIONAR UNIDAD ════════════╗");
+        System.out.printf("║ Jugador: %s%-31s%s  ║%n", bandoColor, bandoNombre, Colores.RESET);
+
+        String lineaUnidad = "Unidad: " + nombreUnidad;
+        System.out.printf("║ %-43s ║%n", lineaUnidad);
+
         System.out.printf("║ Rango Filas:    0..%-22s ║%n", (filas - 1));
         System.out.printf("║ Rango Columnas: 0..%-22s ║%n", (columnas - 1));
         System.out.println("╚═══════════════════════════════════════════╝");
