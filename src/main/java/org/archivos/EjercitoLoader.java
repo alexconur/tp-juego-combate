@@ -3,12 +3,8 @@ package org.archivos;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelo.equipamiento.Arma;
-import org.modelo.equipamiento.Baculo;
-import org.modelo.equipamiento.Equipamiento;
-import org.modelo.equipamiento.Grimorio;
-import org.modelo.equipamiento.TipoArma;
-import org.modelo.equipamiento.TipoBaculo;
+import org.modelo.equipamiento.*;
+import org.modelo.equipamiento.estrategias.*;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Lord;
 import org.modelo.unidades.Unidad;
@@ -51,7 +47,20 @@ public final class EjercitoLoader {
         switch (tipoEq.toUpperCase()) {
             case "ARMA" -> eq = new Arma(nombreEq, TipoArma.valueOf(subtipo.toUpperCase()), potencia, alcance, usos);
             case "GRIMORIO" -> eq = new Grimorio(nombreEq, potencia, alcance, usos);
-            case "BACULO" -> eq = new Baculo(nombreEq, TipoBaculo.valueOf(subtipo.toUpperCase()), potencia, usos, potencia);
+            case "BACULO" -> {
+              EstrategiaBaculo estrategia;
+              String subtipoUpper = subtipo.toUpperCase();
+                
+              switch (subtipoUpper) {
+                case "CURACION" -> estrategia = new EstrategiaCuracion();
+                case "SANACION" -> estrategia = new EstrategiaSanacion();
+                case "FORTALEZA" -> estrategia = new EstrategiaFortaleza();
+                default -> throw new IllegalArgumentException("Tipo de Báculo desconocido: " + subtipo);
+              }                
+              int poder = potencia;
+              int bonusMagia = potencia; 
+              eq = new Baculo(nombreEq, estrategia, bonusMagia, usos, poder);
+            }              
             default -> throw new IllegalArgumentException("Tipo de equipamiento desconocido: " + tipoEq);
         }
       }
