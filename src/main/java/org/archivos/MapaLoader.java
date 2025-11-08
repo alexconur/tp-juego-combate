@@ -8,7 +8,13 @@ import org.modelo.tablero.Tablero;
 
 public final class MapaLoader {
 
-    public static Tablero cargar(String resourcePath) {
+    private final FabricaCasillas fabricaCasillas;
+
+    public MapaLoader(FabricaCasillas fabricaCasillas) {
+        this.fabricaCasillas = fabricaCasillas;
+    }
+
+    public Tablero cargar(String resourcePath) {
         List<List<String>> t = CsvReader.readResource(resourcePath);
         if (t.isEmpty()) throw new IllegalArgumentException("Mapa vacío: " + resourcePath);
 
@@ -21,12 +27,11 @@ public final class MapaLoader {
         }
 
         Tablero tablero = new Tablero(filas, cols);
-        FabricaCasillas fabrica = FabricaCasillas.getInstancia();
 
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < cols; j++) {
                 String token = t.get(i).get(j);
-                Casilla c = fabrica.crearCasilla(token, i, j);
+                Casilla c = this.fabricaCasillas.crearCasilla(token, i, j);
                 tablero.setCasilla(i, j, c);
             }
         }

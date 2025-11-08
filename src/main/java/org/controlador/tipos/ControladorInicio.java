@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import org.archivos.CargadorDeDatos;
 import org.archivos.EjercitoLoader;
+import org.archivos.MapaLoader;
 import org.archivos.factories.EquipamientoDefault;
 import org.archivos.factories.EquipamientoFactory;
 import org.archivos.factories.EstrategiaDefault;
@@ -14,6 +15,7 @@ import org.archivos.factories.UnidadFactory;
 import org.controlador.Controlador;
 import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
+import org.modelo.tablero.FabricaCasillas;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
@@ -46,7 +48,10 @@ public class ControladorInicio implements Controlador {
 
         EjercitoLoader ejercitoLoader = new EjercitoLoader(unidadFactory, equipamientoFactory);
 
-        CargadorDeDatos cargador = new CargadorDeDatos(ejercitoLoader);
+        FabricaCasillas fabricaCasillas = FabricaCasillas.getInstancia();
+        MapaLoader mapaLoader = new MapaLoader(fabricaCasillas);
+
+        CargadorDeDatos cargador = new CargadorDeDatos(ejercitoLoader, mapaLoader);
 
         Tablero tablero = cargador.cargarMapa(mapaPath);
         juego.reemplazarTablero(tablero);

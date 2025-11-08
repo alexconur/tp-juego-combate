@@ -8,13 +8,15 @@ import org.modelo.unidades.Unidad;
 
 public final class CargadorDeDatos {
     private final EjercitoLoader ejercitoLoader;
+    private final MapaLoader mapaLoader;
 
-    public CargadorDeDatos(EjercitoLoader ejercitoLoader) {
+    public CargadorDeDatos(EjercitoLoader ejercitoLoader, MapaLoader mapaLoader) {
         this.ejercitoLoader = ejercitoLoader;
+        this.mapaLoader = mapaLoader;
     }
 
     public Tablero cargarMapa(String mapaResourcePath) {
-        return MapaLoader.cargar(mapaResourcePath);
+        return this.mapaLoader.cargar(mapaResourcePath);
     }
 
     public List<Unidad> cargarEjercito(String ejercitoResourcePath) {
