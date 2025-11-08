@@ -21,8 +21,10 @@ public class Castillo extends Casilla {
 
     @Override
     public boolean esTransitable() { return true; }
+
     @Override
-    public String getTipoTerreno() {
-        return "Castillo";
-    }
+    public String getTipoTerreno() { return "Castillo"; }
+
+    @Override
+    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_CASTILLO_BG; }
 }

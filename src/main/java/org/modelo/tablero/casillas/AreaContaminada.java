@@ -23,7 +23,8 @@ public class AreaContaminada extends Casilla {
     public boolean esTransitable() { return true; }
 
     @Override
-    public String getTipoTerreno() {
-        return "Area Contaminada";
-    }
+    public String getTipoTerreno() { return "Area Contaminada"; }
+
+    @Override
+    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_PELIGROSO_BG; }
 }

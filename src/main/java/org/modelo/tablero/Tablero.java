@@ -116,16 +116,7 @@ public class Tablero {
         if (unidad == null || unidad.getCasillaActual() == null) return alcanzables;
         
         Casilla origen = unidad.getCasillaActual();
-        
-        if ("Pantano".equals(origen.getTipoTerreno())) {
-            for (Casilla vecino : obtenerVecinos(origen)) {
-                if (vecino != null && vecino.esTransitable() && !vecino.estaOcupada()) {
-                    alcanzables.add(vecino);
-                }
-            }
-            return alcanzables;
-        }
-        
+                
         int maxMovimiento = unidad.getMovimientoRestante();
 
         // Estructuras BFS

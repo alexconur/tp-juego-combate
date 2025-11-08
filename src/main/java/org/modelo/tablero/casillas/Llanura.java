@@ -14,8 +14,10 @@ public class Llanura extends Casilla {
 
     @Override
     public boolean esTransitable() { return true; }
+    
     @Override
-    public String getTipoTerreno() {
-        return "Llanura";
-    }
+    public String getTipoTerreno() { return "Llanura"; }
+
+    @Override
+    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_LLANURA_BG; }
 }

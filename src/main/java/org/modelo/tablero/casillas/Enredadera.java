@@ -15,8 +15,10 @@ public class Enredadera extends Casilla {
 
     @Override
     public boolean esTransitable() { return false; }
+
     @Override
-    public String getTipoTerreno() {
-        return "Enredadera";
-    }
+    public String getTipoTerreno() { return "Enredadera"; }
+
+    @Override
+    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_ENREDADERA_BG; }
 }

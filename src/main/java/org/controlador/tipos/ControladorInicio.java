@@ -129,7 +129,7 @@ public class ControladorInicio implements Controlador {
                     // 4. Preguntar por modo Oculto
                     // (Se comprueba el tipo de terreno sin usar instanceof)
                     Casilla c = tablero.getCasilla(ubi.getFila(), ubi.getColumna());
-                    if (c != null && c.getTipoTerreno().equals("Bosque")) {
+                    if (c != null && c.permiteEmboscada()) {
                         
                         boolean ocultar = vInicio.pedirConfirmacion("¿Desplegar esta unidad en modo oculto?");
                         if (ocultar) {

@@ -86,4 +86,6 @@ public abstract class Casilla {
     // --- Métodos de Efectos ---
     // Define si una unidad puede transitar la casilla o no.
     public abstract boolean esTransitable();
+
+    public abstract String getCodigoColorVista();
 }

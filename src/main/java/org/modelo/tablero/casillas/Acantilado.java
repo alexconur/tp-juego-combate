@@ -15,8 +15,10 @@ public class Acantilado extends Casilla {
 
     @Override
     public boolean esTransitable() { return false; }
+
     @Override
-    public String getTipoTerreno() {
-        return "Acantilado";
-    }
+    public String getTipoTerreno() { return "Acantilado"; }
+
+    @Override
+    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_ACANTILADO_BG; }
 }

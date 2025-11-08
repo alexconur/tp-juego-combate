@@ -59,34 +59,13 @@ public class TableroRenderer {
     // Devuelve el código ANSI de color de FONDO para un tipo de casilla.
     private static String getSimboloTerrenoBG(Casilla casilla, Bando bandoActual) {
         if (casilla == null) return Colores.TERRENO_DEFAULT_BG;
-        String tipo = casilla.getClass().getSimpleName();
 
         // Si hay una unidad enemiga oculta, mostrar fondo de Enredadera
         Unidad u = casilla.getOcupante();
         if (u != null && u.isOculto() && u.getBando() != bandoActual) {
-                return Colores.TERRENO_ENREDADERA_BG;
+            return Colores.TERRENO_ENREDADERA_BG;
         }
-
-        switch (tipo) {
-            case "Bosque": 
-                return Colores.TERRENO_BOSQUE_BG; 
-            case "Llanura": 
-                return Colores.TERRENO_LLANURA_BG;
-            case "Pantano": 
-                return Colores.TERRENO_PANTANO_BG;
-            case "Castillo": 
-                return Colores.TERRENO_CASTILLO_BG;
-            case "Enredadera": 
-                return Colores.TERRENO_ENREDADERA_BG;
-            case "AreaContaminada": 
-                return Colores.TERRENO_PELIGROSO_BG;
-            case "Agua":
-                return Colores.TERRENO_AGUA_BG;
-            case "Acantilado": 
-                return Colores.TERRENO_ACANTILADO_BG;
-            default: 
-                return Colores.TERRENO_DEFAULT_BG;
-        }
+        return casilla.getCodigoColorVista();
     }
 
         // Devuelve el código ANSI de FRENTE + el carácter de la unidad.

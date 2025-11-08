@@ -10,10 +10,11 @@ public class Pantano extends Casilla {
     }
 
     public Pantano(int fila, int columna) {
-        super(fila, columna, (unidad, casilla) -> {
-                  unidad.setMovimientoRestante(1);
-                  System.out.println(unidad.getNombre() + " se atasca en el pantano!");
-              }, null, null);
+        super(fila, columna, null,null, 
+        (unidad) -> {
+            unidad.setMovimientoRestante(1);
+            System.out.println(unidad.getNombre() + " se atasca en el pantano!");
+        });
     }
 
     @Override
@@ -21,4 +22,7 @@ public class Pantano extends Casilla {
     
     @Override
     public String getTipoTerreno() { return "Pantano"; }
+
+    @Override
+    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_PANTANO_BG; }
 }
