@@ -2,7 +2,6 @@ package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.FabricaCasillas;
-
 public class Acantilado extends Casilla {
 
     static {
