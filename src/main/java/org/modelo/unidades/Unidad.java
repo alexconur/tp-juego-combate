@@ -4,7 +4,7 @@ import org.modelo.equipamiento.Equipamiento;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.Tablero; 
 
-public class Unidad {
+public abstract class Unidad {
     
     // Atributos
     private String nombre;
@@ -28,7 +28,7 @@ public class Unidad {
     private int movimientoRestante;
 
     // Constructor
-    public Unidad(String nombre, int hp, int atk, int def, int mgc, int mov, Bando bando) {
+    protected Unidad(String nombre, int hp, int atk, int def, int mgc, int mov, Bando bando) {
         this.nombre=nombre;
         this.hp=hp;
         this.maxHp = hp;
@@ -38,7 +38,6 @@ public class Unidad {
         this.mov=mov;
         this.bando=bando;
         this.oculto = false;
-        this.equipamiento = null;
         this.esLord = false;
 
         // --> Las unidades empiezan listas para su primer turno
@@ -84,7 +83,7 @@ public class Unidad {
     // Setters
     public void setEquipamiento(Equipamiento equipamiento) { this.equipamiento = equipamiento; }
     public void setCasillaActual(Casilla casilla) { this.casillaActual = casilla; }
-    public void setEsLord(boolean esLord) { this.esLord = esLord; }
+    protected void setEsLord(boolean esLord) { this.esLord = esLord; }
     public void setOculto(boolean oculto) { this.oculto = oculto; } // *X*: lo habia puesto xq a nacho le daba error, pero a mi no me dio ese error...
     public void setMovimientoRestante(int mov) { this.movimientoRestante = mov; }
 
@@ -187,7 +186,7 @@ public class Unidad {
             return;
         }
 
-        if (equipamiento != null && !equipamiento.esOfensivo() && !equipamiento.estaRoto()) {
+        if (!equipamiento.esOfensivo() && !equipamiento.estaRoto()) {
             // Delega la acción de curar al báculo
             equipamiento.accionar(this, aliado);
             this.ataqueRealizado = true; // Curar cuenta como la acción del turno

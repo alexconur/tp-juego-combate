@@ -12,6 +12,8 @@ import org.modelo.equipamiento.TipoBaculo;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Lord;
 import org.modelo.unidades.Unidad;
+import org.modelo.unidades.Tropa;
+
 
 public final class EjercitoLoader {
 
@@ -59,7 +61,7 @@ public final class EjercitoLoader {
         // Usa el factory de Lord para crearlo con stats personalizadas
         u = Lord.crearPersonalizado(nombre, HP, ATK, DEF, MGC, MOV, bando);
       } else {
-        u = new Unidad(nombre, HP, ATK, DEF, MGC, MOV, bando);
+        u = new Tropa(nombre, HP, ATK, DEF, MGC, MOV, bando);
       }
       
       u.setEquipamiento(eq); // Asigna el equipamiento encontrado
