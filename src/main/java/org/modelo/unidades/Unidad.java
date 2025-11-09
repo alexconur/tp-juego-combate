@@ -98,6 +98,10 @@ public abstract class Unidad {
            // System.out.println(nombre + " pierde su bonus defensivo al ser atacada!");
             this.resetearBonusTemporales();
         }
+
+        if (!estaVivo()) {
+            this.casillaActual.desocupar(); // La unidad ya no está en el tablero
+        }
     }
 
     public void recibirCuracion(int cantCurar) {
