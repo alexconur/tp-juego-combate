@@ -52,7 +52,7 @@ public class Tablero {
 
     // Mueve una unidad de una casilla a otra. 
     public void moverUnidad(Unidad unidad, int nuevaFila, int nuevaColumna)
-        throws CasillaOcupadaException, CasillaIntransitableException {
+            throws CasillaOcupadaException, CasillaIntransitableException {
 
         if (unidad == null) return;
 
@@ -73,13 +73,23 @@ public class Tablero {
 
         // 2. Liberar la casilla actual
         Casilla origen = unidad.getCasillaActual();
-        if (origen != null) origen.desocupar();
+        if (origen != null) {
+            origen.desocupar();
+
+            // ✅ Limpio bonus del terreno anterior (evita stacking)
+            unidad.resetearBonusTemporales();
+        }
 
         // 3. Mover la unidad a la nueva posición
         destino.ocupar(unidad);
         unidad.setCasillaActual(destino);
+
+        // ✅ Aplicar efectos inmediatos
+        destino.aplicarEfectoAlEntrar(unidad);      // castillo, etc.
+        destino.aplicarEfectoDePosicion(unidad);    // bosque: +ATK/+MGC al instante
     }
 
+    
     // Devuelve las casillas vecinas (en las 8 direcciones posibles)
     // que están dentro de los límites del tablero.
     private List<Casilla> obtenerVecinos(Casilla c) {
