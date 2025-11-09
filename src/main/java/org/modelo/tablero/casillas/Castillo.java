@@ -9,11 +9,15 @@ public class Castillo extends Casilla {
     public static String codigo() { return "FO"; }
 
     public Castillo(int fila, int columna) {
-        super(fila, columna, null, (unidad, casilla) -> {
-                  unidad.recibirCuracion(CURACION_FUERTE);
-                  unidad.aplicarBonusDefTemporal(BONUS_DEFENSA);
-                  System.out.println(unidad.getNombre() + " se cura " + CURACION_FUERTE + " HP en el fuerte.");
-              }, null);
+        super(fila, columna, null,
+            (unidad, casilla, bandoActual) -> {
+                // Esto siempre se aplica. No importa de quién es el turno
+                unidad.recibirCuracion(CURACION_FUERTE);
+                unidad.aplicarBonusDefTemporal(BONUS_DEFENSA);
+                System.out.println(unidad.getNombre()
+                    + " se cura " + CURACION_FUERTE + " HP en el fuerte.");
+            },
+            null);
     }
 
     @Override

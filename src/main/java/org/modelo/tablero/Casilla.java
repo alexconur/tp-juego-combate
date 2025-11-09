@@ -6,6 +6,7 @@ import org.modelo.tablero.casillas.EfectoFinDeTurno;
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
 import org.modelo.tablero.excepciones.CasillaOcupadaException;
 import org.modelo.unidades.Unidad;
+import org.modelo.unidades.Bando;
 
 public abstract class Casilla {
     // Atributos
@@ -69,9 +70,9 @@ public abstract class Casilla {
         return unidadQueSeVa;
     }
 
-    public void notificarFinDeTurno() {
+    public void notificarFinDeTurno(Bando bandoActual) {
         if (ocupante != null && efectoFinDeTurno != null) {
-            efectoFinDeTurno.aplicar(ocupante, this);
+            efectoFinDeTurno.aplicar(ocupante, this, bandoActual);
         }
     }
 

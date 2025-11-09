@@ -157,7 +157,7 @@ public class Juego {
         for (int i = 0; i < tablero.getFilas(); i++) {
             for (int j = 0; j < tablero.getColumnas(); j++) {
                 Casilla c = tablero.getCasilla(i, j);
-                if (c != null) c.notificarFinDeTurno();   // *M* A chequear si va acá o en prepararUnidadesFinTurno, o si se puede hacer mejor
+                if (c != null) c.notificarFinDeTurno(bandoActual);   // *M* A chequear si va acá o en prepararUnidadesFinTurno, o si se puede hacer mejor
             }
         }
     }

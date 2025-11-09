@@ -9,11 +9,14 @@ public class AreaContaminada extends Casilla {
 
     public AreaContaminada(int fila, int columna) {
         super(fila, columna, null,
-              (unidad, casilla) -> {
-                  unidad.recibirDanio(HP_DISMINUIDO);
-                  System.out.println(unidad.getNombre() + " recibió daño " + HP_DISMINUIDO + " en Area Contaminada.");
-              },
-              null);
+      (unidad, casilla, bandoActual) -> {
+          if (unidad.getBando() == bandoActual) {
+              unidad.recibirDanio(HP_DISMINUIDO);
+              System.out.println(unidad.getNombre()
+                + " recibió daño " + HP_DISMINUIDO + " en Área Contaminada.");
+          }
+      },
+      null);
     }
 
     @Override
