@@ -76,7 +76,7 @@ public class Tablero {
         if (origen != null) {
             origen.desocupar();
 
-            // ✅ Limpio bonus del terreno anterior (evita stacking)
+            //Limpio bonus del terreno anterior (evita stacking)
             unidad.resetearBonusTemporales();
         }
 
@@ -84,9 +84,9 @@ public class Tablero {
         destino.ocupar(unidad);
         unidad.setCasillaActual(destino);
 
-        // ✅ Aplicar efectos inmediatos
-        destino.aplicarEfectoAlEntrar(unidad);      // castillo, etc.
-        destino.aplicarEfectoDePosicion(unidad);    // bosque: +ATK/+MGC al instante
+        //Aplicar efectos inmediatos
+        destino.aplicarEfectoAlEntrar(unidad);     
+        destino.aplicarEfectoDePosicion(unidad);   
     }
 
     

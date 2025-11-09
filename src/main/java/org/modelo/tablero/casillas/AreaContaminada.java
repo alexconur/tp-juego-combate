@@ -12,8 +12,7 @@ public class AreaContaminada extends Casilla {
       (unidad, casilla, bandoActual) -> {
           if (unidad.getBando() == bandoActual) {
               unidad.recibirDanio(HP_DISMINUIDO);
-              System.out.println(unidad.getNombre()
-                + " recibió daño " + HP_DISMINUIDO + " en Área Contaminada.");
+              // System.out.println(unidad.getNombre() + " recibió daño " + HP_DISMINUIDO + " en Área Contaminada.");
           }
       },
       null);

@@ -95,7 +95,7 @@ public abstract class Unidad {
         }
         // Se pierde el bonus defensivo
         if (this.bonusDefTemporal > 0) {
-            System.out.println(nombre + " pierde su bonus defensivo al ser atacada!");
+           // System.out.println(nombre + " pierde su bonus defensivo al ser atacada!");
             this.resetearBonusTemporales();
         }
     }
@@ -134,7 +134,7 @@ public abstract class Unidad {
         // Si descansó el turno pasado, aplico el bonus de descanso recién ahora
         if (this.descansoTurno) {
             this.aplicarBonusDefTemporal(BONUS_DEF_DESCANSO);
-            System.out.println(nombre + " recibe +" + BONUS_DEF_DESCANSO + " DEF por descansar el turno anterior.");
+            // System.out.println(nombre + " recibe +" + BONUS_DEF_DESCANSO + " DEF por descansar el turno anterior.");
         }
 
         // Resetear acciones

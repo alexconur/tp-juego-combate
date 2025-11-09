@@ -127,7 +127,7 @@ public class Juego {
 
         this.numeroTurno++;
 
-        System.out.println("--- Turno del " + bandoActual + " ---");
+        // System.out.println("--- Turno del " + bandoActual + " ---");
         System.out.flush();
 
         // Preparar unidades del NUEVO bando
