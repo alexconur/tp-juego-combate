@@ -1,13 +1,11 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.FabricaCasillas;
 
 public class Enredadera extends Casilla {
 
-    static {
-        FabricaCasillas.getInstancia().registrarTipoCasilla("EN", Enredadera::new);
-    }
+    public static String codigo() { return "EN"; }
+
 
     public Enredadera(int fila, int columna) {
         super(fila, columna, null, null, null);

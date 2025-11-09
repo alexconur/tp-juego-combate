@@ -1,14 +1,11 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.FabricaCasillas;
 
 public class AreaContaminada extends Casilla {
     private static final int HP_DISMINUIDO = 5;  // Valor hipotético
 
-    static {
-        FabricaCasillas.getInstancia().registrarTipoCasilla("AR", AreaContaminada::new);
-    }
+    public static String codigo() { return "AR"; }
 
     public AreaContaminada(int fila, int columna) {
         super(fila, columna, null,

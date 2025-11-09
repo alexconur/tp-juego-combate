@@ -16,6 +16,7 @@ import org.controlador.Controlador;
 import org.modelo.Juego;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.FabricaCasillas;
+import org.modelo.tablero.RegistroDeCasillas;
 import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
@@ -26,6 +27,7 @@ import org.vista.tipos.VistaInicio;
 public class ControladorInicio implements Controlador {
     private final Juego juego;
     private final VistaInicio vInicio;
+    private final CargadorDeDatos cargador;
     private final Scanner scanner = new Scanner(System.in);
 
     private String mapaPath, ejercitoPath;
@@ -33,6 +35,18 @@ public class ControladorInicio implements Controlador {
     public ControladorInicio(Juego juego, VistaInicio vInicio) {
         this.juego = juego;
         this.vInicio = vInicio;
+
+        EstrategiaFactory estrategiaFactory = new EstrategiaDefault();
+        EquipamientoFactory equipamientoFactory = new EquipamientoDefault(estrategiaFactory);
+        UnidadFactory unidadFactory = new UnidadDefault();
+        EjercitoLoader ejercitoLoader = new EjercitoLoader(unidadFactory, equipamientoFactory);
+
+        FabricaCasillas fabricaCasillas = new FabricaCasillas();
+        RegistroDeCasillas.registrarTodo(fabricaCasillas);
+
+        MapaLoader mapaLoader = new MapaLoader(fabricaCasillas);
+
+        this.cargador = new CargadorDeDatos(ejercitoLoader, mapaLoader);
     }
 
     public void ejecutar() {
@@ -41,17 +55,6 @@ public class ControladorInicio implements Controlador {
         VistaInicio.Selecciones sel = vInicio.seleccionarArchivos();
         mapaPath = sel.getMapaPath();
         ejercitoPath = sel.getEjercitoPath();
-
-        EstrategiaFactory estrategiaFactory = new EstrategiaDefault();
-        EquipamientoFactory equipamientoFactory = new EquipamientoDefault(estrategiaFactory);
-        UnidadFactory unidadFactory = new UnidadDefault();
-
-        EjercitoLoader ejercitoLoader = new EjercitoLoader(unidadFactory, equipamientoFactory);
-
-        FabricaCasillas fabricaCasillas = FabricaCasillas.getInstancia();
-        MapaLoader mapaLoader = new MapaLoader(fabricaCasillas);
-
-        CargadorDeDatos cargador = new CargadorDeDatos(ejercitoLoader, mapaLoader);
 
         Tablero tablero = cargador.cargarMapa(mapaPath);
         juego.reemplazarTablero(tablero);

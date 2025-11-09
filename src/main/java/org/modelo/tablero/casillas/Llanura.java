@@ -1,12 +1,9 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.FabricaCasillas;
 
 public class Llanura extends Casilla {
-    static {
-        FabricaCasillas.getInstancia().registrarTipoCasilla("LL", Llanura::new);
-    }
+    public static String codigo() { return "LL"; }
 
     public Llanura(int fila, int columna) {
         super(fila, columna, null, null, null);

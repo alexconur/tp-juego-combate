@@ -1,13 +1,10 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.FabricaCasillas;
 
 public class Pantano extends Casilla {
 
-    static {
-        FabricaCasillas.getInstancia().registrarTipoCasilla("PA", Pantano::new);
-    }
+    public static String codigo() { return "PA"; }
 
     public Pantano(int fila, int columna) {
         super(fila, columna, null,null, 

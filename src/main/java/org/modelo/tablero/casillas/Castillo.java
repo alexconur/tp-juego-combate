@@ -1,15 +1,12 @@
 package org.modelo.tablero.casillas;
 
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.FabricaCasillas;
 
 public class Castillo extends Casilla {
     private static final int CURACION_FUERTE = 10; // Valor hipotético
     private static final int BONUS_DEFENSA = 5;  // Valor hipotético
 
-    static {
-        FabricaCasillas.getInstancia().registrarTipoCasilla("FO", Castillo::new);
-    }
+    public static String codigo() { return "FO"; }
 
     public Castillo(int fila, int columna) {
         super(fila, columna, null, (unidad, casilla) -> {
