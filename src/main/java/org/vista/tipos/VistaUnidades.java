@@ -119,9 +119,15 @@ public class VistaUnidades {
         // Mostrar equipamiento
         Equipamiento eq = u.getEquipamiento();
         if (eq != null) {
+            String rangoDisplay;
+            if (eq.esOfensivo()) {
+                rangoDisplay = String.valueOf(eq.getRango());
+            } else {
+                rangoDisplay = "Todos los aliados";
+            }
             System.out.printf("║ %-12s %-26s ║%n", "Arma:", eq.getNombre());            
             System.out.printf("║   %-10s %-26s ║%n", "Ofensivo: ", (eq.esOfensivo() ? "Sí" : "No"));
-            System.out.printf("║   %-10s %-26s ║%n", "Rango: ", eq.getRango());
+            System.out.printf("║   %-10s %-26s ║%n", "Rango: ", rangoDisplay);
             System.out.printf("║   %-10s %-26s ║%n", "Usos restantes: ", + eq.getUsosRestantes());
         } else {
             System.out.printf("║ %-12s (ninguno)%-15s ║%n", "Arma:", "");
