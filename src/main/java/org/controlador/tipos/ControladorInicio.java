@@ -1,5 +1,6 @@
 package org.controlador.tipos;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +22,9 @@ import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.Colores;
+import org.vista.TableroRenderer;
+import org.vista.tipos.SeleccionesInicio;
+import org.vista.tipos.UbicacionInicio;
 import org.vista.tipos.VistaInicio;
 
 
@@ -52,7 +56,7 @@ public class ControladorInicio implements Controlador {
     public void ejecutar() {
         vInicio.mostrar();
 
-        VistaInicio.Selecciones sel = vInicio.seleccionarArchivos();
+        SeleccionesInicio sel = vInicio.seleccionarArchivos();
         mapaPath = sel.getMapaPath();
         ejercitoPath = sel.getEjercitoPath();
 
@@ -72,7 +76,6 @@ public class ControladorInicio implements Controlador {
         faseDeDespliegue(bandoJ2, tablero);
         
         System.out.println("\n¡Todo listo para la batalla!");
-        // (Pausa para que el jugador lea antes de que ControladorTurno limpie la pantalla)
         System.out.println("Presione Enter para continuar...");
         scanner.nextLine();
     }
@@ -86,21 +89,18 @@ public class ControladorInicio implements Controlador {
         
         boolean posicionadoConExito = false;
         while (!posicionadoConExito) {
-            // Mostramos el tablero ANTES de pedir la ubicación
-            vInicio.mostrarTablero(tablero, bando);
-            VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionLord(bando, tablero.getFilas(), tablero.getColumnas());
+            String tableroStr = TableroRenderer.render(tablero, bando);
+            vInicio.mostrarTablero(tableroStr);
+            UbicacionInicio ubi = vInicio.pedirUbicacionLord(bando, tablero.getFilas(), tablero.getColumnas());
             
             Casilla c = tablero.getCasilla(ubi.getFila(), ubi.getColumna());
             
-            // Validamos que la casilla sea transitable y no esté ocupada
             if (c != null && c.esTransitable() && !c.estaOcupada()) {
                 juego.desplegarUnidad(lord, ubi.getFila(), ubi.getColumna());
                 System.out.println("✔ Lord " + lord.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
                 posicionadoConExito = true;
-                break; // Salimos del bucle si el despliegue es exitoso
+                break; 
             }
-            
-            // Si llegamos aquí, la ubicación no fue válida
             System.out.println(Colores.WARNING + "¡Ubicación inválida! La casilla no es transitable o está ocupada." + Colores.RESET);
         }
     }
@@ -118,24 +118,50 @@ public class ControladorInicio implements Controlador {
                     break;
                 }
     
-                // 1. Mostrar tablero y pedir unidad
-                vInicio.mostrarTablero(tablero, bando);
-                Unidad unidadADesplegar = vInicio.seleccionarUnidadDeReserva(bando, enReserva);
+                String tableroStr = TableroRenderer.render(tablero, bando);
+                vInicio.mostrarTablero(tableroStr);
+                Unidad unidadADesplegar = null;
+
+                if (enReserva.isEmpty()) {
+                    System.out.println("No hay más unidades en la reserva.");
+                    
+                } else {
+                    String bandoNombre = bando.toString();
+                    String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+
+                    List<String> nombresUnidades = new ArrayList<>();
+                    List<String> equipsUnidades = new ArrayList<>();
+                    
+                    for (Unidad u : enReserva) {
+                        nombresUnidades.add(u.getNombre());
+                        String eq;
+                        if (u.getEquipamiento() != null) {
+                            eq = u.getEquipamiento().getNombre();
+                        } else {
+                            eq = "Puño limpio";
+                        }
+                        equipsUnidades.add(eq);
+                    }
+                    int idx = vInicio.seleccionarUnidadDeReserva(bandoNombre, bandoColor, nombresUnidades, equipsUnidades);
+                    if (idx == 0) {
+                        unidadADesplegar = null;
+                    } else {
+                        unidadADesplegar = enReserva.get(idx - 1);
+                    }
+                }
     
                 if (unidadADesplegar == null) {
                     System.out.println("Terminando fase de despliegue para " + bando);
-                    break; // El jugador eligió [0] Terminar
+                    break;
                 }
     
-                // 2. Pedir ubicación
-                VistaInicio.Ubicacion ubi = vInicio.pedirUbicacionUnidad(unidadADesplegar, bando, tablero.getFilas(), tablero.getColumnas());
-                
-                // 3. Intentar desplegar (Juego.desplegarUnidad ahora valida adyacencia)
+                String nombreUnidad = unidadADesplegar.getNombre();
+                String bandoNombre = bando.toString();
+                String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+                UbicacionInicio ubi = vInicio.pedirUbicacionUnidad(nombreUnidad, bandoNombre, bandoColor, tablero.getFilas(), tablero.getColumnas());
                 boolean desplegada = juego.desplegarUnidad(unidadADesplegar, ubi.getFila(), ubi.getColumna());
     
                 if (desplegada) {
-                    // 4. Preguntar por modo Oculto
-                    // (Se comprueba el tipo de terreno sin usar instanceof)
                     Casilla c = tablero.getCasilla(ubi.getFila(), ubi.getColumna());
                     if (c != null && c.permiteEmboscada()) {
                         
@@ -148,9 +174,7 @@ public class ControladorInicio implements Controlador {
 
                     System.out.println("✔ " + unidadADesplegar.getNombre() + " desplegado en (" + ubi.getFila() + "," + ubi.getColumna() + ").");
                 } else {
-                    // El despliegue falló (Juego.java ya imprimió el error)
                     System.out.println(Colores.WARNING + "Despliegue fallido. Intente en otra casilla." + Colores.RESET);
-                    // La unidad no se quita de la reserva, el bucle principal se repite
                 }
             }
         }

@@ -10,33 +10,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
-import org.modelo.unidades.Unidad;
 import org.vista.Colores;
-import org.vista.TableroRenderer;
 
 public class VistaInicio {
-
-    public static class Selecciones {
-        private final String mapaPath;
-        private final String ejercitoPath;
-
-        public Selecciones(String mapaPath, String ejercitoPath) {
-            this.mapaPath = mapaPath;
-            this.ejercitoPath = ejercitoPath;
-        }
-        public String getMapaPath() { return mapaPath; }
-        public String getEjercitoPath() { return ejercitoPath; }
-    }
-
-    public static class Ubicacion {
-        private final int fila;
-        private final int columna;
-        public Ubicacion(int fila, int columna) { this.fila = fila; this.columna = columna; }
-        public int getFila() { return fila; }
-        public int getColumna() { return columna; }
-    }
 
     private final Scanner in = new Scanner(System.in);
 
@@ -52,7 +29,7 @@ public void mostrar() {
         System.out.println();
     }
 
-    public Selecciones seleccionarArchivos() {
+    public SeleccionesInicio seleccionarArchivos() {
         String mapa = pedirArchivo("Mapa", DIR_MAPAS);
         String ejercito = pedirArchivo("Ejército", DIR_EJERCITOS);
 
@@ -61,11 +38,11 @@ public void mostrar() {
         System.out.printf("║ %-10s %-27s ║%n", "Ejército:", ejercito);
         System.out.println("╚══════════════════════════════════════════╝");
 
-        return new Selecciones(mapa, ejercito);
+        return new SeleccionesInicio(mapa, ejercito);
     }
 
     // --- pide Fila/Columna dentro del rango [0..filas-1], [0..columnas-1] ---
-    public Ubicacion pedirUbicacionLord(Bando bando, int filas, int columnas) {
+    public UbicacionInicio pedirUbicacionLord(Bando bando, int filas, int columnas) {
 
         String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
         String bandoNombre = bando.toString();
@@ -79,14 +56,11 @@ public void mostrar() {
 
         int f = leerEnteroEnRango("Fila", 0, filas - 1);
         int c = leerEnteroEnRango("Columna", 0, columnas - 1);
-        
-        return new Ubicacion(f, c);
+
+        return new UbicacionInicio(f, c);
     }
 
-    public Ubicacion pedirUbicacionUnidad(Unidad unidad, Bando bando, int filas, int columnas) {
-        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
-        String bandoNombre = bando.toString();
-        String nombreUnidad = unidad.getNombre();
+    public UbicacionInicio pedirUbicacionUnidad(String nombreUnidad, String bandoNombre, String bandoColor, int filas, int columnas) {
 
         System.out.println("\n╔════════════ POSICIONAR UNIDAD ════════════╗");
         System.out.printf("║ Jugador: %s%-31s%s  ║%n", bandoColor, bandoNombre, Colores.RESET);
@@ -100,37 +74,35 @@ public void mostrar() {
 
         int f = leerEnteroEnRango("Fila", 0, filas - 1);
         int c = leerEnteroEnRango("Columna", 0, columnas - 1);
-        
-        return new Ubicacion(f, c);
+
+        return new UbicacionInicio(f, c);
     }
 
-    // Muestra las unidades en reserva y permite al jugador seleccionar una, o 0 para terminar la fase.
-    public Unidad seleccionarUnidadDeReserva(Bando bando, List<Unidad> unidades) {
-        if (unidades.isEmpty()) {
-            System.out.println("No hay más unidades en la reserva.");
-            return null;
-        }
+    public int seleccionarUnidadDeReserva(String bandoNombre, String bandoColor, List<String> nombresUnidades, List<String> equipsUnidades) {
         
-        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
-        String bandoNombre = bando.toString();
-        
-        System.out.println("\n╔═══ DESPLEGAR UNIDADES DE RESERVA ═══╗");
-        System.out.printf("║ JUGADOR: %s%-24s%s ║%n", bandoColor, bandoNombre, Colores.RESET);
-        System.out.println("║─────────────────────────────────────║");
-        System.out.println("║ [0] TERMINAR FASE DE DESPLIEGUE     ║");
-        
-        int i = 1;
-        for (Unidad u : unidades) {
-            // Mostramos el equipamiento para ayudar a decidir
-            String eq = (u.getEquipamiento() != null) ? u.getEquipamiento().getNombre() : "Puño limpio";
-            String linea = String.format("[%d] %-15s (%s)", i++, u.getNombre(), eq);
-            System.out.printf("║ %s%-35s%s ║%n", bandoColor, linea, Colores.RESET);
-        }
-        System.out.println("╚═════════════════════════════════════╝");
+            System.out.println("\n╔═══ DESPLEGAR UNIDADES DE RESERVA ═══╗");
+            System.out.printf("║ JUGADOR: %s%-24s%s ║%n", bandoColor, bandoNombre, Colores.RESET);
+            System.out.println("║─────────────────────────────────────║");
+            System.out.println("║ [0] TERMINAR FASE DE DESPLIEGUE     ║");
+            
+            int i = 1;
+            // Iteramos usando un índice numérico para acceder a ambas listas
+            for (int j = 0; j < nombresUnidades.size(); j++) {
+                // Obtenemos los datos de las listas
+                String nombre = nombresUnidades.get(j);
+                String equip = equipsUnidades.get(j);
                 
-        int idx = leerEnteroEnRango("Opción", 0, unidades.size());
-        if (idx == 0) return null; // [0] TERMINAR FASE
-        return unidades.get(idx - 1);
+                // La VISTA se encarga de su propio formateo
+                String linea = String.format("[%d] %-15s (%s)", i++, nombre, equip);
+                
+                System.out.printf("║ %s%-35s%s ║%n", bandoColor, linea, Colores.RESET);
+            }
+            System.out.println("╚═════════════════════════════════════╝");
+                    
+            // El rango es 0 o hasta el total de unidades
+            int idx = leerEnteroEnRango("Opción", 0, nombresUnidades.size());
+            
+            return idx; 
     }
 
     public boolean pedirConfirmacion(String prompt) {
@@ -211,8 +183,9 @@ public void mostrar() {
         }
     }
 
-    public void mostrarTablero(Tablero tablero, Bando bandoActual) {
+    // Este método ya NO depende del Modelo (Tablero, Bando)
+    public void mostrarTablero(String tableroRenderizado) {
         System.out.println("\n=== TABLERO ===");
-        System.out.println(TableroRenderer.render(tablero, bandoActual));
+        System.out.println(tableroRenderizado);
     }
 }

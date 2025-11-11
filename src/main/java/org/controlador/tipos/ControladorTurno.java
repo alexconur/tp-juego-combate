@@ -1,13 +1,27 @@
 package org.controlador.tipos;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import org.controlador.Controlador;
-import org.controlador.acciones.*;
+import org.controlador.acciones.Accion;
+import org.controlador.acciones.AccionActuar;
+import org.controlador.acciones.AccionDesplegar;
+import org.controlador.acciones.AccionEmboscada;
+import org.controlador.acciones.AccionInfoCasillas;
+import org.controlador.acciones.AccionMover;
+import org.controlador.acciones.AccionRendirse;
+import org.controlador.acciones.AccionTerminarTurno;
+import org.controlador.acciones.AccionVerUnidades;
 import org.modelo.Juego;
+import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
+import org.modelo.unidades.Unidad;
+import org.vista.Colores;
+import org.vista.TableroRenderer;
 import org.vista.tipos.VistaTurno;
 
 public class ControladorTurno implements Controlador {
@@ -24,7 +38,6 @@ public class ControladorTurno implements Controlador {
         this.acciones = new HashMap<>();
     }
 
-    //Inicializa el mapa de acciones para el bando que tiene el turno.
     private void inicializarAcciones(Bando bandoActual) {
         acciones.clear();
         acciones.put(1, new AccionMover(juego, vTurno, bandoActual));
@@ -41,16 +54,18 @@ public class ControladorTurno implements Controlador {
     public void ejecutar() {
         System.out.println("\n=== ¡COMIENZA EL COMBATE! ===");
 
-        // Bucle principal del juego
         while (!juego.isGameOver()) {
             Bando bandoActual = juego.getBandoActual();
             inicializarAcciones(bandoActual);
 
-            // Bucle de acciones para el jugador actual
             boolean turnoActivo = true;
             while (turnoActivo) {
                 vTurno.limpiarPantalla();
-                vTurno.mostrarEstado(juego);
+                Tablero tablero = juego.getTablero();
+                int numeroTurno = juego.getNumeroTurno();
+                List<Unidad> unidadesEnTablero = juego.getTodasUnidadesEnTablero();
+                boolean isGameOver = juego.isGameOver();
+                refrescarVistaEstadoJuego(tablero, bandoActual, numeroTurno, unidadesEnTablero, isGameOver);
             
                 int opcion = vTurno.mostrarMenuPrincipal();
                 boolean necesitaPausa = false;
@@ -71,7 +86,6 @@ public class ControladorTurno implements Controlador {
                 }
             }
             
-            // Cambiar de turno
             if (!juego.isGameOver()) {
                 juego.cambiarTurno();
             } else {
@@ -81,8 +95,42 @@ public class ControladorTurno implements Controlador {
         }
         
         System.out.println("=== FIN DE LA PARTIDA ===");
-        vTurno.mostrarEstado(juego); // Mostrar estado final
-    }    
+        Tablero tablero = juego.getTablero();
+        Bando bandoActual = juego.getBandoActual();
+        int numeroTurno = juego.getNumeroTurno();
+        List<Unidad> unidadesEnTablero = juego.getTodasUnidadesEnTablero();
+        refrescarVistaEstadoJuego(tablero, bandoActual, numeroTurno, unidadesEnTablero, true);
+    }
+
+    private void refrescarVistaEstadoJuego(Tablero tablero, Bando bandoActual, int numeroTurno, List<Unidad> unidadesEnTablero, boolean isGameOver) {
+        String bandoNombre = bandoActual.toString();
+        String bandoColor = (bandoActual == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+
+        String tableroStr = TableroRenderer.render(tablero, bandoActual);
+
+        List<String> lineasDeUnidad = new ArrayList<>();
+        List<String> coloresUnidad = new ArrayList<>();
+
+        for (Unidad u : unidadesEnTablero) {
+            String bando = u.getBando().toString().substring(6, 12);
+            String pos = (u.getCasillaActual() != null) ? 
+                         "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")" : "(RESERVA)";
+            String hp = u.getHp() + "/" + u.getMaxHp() + " HP";
+            String estado = (u.estaVivo() ? hp : "MUERTO");
+            String acciones = "[Mov: " + (u.puedeMoverse() ? "SI" : "NO") + ", Act: " + (u.puedeActuar() ? "SI" : "NO") + "]";  
+            String colorBando;
+            if (u.estaVivo()){
+                colorBando = (u.getBando() ==  Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
+            } else {
+                colorBando = Colores.VACIO_U;
+            }
+            String linea = String.format("[%s] %-18s %-10s %-12s %s", bando, u.getNombre(), pos, estado, acciones);
+            lineasDeUnidad.add(linea);
+            coloresUnidad.add(colorBando);
+        }
+
+        this.vTurno.mostrarEstado(isGameOver, numeroTurno, bandoNombre, bandoColor, tableroStr, lineasDeUnidad, coloresUnidad);
+    }
 
     private void pausarParaContinuar(){
         System.out.println("Presione Enter para continuar...");

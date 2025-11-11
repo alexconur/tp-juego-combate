@@ -1,9 +1,11 @@
 package org.controlador.acciones.unidades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelo.Juego;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaUnidades;
-import java.util.List;
 
 public class AccionListarEnTablero implements AccionUnidades {
     private final Juego juego;
@@ -22,7 +24,14 @@ public class AccionListarEnTablero implements AccionUnidades {
         if (unidades.isEmpty()) {
             System.out.println("No hay unidades desplegadas actualmente.");
         } else {
-            vUnidades.mostrarListaUnidades("Unidades desplegadas", unidades);
+            List<String> nombresDesplegadas = new ArrayList<>();
+            List<String> equipsDesplegadas = new ArrayList<>();
+            for (Unidad u : unidades) {
+                nombresDesplegadas.add(u.getNombre());
+                String eq = (u.getEquipamiento() != null) ? u.getEquipamiento().getNombre() : "Puño limpio";
+                equipsDesplegadas.add(eq);
+            }
+            vUnidades.mostrarListaUnidades("Unidades desplegadas", nombresDesplegadas, equipsDesplegadas);
         }
         return true;
     }

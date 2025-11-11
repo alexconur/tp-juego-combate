@@ -1,17 +1,14 @@
 package org.vista.tipos;
 
-import org.modelo.unidades.Unidad;
-import org.vista.Colores;
-import org.modelo.equipamiento.Equipamiento;
-
 import java.util.List;
 import java.util.Scanner;
+
+import org.vista.Colores;
 
 public class VistaUnidades {
 
     private final Scanner sc = new Scanner(System.in);
 
-    // Menú principal
     public int mostrarMenuPrincipal() {
         System.out.println("\n╔══════════ MENÚ DE UNIDADES ══════════╗");
         System.out.println("║ [1] Ver unidades desplegadas         ║");
@@ -23,121 +20,170 @@ public class VistaUnidades {
         return leerEnteroEnRango("Opción", 0, 3);
     }
 
-    // Mostrar lista de unidades (en tablero o reserva)
-    public void mostrarListaUnidades(String titulo, List<Unidad> unidades) {
+    public void mostrarListaUnidades(String titulo, List<String> nombres, List<String> equipos) {
 
-        String tituloCaja = String.format(" %S ", titulo); // %S lo pone en mayúsculas
-        // Cuadro UNIDADES EN RESERVA
+        String tituloCaja = String.format(" %S ", titulo);
         System.out.printf("\n╔═════════════════%s════════════════╗\n", tituloCaja);
-        imprimirLineasDeUnidades(unidades, false); // false = no mostrar índices
+        imprimirLineasDeUnidadesSimple(nombres, equipos, false);
+        
         System.out.println("╚══════════════════════════════════════════════════════╝");
-    }      
+    } 
 
-    // Seleccionar unidad de una lista
-    public Unidad seleccionarUnidad(List<Unidad> unidades) {
-        if (unidades.isEmpty()) {
+    public int seleccionarUnidad(
+            List<String> nombres, 
+            List<String> posiciones, 
+            List<String> hps, 
+            List<String> maxHps, 
+            List<String> estados, 
+            List<String> colores) {
+
+        if (nombres.isEmpty()) {
             System.out.println("No hay unidades disponibles.");
-            return null;
+            return 0;
         }
+        
         System.out.println("\n╔══════════════════ SELECCIONAR UNIDAD ════════════════╗");
         System.out.println("║ [0] Cancelar                                         ║");
-        imprimirLineasDeUnidades(unidades, true); // true = mostrar índices [1], [2], ...
-        System.out.println("╚══════════════════════════════════════════════════════╝");
 
-        int opt = leerEnteroEnRango("Opción (0 para cancelar)", 0, unidades.size());
-        return (opt == 0) ? null : unidades.get(opt - 1);
+        imprimirLineasDeUnidadesDetallado(nombres, posiciones, hps, maxHps, estados, colores, true);
+        
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+        int opt = leerEnteroEnRango("Opción (0 para cancelar)", 0, nombres.size());
+        return opt;
     }
 
-    // Refactorizamos la lógica de imprimir la lista de unidades para reusarla en mostrarListaUnidades y seleccionarUnidad.
-    private void imprimirLineasDeUnidades(List<Unidad> unidades, boolean conIndices) {
-        if (unidades.isEmpty()) {
+    private void imprimirLineasDeUnidadesSimple(List<String> nombres, List<String> equips, boolean conIndices) {
+        if (nombres.isEmpty()) {
             System.out.println("║ (vacío)                                              ║");
             return;
         }
 
         int i = 1;
-        for (Unidad u : unidades) {
-            String pos = (u.getCasillaActual() != null)
-                    ? "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")"
-                    : "(reserva)";
-            String estado = (u.estaVivo() ? "VIVO" : "MUERTO");
+        // Iteramos sobre las listas usando un índice
+        for (int j = 0; j < nombres.size(); j++) {
             
-            String color = (u.estaVivo()) ? Colores.colorParaBando(u.getBando()) : Colores.VACIO_U;
+            String nombre = nombres.get(j);
+            String equip = equips.get(j);
+
+            // Formato de la VISTA (simple)
+            String linea = String.format("%-15s (%s)", nombre, equip);
+            
+            if (conIndices) {
+                linea = String.format("[%d] %s", i++, linea);
+            } else {
+                linea = "  · " + linea; // Formato para lista simple
+            }
+            
+            // Ajusta el padding para que coincida con el ancho de tu caja (54 caracteres)
+            System.out.printf("║ %-50s ║%n", linea);
+        }
+    }
+
+    private void imprimirLineasDeUnidadesDetallado(
+            List<String> nombres, 
+            List<String> posiciones, 
+            List<String> hps, 
+            List<String> maxHps, 
+            List<String> estados, 
+            List<String> colores, // Colores pre-calculados por el controlador
+            boolean conIndices) {
+
+        if (nombres.isEmpty()) { // Comprobamos con la lista de nombres
+            System.out.println("║ (vacío)                                              ║");
+            return;
+        }
+
+        int i = 1;
+        // Usamos un loop por índice para acceder a todas las listas paralelas
+        for (int j = 0; j < nombres.size(); j++) {
+            
+            // Obtenemos los datos de las listas (todos son Strings)
+            String nombre = nombres.get(j);
+            String pos = posiciones.get(j);
+            String hp = hps.get(j);
+            String maxHp = maxHps.get(j);
+            String estado = estados.get(j);
+            String color = colores.get(j); // El controlador ya resolvió el color
+
+            // --- El resto de tu lógica de formateo es idéntica ---
+            
             String prefijo = (conIndices) ? String.format("[%d] ", i++) : "";
             
             // Formateamos la línea
             String linea = String.format("%s%-18s %-10s %s/%s HP [%s]",
-                    prefijo, u.getNombre(), pos, u.getHp(), u.getMaxHp(), estado);
+                    prefijo, nombre, pos, hp, maxHp, estado);
             
             // Imprimimos dentro de la caja con padding
+            // (Asumiendo que 'Colores.RESET' es una constante estática en tu clase Vista)
             System.out.printf("║ %s%-52s%s ║%n", color, linea, Colores.RESET);
         }
     }
 
-    // Muestra las unidades vivas de una lista y permite seleccionar una
-    public Unidad seleccionarUnidadViva(List<Unidad> unidades) {
-        List<Unidad> vivas = unidades.stream()
-                .filter(Unidad::estaVivo)
-                .toList();
+    public int seleccionarUnidadSimple(List<String> lineasDeInfo, List<String> colores) {
+        
+        System.out.println("\n╔══════════════════ SELECCIONAR UNIDAD ════════════════╗");
+        System.out.println("║ [0] Cancelar                                         ║");
 
-        if (vivas.isEmpty()) {
-            System.out.println("No hay unidades vivas en el tablero.");
-            return null;
+        // --- Bucle de impresión simple ---
+        // La vista solo se encarga de agregar el índice "[1]", "[2]", etc.
+        int i = 1;
+        for (int j = 0; j < lineasDeInfo.size(); j++) {
+            
+            String color = colores.get(j);
+            String prefijo = String.format("[%d] ", i++);
+            
+            // Concatena el índice "[1] " con la línea de info "Nombre (0,0)..."
+            String lineaCompleta = prefijo + lineasDeInfo.get(j); 
+
+            // Imprime la línea (ajusta el -52 si tu prefijo cambia el ancho)
+            System.out.printf("║ %s%-52s%s ║%n", color, lineaCompleta, Colores.RESET);
         }
-
-        return seleccionarUnidad(vivas);
+        // --- Fin del bucle ---
+        
+        System.out.println("╚══════════════════════════════════════════════════════╝");
+        
+        int opt = leerEnteroEnRango("Opción (0 para cancelar)", 0, lineasDeInfo.size());
+        return opt;
     }
 
-    // Mostrar detalle completo de una unidad
-    public void mostrarDetalleUnidad(Unidad u) {
-        if (u == null) {
+    public void mostrarDetalleUnidad(
+        String nombre, String bando, String pos, String hp, String maxHp, 
+        String atk, String def, String mgc, String movRestante, String movTotal,
+        String eqNombre, String eqOfensivo, String eqRango, String eqUsos,
+        String estadoCompleto) {
+
+        if (nombre == null || nombre.isEmpty()) {
             System.out.println("Unidad inválida.");
             return;
         }
-        
-        String estado = u.estaVivo() ? "Vivo" : "Muerto";
-        estado += u.isOculto() ? " (Oculto)" : "";
-        estado += u.isLord() ? " [LORD]" : "";
-
-        String pos = (u.getCasillaActual() != null 
-                ? "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")" 
-                : "Reserva");
-
-        // Ancho de la caja: 42 caracteres
+    
         System.out.println("\n╔═══════════ DETALLE DE UNIDAD ═══════════╗");
-        System.out.printf("║ %-12s %-26s ║%n", "Nombre:", u.getNombre());
-        System.out.printf("║ %-12s %-26s ║%n", "Bando:", u.getBando());
+        System.out.printf("║ %-12s %-26s ║%n", "Nombre:", nombre);
+        System.out.printf("║ %-12s %-26s ║%n", "Bando:", bando);
         System.out.printf("║ %-12s %-26s ║%n", "Posición:", pos);
-        System.out.printf("║ %-12s %-26s ║%n", "HP:", u.getHp() + " / " + u.getMaxHp(), Colores.RESET);
+        System.out.printf("║ %-12s %-26s ║%n", "HP:", hp + " / " + maxHp, Colores.RESET);
         System.out.println("║─────────────────────────────────────────║");
-        System.out.printf("║ %-12s %-26s ║%n", "ATK total:", u.getAtkTotal(), Colores.RESET);
-        System.out.printf("║ %-12s %-26s ║%n", "DEF total:", u.getDef(), Colores.RESET);
-        System.out.printf("║ %-12s %-26s ║%n", "MGC total:", u.getMgcTotal(), Colores.RESET);
-        System.out.printf("║ %-12s %-26s ║%n", "Movimiento:", u.getMovimientoRestante() + "/" + u.getMov());
+        System.out.printf("║ %-12s %-26s ║%n", "ATK total:", atk, Colores.RESET);
+        System.out.printf("║ %-12s %-26s ║%n", "DEF total:", def, Colores.RESET);
+        System.out.printf("║ %-12s %-26s ║%n", "MGC total:", mgc, Colores.RESET);
+        System.out.printf("║ %-12s %-26s ║%n", "Movimiento:", movRestante + "/" + movRestante);
         System.out.println("║─────────────────────────────────────────║");
         
-        // Mostrar equipamiento
-        Equipamiento eq = u.getEquipamiento();
-        if (eq != null) {
-            String rangoDisplay;
-            if (eq.esOfensivo()) {
-                rangoDisplay = String.valueOf(eq.getRango());
-            } else {
-                rangoDisplay = "Todos los aliados";
-            }
-            System.out.printf("║ %-12s %-26s ║%n", "Arma:", eq.getNombre());            
-            System.out.printf("║   %-10s %-26s ║%n", "Ofensivo: ", (eq.esOfensivo() ? "Sí" : "No"));
-            System.out.printf("║   %-10s %-26s ║%n", "Rango: ", rangoDisplay);
-            System.out.printf("║   %-10s %-26s ║%n", "Usos restantes: ", + eq.getUsosRestantes());
+            
+        if (eqNombre != null && !eqNombre.isEmpty()) {
+            System.out.printf("║ %-12s %-26s ║%n", "Arma:", eqNombre);            
+            System.out.printf("║   %-10s %-26s ║%n", "Ofensivo: ", eqOfensivo);
+            System.out.printf("║   %-10s %-26s ║%n", "Rango: ", eqRango);
+            System.out.printf("║   %-10s %-26s ║%n", "Usos restantes: ", eqUsos);
         } else {
             System.out.printf("║ %-12s (ninguno)%-15s ║%n", "Arma:", "");
         }
         
         System.out.println("║─────────────────────────────────────────║");
-        System.out.printf("║ %-12s %-26s ║%n", "Estado:", estado);
+        System.out.printf("║ %-12s %-26s ║%n", "Estado:", estadoCompleto);
         System.out.println("╚═════════════════════════════════════════╝\n");
     }
-    // Método de lectura robusto
+
     private int leerEntero(String prompt) {
         while (true) {
             try {

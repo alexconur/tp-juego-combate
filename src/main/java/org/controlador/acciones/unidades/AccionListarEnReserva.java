@@ -1,9 +1,11 @@
 package org.controlador.acciones.unidades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelo.Juego;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaUnidades;
-import java.util.List;
 
 public class AccionListarEnReserva implements AccionUnidades {
     private final Juego juego;
@@ -22,7 +24,14 @@ public class AccionListarEnReserva implements AccionUnidades {
         if (reserva.isEmpty()) {
             System.out.println("No hay unidades en reserva.");
         } else {
-            vUnidades.mostrarListaUnidades("Unidades en reserva", reserva); 
+            List<String> nombresReserva = new ArrayList<>();
+            List<String> equipsReserva = new ArrayList<>();
+            for (Unidad u : reserva) {
+                nombresReserva.add(u.getNombre());
+                String eq = (u.getEquipamiento() != null) ? u.getEquipamiento().getNombre() : "Puño limpio";
+                equipsReserva.add(eq);
+            }
+            vUnidades.mostrarListaUnidades("Unidades en reserva", nombresReserva, equipsReserva);
         }
         return true;
     }

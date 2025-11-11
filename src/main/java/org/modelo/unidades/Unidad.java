@@ -2,11 +2,9 @@ package org.modelo.unidades;
 
 import org.modelo.equipamiento.Equipamiento;
 import org.modelo.tablero.Casilla;
-import org.modelo.tablero.Tablero; 
+import org.modelo.tablero.Tablero;
 
 public abstract class Unidad {
-    
-    // Atributos
     private String nombre;
     private int hp, maxHp, atk, def, mgc, mov;
     private boolean oculto;
@@ -14,20 +12,15 @@ public abstract class Unidad {
     private Bando bando;
     private boolean esLord;
     private boolean haSidoRevelada = false;
-
-    // Atributos para buffs temporales
     private int bonusAtkTemporal;
     private int bonusDefTemporal;
     private int bonusMgcTemporal;
     private boolean descansoTurno;                       
     private static final int BONUS_DEF_DESCANSO = 3;
-
-    private Casilla casillaActual; // Logica tablero
-
+    private Casilla casillaActual;
     private boolean ataqueRealizado;
     private int movimientoRestante;
 
-    // Constructor
     protected Unidad(String nombre, int hp, int atk, int def, int mgc, int mov, Bando bando) {
         this.nombre=nombre;
         this.hp=hp;
@@ -39,13 +32,10 @@ public abstract class Unidad {
         this.bando=bando;
         this.oculto = false;
         this.esLord = false;
-
-        // --> Las unidades empiezan listas para su primer turno
         this.ataqueRealizado = false;
         this.movimientoRestante = mov;
     }
 
-    // Getters de Estado
     public Bando getBando() { return bando; }
     public String getNombre() { return nombre; }
     public int getHp() { return hp; }
@@ -54,15 +44,27 @@ public abstract class Unidad {
     public int getDef() { return this.def + this.bonusDefTemporal; }
     public Casilla getCasillaActual(){ return casillaActual; }
     public Equipamiento getEquipamiento(){ return equipamiento; }
-    public boolean estaVivo(){ return hp > 0; } // *A* para eliminar del juego a la unidad
+    public int getMovimientoRestante(){ return movimientoRestante; }
+
+    public void setEquipamiento(Equipamiento equipamiento) { this.equipamiento = equipamiento; }
+    public void setCasillaActual(Casilla casilla) { this.casillaActual = casilla; }
+    protected void setEsLord(boolean esLord) { this.esLord = esLord; }
+    public void setOculto(boolean oculto) { this.oculto = oculto; }
+    public void setMovimientoRestante(int mov) { this.movimientoRestante = mov; }
+
+    public boolean estaVivo(){ return hp > 0; }
     public boolean isOculto() { return oculto; }
     public boolean isLord() { return esLord; }
-
-    public int getMovimientoRestante(){ return movimientoRestante; }
     public boolean puedeMoverse(){ return movimientoRestante > 0 && !ataqueRealizado ;}
     public boolean puedeActuar(){ return !ataqueRealizado;}
+    public boolean yaAtaco() { return ataqueRealizado; }
+    public boolean yaSeMovio() { return movimientoRestante < mov; }
+    public boolean puedePrepararEmboscada() { return !this.haSidoRevelada && !this.oculto && !this.yaAtaco() && !this.yaSeMovio(); }
 
-    // Devuelve el ATK total (base + bonus de equipamiento).
+    public void aplicarBonusAtkTemporal(int valor) { this.bonusAtkTemporal += valor; }
+    public void aplicarBonusDefTemporal(int valor) { this.bonusDefTemporal += valor; }
+    public void aplicarBonusMgcTemporal(int valor) { this.bonusMgcTemporal += valor; }
+
     public int getAtkTotal() {
         int total = this.atk + this.bonusAtkTemporal;
         if (equipamiento != null && !equipamiento.estaRoto()) {
@@ -71,7 +73,6 @@ public abstract class Unidad {
         return total;
     }
 
-    //Devuelve el MGC total (base + bonus de equipamiento).
     public int getMgcTotal() {
         int total = this.mgc + this.bonusMgcTemporal;
         if (equipamiento != null && !equipamiento.estaRoto()) {
@@ -80,37 +81,27 @@ public abstract class Unidad {
         return total;
     }
 
-    // Setters
-    public void setEquipamiento(Equipamiento equipamiento) { this.equipamiento = equipamiento; }
-    public void setCasillaActual(Casilla casilla) { this.casillaActual = casilla; }
-    protected void setEsLord(boolean esLord) { this.esLord = esLord; }
-    public void setOculto(boolean oculto) { this.oculto = oculto; } // *X*: lo habia puesto xq a nacho le daba error, pero a mi no me dio ese error...
-    public void setMovimientoRestante(int mov) { this.movimientoRestante = mov; }
-
-    // Metodos al recibir daño o cura
     public void recibirDanio(int cantDanio){
         this.hp -= cantDanio;
         if (this.hp < 0){
             this.hp = 0;
         }
-        // Se pierde el bonus defensivo
         if (this.bonusDefTemporal > 0) {
-           // System.out.println(nombre + " pierde su bonus defensivo al ser atacada!");
             this.resetearBonusTemporales();
         }
 
         if (!estaVivo()) {
-            this.casillaActual.desocupar(); // La unidad ya no está en el tablero
+            this.casillaActual.desocupar(); 
         }
     }
 
     public void recibirCuracion(int cantCurar) {
         this.hp += cantCurar;
-        if (this.hp > this.maxHp) { // No puede curar más de la vida máxima
+        if (this.hp > this.maxHp) {
             this.hp = this.maxHp;
         }
     }
-    // Revela la unidad si estaba oculta. Se llama al moverse o atacar.
+
     public void revelar() {
         if (this.oculto) {
             this.oculto = false;
@@ -118,7 +109,6 @@ public abstract class Unidad {
         }
     }
 
-    // Calcula la distancia a otra unidad
     public int distanciaA(Unidad objetivo) {
         if (this.casillaActual == null || objetivo == null || objetivo.getCasillaActual() == null) {
             return Integer.MAX_VALUE;
@@ -128,42 +118,24 @@ public abstract class Unidad {
         return Math.max(Math.abs(c1.getFila() - c2.getFila()), Math.abs(c1.getColumna() - c2.getColumna()));
     }
 
-    // Resetea los flags de acción al inicio de un nuevo turno.
     public void prepararParaNuevoTurno() {
-
-        // siempre hay q limpiar todos los bonus temporales
-        // Esto borra el DEF del castillo que SOLO debe durar el turno del rival
         this.resetearBonusTemporales();
 
-        // Si descansó el turno pasado, aplico el bonus de descanso recién ahora
         if (this.descansoTurno) {
             this.aplicarBonusDefTemporal(BONUS_DEF_DESCANSO);
-            // System.out.println(nombre + " recibe +" + BONUS_DEF_DESCANSO + " DEF por descansar el turno anterior.");
         }
 
-        // Resetear acciones
         this.ataqueRealizado = false;
         this.movimientoRestante = this.mov;
-
-        // Al iniciar el turno, se considera descansando HASTA que haga algo
         this.descansoTurno = true;
     }
 
-
-    // --- ACCIONES DE LA UNIDAD ---
-    public boolean yaAtaco() { return ataqueRealizado; }
-    public boolean yaSeMovio() { return movimientoRestante < mov; }
-
-    // Ataca a una unidad objetivo. Delega la lógica de cálculo de daño al equipamiento (Strategy).
-        // Si no tiene equipamiento o está roto, ataca "a puño limpio".
     public void atacar(Unidad objetivo) {
         if (!puedeActuar() || this.bando == objetivo.getBando()) {
             return;
         }
-        
-        // Lógica de Puño Limpio (Rango 1)
+
         if (equipamiento == null || !equipamiento.esOfensivo() || equipamiento.estaRoto()) {
-            // Solo puede atacar adyacente
             int dist = this.distanciaA(objetivo);
 
             if (dist > 1) {
@@ -174,43 +146,33 @@ public abstract class Unidad {
             int danio = this.getAtkTotal() - objetivo.getDef();
             objetivo.recibirDanio(Math.max(0, danio));
         } else {
-            // Chequeo de rango del equipamiento
             int dist = this.distanciaA(objetivo);
-            
             if (dist > equipamiento.getRango()) {
-                 System.out.println("El objetivo está fuera de rango del equipamiento (Rango: " + equipamiento.getRango() + ", Dist: " + dist + ")");
-                 return;
+                System.out.println("El objetivo está fuera de rango del equipamiento (Rango: " + equipamiento.getRango() + ", Dist: " + dist + ")");
+                return;
             }
-            
             equipamiento.accionar(this, objetivo);
         }
         
         this.ataqueRealizado = true;
-        this.movimientoRestante = 0; // Atacar consume el movimiento
+        this.movimientoRestante = 0;
         this.revelar();
-        this.descansoTurno = false;          // no descansó
-        this.resetearBonusTemporales();      // pierde bonus temporales al atacar
+        this.descansoTurno = false;
+        this.resetearBonusTemporales();
     }
 
-    // Cura a una unidad aliada. Solo funciona si tiene un Báculo equipado.
     public void curarAliado(Unidad aliado) {
         if (!puedeActuar() || this.bando != aliado.getBando()) {
             return;
         }
 
         if (!equipamiento.esOfensivo() && !equipamiento.estaRoto()) {
-            // Delega la acción de curar al báculo
             equipamiento.accionar(this, aliado);
-            this.ataqueRealizado = true; // Curar cuenta como la acción del turno
+            this.ataqueRealizado = true; 
             this.revelar();
-            this.descansoTurno = false;      // curar también cancela el descanso
+            this.descansoTurno = false;
             this.resetearBonusTemporales();
         }
-    }
-
-    // Emboscada -------------
-    public boolean puedePrepararEmboscada() {
-        return !this.haSidoRevelada && !this.oculto && !this.yaAtaco() && !this.yaSeMovio();
     }
 
     public void prepararEmboscada() {
@@ -220,9 +182,6 @@ public abstract class Unidad {
         }
     }
 
-    public void aplicarBonusAtkTemporal(int valor) { this.bonusAtkTemporal += valor; }
-    public void aplicarBonusDefTemporal(int valor) { this.bonusDefTemporal += valor; }
-    public void aplicarBonusMgcTemporal(int valor) { this.bonusMgcTemporal += valor; }
 
     public void resetearBonusTemporales() {
         this.bonusAtkTemporal = 0;
@@ -230,14 +189,12 @@ public abstract class Unidad {
         this.bonusMgcTemporal = 0;
     }
 
-    // --- MOVIMIENTO EN EL TABLERO ---
     public void moverA(Tablero tablero, int nuevaFila, int nuevaColumna) {
         if (!puedeMoverse()) {
             System.out.println(nombre + " no puede moverse (ya actuó o no tiene movimiento).");
             return;
         }
 
-        // Validación simple de distancia: permite 8 direcciones 
         int dist = Math.max(
             Math.abs(casillaActual.getFila() - nuevaFila), 
             Math.abs(casillaActual.getColumna() - nuevaColumna)
@@ -253,28 +210,17 @@ public abstract class Unidad {
                             ") excede el movimiento restante (" + this.movimientoRestante + ").");
             return;
         }
+        
+        tablero.moverUnidad(this, nuevaFila, nuevaColumna);
 
-        try {
-            
-            // Tablero se encarga de validar el movimiento y de realizarlo
-            tablero.moverUnidad(this, nuevaFila, nuevaColumna);
+        revelar();
+        this.descansoTurno = false;
 
-            // Revelar la unidad (por si estaba oculta)
-            revelar();
-            this.descansoTurno = false;
-
-            // Si tenía bonus defensivo (por haber descansado), lo pierde al moverse
-            if (this.bonusDefTemporal > 0) {
-                System.out.println(nombre + " pierde su bonus defensivo al moverse.");
-                this.resetearBonusTemporales();
-            }
-
-            this.movimientoRestante = 0;
-
-        } catch (org.modelo.tablero.excepciones.CasillaOcupadaException e) {
-            System.out.println("Casilla ocupada: " + e.getMessage());
-        } catch (org.modelo.tablero.excepciones.CasillaIntransitableException e) {
-            System.out.println("Movimiento inválido: " + e.getMessage());
+        if (this.bonusDefTemporal > 0) {
+            System.out.println(nombre + " pierde su bonus defensivo al moverse.");
+            this.resetearBonusTemporales();
         }
+
+        this.movimientoRestante = 0;
     }
 }

@@ -21,7 +21,7 @@ public class Juego {
     private int numeroTurno;
 
     public Juego() {
-        this.tablero = null; // *X*: se reemplaza en ControladorInicio
+        this.tablero = null;
         this.rng = new Random();
         this.bando1EnTablero = new ArrayList<>();
         this.bando1Reserva = new ArrayList<>();
@@ -35,7 +35,6 @@ public class Juego {
     public int getNumeroTurno() { return numeroTurno; }
     public void reemplazarTablero(Tablero nuevo) { this.tablero = nuevo; }
 
-    // Carga las unidades en las reservas
     public void setEjercitos(List<Unidad> unidades) {
         for (Unidad u : unidades) {
             if (u.getBando() == Bando.REINO_DRUIDA) {
@@ -46,8 +45,6 @@ public class Juego {
         }
     }
 
-
-    // agrego las unidades la lista
     public boolean desplegarUnidad(Unidad unidad, int fila, int columna) {
         if (unidad == null || tablero == null) return false;
         
@@ -118,30 +115,18 @@ public class Juego {
 
         aplicarEfectosFinDeTurno();
 
-        prepararUnidadesFinTurno(bandoActual);
-
-        // Cambiar el bando actual
         bandoActual = (bandoActual == Bando.REINO_DRUIDA)
                 ? Bando.REINO_NIGROMANTICO
                 : Bando.REINO_DRUIDA;
 
         this.numeroTurno++;
-
-        // System.out.println("--- Turno del " + bandoActual + " ---");
         System.out.flush();
 
-        // Preparar unidades del NUEVO bando
         for (Unidad u : getUnidadesEnTablero(bandoActual)) {
             u.prepararParaNuevoTurno();
         }
 
-        // Efectos pasivos de posición que se aplican AL COMENZAR el turno
         aplicarBonosDePosicion(bandoActual);
-
-        // Fin del juego
-        if (isGameOver()) {
-            System.out.println("🏁 ¡La partida ha terminado!");
-        }
     }
 
     private Unidad getLordEnTablero(Bando bando) {
@@ -162,29 +147,17 @@ public class Juego {
         }
     }
 
-    private void prepararUnidadesFinTurno(Bando bando) {
-        // *IMPORTANTE*: Llama a prepararParaNuevoTurno al FINAL del turno
-        // for (Unidad u : getUnidadesEnTablero(bando)) {
-        //     if (!u.estaVivo()) continue;
-        //     Casilla c = u.getCasillaActual();          *M* A chequear si esto lo tenemos que sacar o no
-        //     if (c != null) {
-        //         c.notificarFinDeTurno();                   
-        //     }
-        // }
-    }
-
     private void aplicarBonosDePosicion(Bando bando) {
         for (Unidad u : getUnidadesEnTablero(bando)) {
             if (!u.estaVivo()) continue;
             Casilla c = u.getCasillaActual();
             if (c != null) {
-                c.aplicarEfectoDePosicion(u); // p.ej. Bosque +ATK/+MGC, etc.
+                c.aplicarEfectoDePosicion(u);
             }
         }
     }
     
-    // --- Lógica de fin de juego ---
-     public boolean isGameOver() {
+    public boolean isGameOver() {
         if (gameOver) return true;
 
         boolean lord1Vivo = bando1EnTablero.stream().anyMatch(u -> u.isLord() && u.estaVivo());
@@ -204,7 +177,6 @@ public class Juego {
         return false;
     }
 
-    // --- Rendición ---
     public void rendirse(Bando bando) {
         if (gameOver) {
             System.out.println("El juego ya había terminado.");
@@ -219,15 +191,11 @@ public class Juego {
         gameOver = true;
     }
 
-    
-    // Encontrar al Lord de un bando (en reserva)
     public Unidad getLordDeReserva(Bando bando) {
         List<Unidad> reserva = getUnidadesEnReserva(bando);
         for (Unidad u : reserva) {
             if (u.isLord()) return u;
         }
-        return null; // *X* No debería pasar si el CSV es correcto
+        return null;
     }
-
-    // *M* manejar la visibilidad de las unidades (actualizarlas)
 }
