@@ -114,7 +114,7 @@ public class ControladorTurno implements Controlador {
         for (Unidad u : unidadesEnTablero) {
             String bando = u.getBando().toString().substring(6, 12);
             String pos = (u.getCasillaActual() != null) ? 
-                         "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")" : "(RESERVA)";
+                         "(" + u.getPosFila() + "," + u.getPosColumna() + ")" : "(RESERVA)";
             String hp = u.getHp() + "/" + u.getMaxHp() + " HP";
             String estado = (u.estaVivo() ? hp : "MUERTO");
             String acciones = "[Mov: " + (u.puedeMoverse() ? "SI" : "NO") + ", Act: " + (u.puedeActuar() ? "SI" : "NO") + "]";  

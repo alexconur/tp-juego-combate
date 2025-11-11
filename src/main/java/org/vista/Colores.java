@@ -7,7 +7,7 @@ public class Colores {
     // Código para resetear cualquier color y volver al default
     public static final String RESET = "\u001B[0m";
 
-    public static final String WARNING = "\u001B[38;5;208m\"";
+    public static final String WARNING = "\u001B[38;5;208m";
 
     // --- COLORES DE UNIDADES ---
     public static final String VACIO_U = "\u001B[1;90m"; // Gris (para el '·' de vacío)

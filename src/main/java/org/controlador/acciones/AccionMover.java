@@ -45,7 +45,7 @@ public class AccionMover implements Accion {
         int i = 1;
         for (Unidad u_mov : movibles) {
             String pos = (u_mov.getCasillaActual() != null) ? 
-                         "(" + u_mov.getCasillaActual().getFila() + "," + u_mov.getCasillaActual().getColumna() + ")" : "(RESERVA)";
+                         "(" + u_mov.getPosFila() + "," + u_mov.getPosColumna() + ")" : "(RESERVA)";
             String hp = u_mov.getHp() + "/" + u_mov.getMaxHp() + " HP";
             
             String linea = String.format("[%d] %-15s %-10s %s", i++, u_mov.getNombre(), pos, hp);

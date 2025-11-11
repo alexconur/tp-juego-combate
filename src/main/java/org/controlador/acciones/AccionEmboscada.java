@@ -42,7 +42,7 @@ public class AccionEmboscada implements Accion {
         int i = 1;
         for (Unidad u : disponibles) {
             String pos = (u.getCasillaActual() != null) ? 
-                         "(" + u.getCasillaActual().getFila() + "," + u.getCasillaActual().getColumna() + ")" : "(RESERVA)";
+                         "(" + u.getPosFila() + "," + u.getPosColumna() + ")" : "(RESERVA)";
             String hp = u.getHp() + "/" + u.getMaxHp() + " HP";
 
             String linea = String.format("[%d] %-15s %-10s %s", i++, u.getNombre(), pos, hp);

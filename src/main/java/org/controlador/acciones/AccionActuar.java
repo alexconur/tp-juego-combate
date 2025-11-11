@@ -72,7 +72,7 @@ public class AccionActuar implements Accion {
 
         for (Unidad unidad : unidades) {
             String pos = (unidad.getCasillaActual() != null) ?
-                    "(" + unidad.getCasillaActual().getFila() + "," + unidad.getCasillaActual().getColumna() + ")" : "(RESERVA)";
+                    "(" + unidad.getPosFila() + "," + unidad.getPosColumna() + ")" : "(RESERVA)";
             String hp = unidad.getHp() + "/" + unidad.getMaxHp() + " HP";
             String linea = String.format("[%d] %-15s %-10s %s",
                     i++, unidad.getNombre(), pos, hp);
@@ -106,7 +106,7 @@ public class AccionActuar implements Accion {
         }
 
         if (!objetivo.estaVivo() && objetivo.getCasillaActual() != null) {
-            objetivo.getCasillaActual().desocupar();
+            objetivo.desocuparCasilla();
             System.out.println("💀 ¡" + objetivo.getNombre() + " ha sido derrotado!");
         }
     }

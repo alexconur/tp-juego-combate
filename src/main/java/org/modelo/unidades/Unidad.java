@@ -91,7 +91,7 @@ public abstract class Unidad {
         }
 
         if (!estaVivo()) {
-            this.casillaActual.desocupar(); 
+            desocuparCasilla(); 
         }
     }
 
@@ -222,5 +222,25 @@ public abstract class Unidad {
         }
 
         this.movimientoRestante = 0;
+    }
+    
+    public void desocuparCasilla() {
+        if (this.casillaActual != null) {
+            this.casillaActual.desocupar();
+        }
+    }
+
+    public int getPosFila() {
+        if (this.casillaActual != null) {
+            return this.casillaActual.getFila();
+        }
+        return -1;
+    }
+
+    public int getPosColumna() {
+        if (this.casillaActual != null) {
+            return this.casillaActual.getColumna();
+        }
+        return -1;
     }
 }

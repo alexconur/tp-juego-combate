@@ -166,7 +166,7 @@ public class VistaUnidades {
         System.out.printf("║ %-12s %-26s ║%n", "ATK total:", atk, Colores.RESET);
         System.out.printf("║ %-12s %-26s ║%n", "DEF total:", def, Colores.RESET);
         System.out.printf("║ %-12s %-26s ║%n", "MGC total:", mgc, Colores.RESET);
-        System.out.printf("║ %-12s %-26s ║%n", "Movimiento:", movRestante + "/" + movRestante);
+        System.out.printf("║ %-12s %-26s ║%n", "Movimiento:", movRestante + "/" + movTotal);
         System.out.println("║─────────────────────────────────────────║");
         
             
