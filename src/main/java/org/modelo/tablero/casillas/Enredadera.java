@@ -19,4 +19,9 @@ public class Enredadera extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_ENREDADERA_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "No se puede recorrer.";
+    }
 }

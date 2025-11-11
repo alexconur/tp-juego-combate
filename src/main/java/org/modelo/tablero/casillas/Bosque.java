@@ -26,4 +26,9 @@ public class Bosque extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_BOSQUE_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "Aumenta " + BONUS_ATAQUE + " ATK y " + BONUS_MAGIA + " MGC, permite emboscadas.";
+    }
 }

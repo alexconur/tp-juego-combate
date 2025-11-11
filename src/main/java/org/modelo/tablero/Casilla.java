@@ -1,10 +1,11 @@
 package org.modelo.tablero;
 
-import org.modelo.tablero.casillas.EfectoAlEntrar;
-import org.modelo.tablero.casillas.EfectoDePosicion;
-import org.modelo.tablero.casillas.EfectoFinDeTurno;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
 import org.modelo.tablero.excepciones.CasillaOcupadaException;
+import org.modelo.tablero.casillas.*;
 import org.modelo.unidades.Unidad;
 import org.modelo.unidades.Bando;
 
@@ -95,4 +96,19 @@ public abstract class Casilla {
     public abstract boolean esTransitable();
 
     public abstract String getCodigoColorVista();
+
+    public abstract String descripcionEfecto();
+
+    public static List<InfoCasilla> obtenerInformacion() {
+        return List.of(
+            new InfoCasilla(new Bosque(0, 0)),
+            new InfoCasilla(new Llanura(0, 0)),
+            new InfoCasilla(new Pantano(0, 0)),
+            new InfoCasilla(new Castillo(0, 0)),
+            new InfoCasilla(new Agua(0, 0)),
+            new InfoCasilla(new AreaContaminada(0, 0)),
+            new InfoCasilla(new Acantilado(0, 0)),
+            new InfoCasilla(new Enredadera(0, 0))
+        );
+    }
 }

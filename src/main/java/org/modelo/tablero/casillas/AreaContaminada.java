@@ -26,4 +26,9 @@ public class AreaContaminada extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_PELIGROSO_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "Reduce " + HP_DISMINUIDO + " HP al final del turno.";
+    }
 }

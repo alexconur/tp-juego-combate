@@ -4,6 +4,8 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.modelo.tablero.Casilla;
+import org.modelo.tablero.InfoCasilla;
 import org.vista.Colores;
 
 public class VistaTurno {
@@ -150,26 +152,15 @@ public class VistaTurno {
 
     public void mostrarInfoCasillas(){
         final String RESET = Colores.RESET;
-        String bloqueBosque  = Colores.TERRENO_BOSQUE_BG  + "   " + RESET;
-        String bloqueLlanura = Colores.TERRENO_LLANURA_BG + "   " + RESET;
-        String bloquePantano = Colores.TERRENO_PANTANO_BG + "   " + RESET;
-        String bloqueCastillo= Colores.TERRENO_CASTILLO_BG + "   " + RESET;
-        String bloqueAgua    = Colores.TERRENO_AGUA_BG    + "   " + RESET;
-        String bloqueAguaCont = Colores.TERRENO_PELIGROSO_BG + "   " + RESET;
-        String bloqueAcantilado = Colores.TERRENO_ACANTILADO_BG + "   " + RESET;
-        String bloqueEnredadera = Colores.TERRENO_ENREDADERA_BG + "   " + RESET;
-
         StringBuilder sb = new StringBuilder();
+
         sb.append("\n╔═══════════════════════ INFORMACIÓN DE CASILLAS ═══════════════════════╗\n");
 
-        sb.append(String.format("║ %s  Bosque: Aumenta 5 ATK y 5 MGC, permite emboscadas.               ║%n", bloqueBosque));
-        sb.append(String.format("║ %s  Llanura: Terreno abierto.                                        ║%n", bloqueLlanura));
-        sb.append(String.format("║ %s  Pantano: Reduce movimiento al minimo.                            ║%n", bloquePantano));
-        sb.append(String.format("║ %s  Castillo: Restaura 10 HP y aumenta DEF en 5.                     ║%n", bloqueCastillo));
-        sb.append(String.format("║ %s  Agua: no se puede atravesar.                                     ║%n", bloqueAgua));
-        sb.append(String.format("║ %s  Área contaminada: reduce 5 HP al final del turno.                ║%n", bloqueAguaCont));
-        sb.append(String.format("║ %s  Acantilado: no se puede avanzar.                                 ║%n", bloqueAcantilado));
-        sb.append(String.format("║ %s  Enredadera: no se puede recorrer.                                ║%n", bloqueEnredadera));
+        for (InfoCasilla info : Casilla.obtenerInformacion()) {
+            String bloque = info.getColor() + "   " + RESET;
+            sb.append(String.format("   %s  %-18s: %s%n", bloque, info.getNombre(), info.getDescripcion()));
+        }
+
         sb.append("╚═══════════════════════════════════════════════════════════════════════╝\n");
 
         System.out.print(sb.toString());

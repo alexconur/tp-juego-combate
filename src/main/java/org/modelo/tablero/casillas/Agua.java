@@ -18,4 +18,9 @@ public class Agua extends Casilla {
     
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_AGUA_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "No se puede atravesar.";
+    }
 }

@@ -28,4 +28,9 @@ public class Castillo extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_CASTILLO_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "Restaura " + CURACION_FUERTE + " HP y aumenta DEF en " + BONUS_DEFENSA + ".";
+    }
 }

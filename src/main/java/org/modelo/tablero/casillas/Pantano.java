@@ -22,4 +22,9 @@ public class Pantano extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_PANTANO_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "Reduce movimiento al minimo.";
+    }
 }

@@ -17,4 +17,9 @@ public class Acantilado extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_ACANTILADO_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "No se puede avanzar.";
+    }
 }

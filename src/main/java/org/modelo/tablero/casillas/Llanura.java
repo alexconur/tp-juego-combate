@@ -17,4 +17,9 @@ public class Llanura extends Casilla {
 
     @Override
     public String getCodigoColorVista() { return org.vista.Colores.TERRENO_LLANURA_BG; }
+
+    @Override
+    public String descripcionEfecto() {
+        return "Terreno abierto.";
+    }
 }
