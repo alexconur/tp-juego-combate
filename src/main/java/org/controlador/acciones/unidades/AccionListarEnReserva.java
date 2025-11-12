@@ -6,6 +6,7 @@ import java.util.List;
 import org.modelo.Juego;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaUnidades;
+import org.vista.Colores;
 
 public class AccionListarEnReserva implements AccionUnidades {
     private final Juego juego;
@@ -26,13 +27,15 @@ public class AccionListarEnReserva implements AccionUnidades {
         } else {
             List<String> nombresReserva = new ArrayList<>();
             List<String> equipsReserva = new ArrayList<>();
+            List<String> coloresReserva = new ArrayList<>();
             for (Unidad u : reserva) {
                 nombresReserva.add(u.getNombre());
                 String eq = (u.getEquipamiento() != null) ? u.getEquipamiento().getNombre() : "Puño limpio";
                 equipsReserva.add(eq);
+                coloresReserva.add(Colores.colorParaBando(u.getBando()));
             }
-            vUnidades.mostrarListaUnidades("Unidades en reserva", nombresReserva, equipsReserva);
-        }
+            vUnidades.mostrarListaUnidades("Unidades en reserva", nombresReserva, equipsReserva, coloresReserva);
+        }        
         return true;
     }
 }

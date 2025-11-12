@@ -1,6 +1,5 @@
 package org.modelo.tablero;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.modelo.tablero.excepciones.CasillaIntransitableException;
@@ -10,16 +9,14 @@ import org.modelo.unidades.Unidad;
 import org.modelo.unidades.Bando;
 
 public abstract class Casilla {
-    // Atributos
+
     private int fila;
     private int columna;
     private Unidad ocupante;
-
     private final EfectoFinDeTurno efectoFinDeTurno;
     private final EfectoDePosicion efectoDePosicion;
     private final EfectoAlEntrar efectoAlEntrar;
 
-    // Constructor
     protected Casilla(int fila, int columna, EfectoAlEntrar efectoAlEntrar,
                       EfectoFinDeTurno efectoFinDeTurno,
                       EfectoDePosicion efectoDePosicion) {
@@ -31,18 +28,18 @@ public abstract class Casilla {
         this.efectoDePosicion = efectoDePosicion;
     }
 
-    // --- Métodos de Estado y Posición ---
+    public abstract boolean esTransitable();
+    public abstract String getCodigoColorVista();
+    public abstract String descripcionEfecto();
 
     public int getFila() { return this.fila; }
     public int getColumna() { return this.columna; }
     public Unidad getOcupante() { return this.ocupante; }
-    public boolean estaOcupada() { return ocupante != null; }
     public String getTipoTerreno() { return this.getClass().getSimpleName(); }
+    
+    public boolean estaOcupada() { return ocupante != null; }
+    public boolean permiteEmboscada() { return false; }
 
-    // --- Métodos de Ocupación ---
-    // Coloca una unidad en esta casilla.
-        // Lanza excepciones si la casilla no es un destino válido.
-        // Actualiza la referencia interna de la unidad.
     public void ocupar(Unidad unidad) throws CasillaOcupadaException, CasillaIntransitableException {
         if (estaOcupada()) {
             throw new CasillaOcupadaException("La casilla (" + fila + "," + columna + ") ya está ocupada.");
@@ -53,16 +50,14 @@ public abstract class Casilla {
         
         this.ocupante = unidad;
         
-        // La casilla le informa a la unidad dónde está.
         if (unidad != null) {
             unidad.setCasillaActual(this); 
         }
     }
 
-    // Quita la unidad de esta casilla. Actualiza la referencia de la casilla
     public Unidad desocupar() {
         Unidad unidadQueSeVa = this.ocupante;
-        // La unidad ya no está en ninguna casilla (hasta que ocupe otra)
+
         if (unidadQueSeVa != null) {
             unidadQueSeVa.setCasillaActual(null);
         }
@@ -88,16 +83,6 @@ public abstract class Casilla {
             efectoAlEntrar.aplicar(unidad);
         }
     }
-
-    public boolean permiteEmboscada() { return false; }
-
-    // --- Métodos de Efectos ---
-    // Define si una unidad puede transitar la casilla o no.
-    public abstract boolean esTransitable();
-
-    public abstract String getCodigoColorVista();
-
-    public abstract String descripcionEfecto();
 
     public static List<InfoCasilla> obtenerInformacion() {
         return List.of(

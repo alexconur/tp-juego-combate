@@ -12,12 +12,10 @@ public class Lord extends Unidad {
         this.setEsLord(true);
     }
 
-    // *A* hice valores por defecto porque no sé a que se refieren con que lord tenga stats mejorados
     public static Lord crear(String nombre, Bando bando) {
         return new Lord(nombre, HP_DEFAULT, ATK_DEFAULT, DEF_DEFAULT, MGC_DEFAULT, MOV_DEFAULT, bando);
     }
 
-    // *A* factory para crearlo personalizado pero no se cual van a querer , PREGUNTAR AL PROFE!
     public static Lord crearPersonalizado(String nombre, int hp, int atk, int def, int mgc, int mov, Bando bando) {
         return new Lord(nombre, hp, atk, def, mgc, mov, bando);
     }

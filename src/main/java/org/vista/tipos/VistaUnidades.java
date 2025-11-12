@@ -20,11 +20,10 @@ public class VistaUnidades {
         return leerEnteroEnRango("Opción", 0, 3);
     }
 
-    public void mostrarListaUnidades(String titulo, List<String> nombres, List<String> equipos) {
-
+public void mostrarListaUnidades(String titulo, List<String> nombres, List<String> equipos, List<String> colores) {
         String tituloCaja = String.format(" %S ", titulo);
         System.out.printf("\n╔═════════════════%s════════════════╗\n", tituloCaja);
-        imprimirLineasDeUnidadesSimple(nombres, equipos, false);
+        imprimirLineasDeUnidadesSimple(nombres, equipos,colores, false);
         
         System.out.println("╚══════════════════════════════════════════════════════╝");
     } 
@@ -52,30 +51,27 @@ public class VistaUnidades {
         return opt;
     }
 
-    private void imprimirLineasDeUnidadesSimple(List<String> nombres, List<String> equips, boolean conIndices) {
+    private void imprimirLineasDeUnidadesSimple(List<String> nombres, List<String> equipos, List<String> colores, boolean conIndices) {
         if (nombres.isEmpty()) {
             System.out.println("║ (vacío)                                              ║");
             return;
         }
 
         int i = 1;
-        // Iteramos sobre las listas usando un índice
         for (int j = 0; j < nombres.size(); j++) {
             
             String nombre = nombres.get(j);
-            String equip = equips.get(j);
-
-            // Formato de la VISTA (simple)
+            String equip = equipos.get(j);
+            String color = colores.get(j);
             String linea = String.format("%-15s (%s)", nombre, equip);
             
             if (conIndices) {
                 linea = String.format("[%d] %s", i++, linea);
             } else {
-                linea = "  · " + linea; // Formato para lista simple
+                linea = "  · " + linea;
             }
             
-            // Ajusta el padding para que coincida con el ancho de tu caja (54 caracteres)
-            System.out.printf("║ %-50s ║%n", linea);
+            System.out.printf("║ %s%-50s%s ║%n", color, linea, Colores.RESET);
         }
     }
 
@@ -85,36 +81,29 @@ public class VistaUnidades {
             List<String> hps, 
             List<String> maxHps, 
             List<String> estados, 
-            List<String> colores, // Colores pre-calculados por el controlador
+            List<String> colores,
             boolean conIndices) {
 
-        if (nombres.isEmpty()) { // Comprobamos con la lista de nombres
+        if (nombres.isEmpty()) {
             System.out.println("║ (vacío)                                              ║");
             return;
         }
 
         int i = 1;
-        // Usamos un loop por índice para acceder a todas las listas paralelas
         for (int j = 0; j < nombres.size(); j++) {
             
-            // Obtenemos los datos de las listas (todos son Strings)
             String nombre = nombres.get(j);
             String pos = posiciones.get(j);
             String hp = hps.get(j);
             String maxHp = maxHps.get(j);
             String estado = estados.get(j);
-            String color = colores.get(j); // El controlador ya resolvió el color
-
-            // --- El resto de tu lógica de formateo es idéntica ---
+            String color = colores.get(j);
             
             String prefijo = (conIndices) ? String.format("[%d] ", i++) : "";
             
-            // Formateamos la línea
             String linea = String.format("%s%-18s %-10s %s/%s HP [%s]",
                     prefijo, nombre, pos, hp, maxHp, estado);
             
-            // Imprimimos dentro de la caja con padding
-            // (Asumiendo que 'Colores.RESET' es una constante estática en tu clase Vista)
             System.out.printf("║ %s%-52s%s ║%n", color, linea, Colores.RESET);
         }
     }
@@ -124,21 +113,15 @@ public class VistaUnidades {
         System.out.println("\n╔══════════════════ SELECCIONAR UNIDAD ════════════════╗");
         System.out.println("║ [0] Cancelar                                         ║");
 
-        // --- Bucle de impresión simple ---
-        // La vista solo se encarga de agregar el índice "[1]", "[2]", etc.
         int i = 1;
         for (int j = 0; j < lineasDeInfo.size(); j++) {
             
             String color = colores.get(j);
             String prefijo = String.format("[%d] ", i++);
-            
-            // Concatena el índice "[1] " con la línea de info "Nombre (0,0)..."
             String lineaCompleta = prefijo + lineasDeInfo.get(j); 
 
-            // Imprime la línea (ajusta el -52 si tu prefijo cambia el ancho)
             System.out.printf("║ %s%-52s%s ║%n", color, lineaCompleta, Colores.RESET);
         }
-        // --- Fin del bucle ---
         
         System.out.println("╚══════════════════════════════════════════════════════╝");
         
@@ -196,7 +179,6 @@ public class VistaUnidades {
         }
     }
 
-    // Usando el nuevo leerEntero
     private int leerEnteroEnRango(String prompt, int min, int max) {
          int valor;
         while (true) {

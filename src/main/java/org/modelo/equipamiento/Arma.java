@@ -1,7 +1,6 @@
 package org.modelo.equipamiento;
 import org.modelo.unidades.Unidad;
 
-// Arma física (Espada, Hacha, Lanza)
 public class Arma extends Equipamiento {
     private TipoArma tipo;
 
@@ -14,13 +13,11 @@ public class Arma extends Equipamiento {
     public void accionar(Unidad portador, Unidad objetivo) {
         if (estaRoto()) return;
 
-        // Cálculo de daño físico: ATK (atacante) - DEF (atacado)
         int daño = portador.getAtkTotal() - objetivo.getDef();
-
-        // Aplicar el daño (asegurando que no sea negativo)
+        
         objetivo.recibirDanio(Math.max(0, daño));
 
-        this.usar(); // Gastar un uso
+        this.usar();
     }
 
     public TipoArma getTipo() { return this.tipo; }

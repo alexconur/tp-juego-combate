@@ -33,6 +33,26 @@ public class Juego {
     public Tablero getTablero() { return tablero; }
     public Bando getBandoActual() { return bandoActual; }
     public int getNumeroTurno() { return numeroTurno; }
+    public List<Unidad> getUnidadesEnTablero(Bando bando) { return (bando == Bando.REINO_DRUIDA) ? bando1EnTablero : bando2EnTablero; }
+    public List<Unidad> getUnidadesEnReserva(Bando bando) { return (bando == Bando.REINO_DRUIDA) ? bando1Reserva : bando2Reserva; }
+    public List<Unidad> getTodasUnidadesEnReserva() {
+        List<Unidad> todas = new ArrayList<>(bando1Reserva);
+        todas.addAll(bando2Reserva);
+        return todas;
+    }
+    public List<Unidad> getTodasUnidadesEnTablero() {
+        List<Unidad> todas = new ArrayList<>(bando1EnTablero);
+        todas.addAll(bando2EnTablero);
+        return todas;
+    }
+    private Unidad getLordEnTablero(Bando bando) {
+        List<Unidad> lista = getUnidadesEnTablero(bando);
+        for (Unidad u : lista) {
+            if (u.isLord()) return u;
+        }
+        return null;
+    }
+
     public void reemplazarTablero(Tablero nuevo) { this.tablero = nuevo; }
 
     public void setEjercitos(List<Unidad> unidades) {
@@ -49,7 +69,6 @@ public class Juego {
         if (unidad == null || tablero == null) return false;
         
         try {
-            // *A* todo este bloque rompe mucho POLK y TDA
             Casilla destino = tablero.getCasilla(fila, columna);
             if (destino == null) {
                 System.out.println("Error: Casilla (" + fila + "," + columna + ") no existe.");
@@ -94,25 +113,7 @@ public class Juego {
         }
     }
 
-    // --- Getters para las listas --- 
-    public List<Unidad> getUnidadesEnTablero(Bando bando) { return (bando == Bando.REINO_DRUIDA) ? bando1EnTablero : bando2EnTablero; }
-    
-    public List<Unidad> getUnidadesEnReserva(Bando bando) { return (bando == Bando.REINO_DRUIDA) ? bando1Reserva : bando2Reserva; }
-    
-    public List<Unidad> getTodasUnidadesEnReserva() {
-        List<Unidad> todas = new ArrayList<>(bando1Reserva);
-        todas.addAll(bando2Reserva);
-        return todas;
-    }
-
-    public List<Unidad> getTodasUnidadesEnTablero() {
-        List<Unidad> todas = new ArrayList<>(bando1EnTablero);
-        todas.addAll(bando2EnTablero);
-        return todas;
-    }
-
     public void cambiarTurno() {
-
         aplicarEfectosFinDeTurno();
 
         bandoActual = (bandoActual == Bando.REINO_DRUIDA)
@@ -129,20 +130,11 @@ public class Juego {
         aplicarBonosDePosicion(bandoActual);
     }
 
-    private Unidad getLordEnTablero(Bando bando) {
-        List<Unidad> lista = getUnidadesEnTablero(bando);
-        for (Unidad u : lista) {
-            if (u.isLord()) return u;
-        }
-        return null;
-    }
-
-
     private void aplicarEfectosFinDeTurno() {
         for (int i = 0; i < tablero.getFilas(); i++) {
             for (int j = 0; j < tablero.getColumnas(); j++) {
                 Casilla c = tablero.getCasilla(i, j);
-                if (c != null) c.notificarFinDeTurno(bandoActual);   // *M* A chequear si va acá o en prepararUnidadesFinTurno, o si se puede hacer mejor
+                if (c != null) c.notificarFinDeTurno(bandoActual);
             }
         }
     }

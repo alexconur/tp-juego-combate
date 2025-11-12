@@ -13,15 +13,7 @@ public class VistaPrincipal {
         this.vUnidades = new VistaUnidades();
     }
 
-    public VistaInicio getvInicio() {
-        return vInicio;
-    }
-
-    public VistaTurno getvTurno() {
-        return vTurno;
-    }
-
-    public VistaUnidades getvUnidades() {
-        return vUnidades;
-    }
+    public VistaInicio getvInicio() { return vInicio; }
+    public VistaTurno getvTurno() { return vTurno; }
+    public VistaUnidades getvUnidades() { return vUnidades; }
 }

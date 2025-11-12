@@ -3,7 +3,7 @@ package org.modelo.tablero.casillas;
 import org.modelo.tablero.Casilla;
 
 public class AreaContaminada extends Casilla {
-    private static final int HP_DISMINUIDO = 5;  // Valor hipotético
+    private static final int HP_DISMINUIDO = 5;
 
     public static String codigo() { return "AR"; }
 
@@ -12,7 +12,6 @@ public class AreaContaminada extends Casilla {
       (unidad, casilla, bandoActual) -> {
           if (unidad.getBando() == bandoActual) {
               unidad.recibirDanio(HP_DISMINUIDO);
-              // System.out.println(unidad.getNombre() + " recibió daño " + HP_DISMINUIDO + " en Área Contaminada.");
           }
       },
       null);

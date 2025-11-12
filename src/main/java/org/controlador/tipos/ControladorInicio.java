@@ -74,9 +74,11 @@ public class ControladorInicio implements Controlador {
 
         faseDeDespliegue(bandoJ1, tablero);
         faseDeDespliegue(bandoJ2, tablero);
-        
-        System.out.println("\n¡Todo listo para la batalla!");
-        System.out.println("Presione Enter para continuar...");
+
+        System.out.println("\n════════════════════════════════════");
+        System.out.println("⚔️  " + "¡Todo listo para la batalla!" + " ⚔️");
+        System.out.println("   Presione Enter para continuar...");
+        System.out.println("════════════════════════════════════");
         scanner.nextLine();
     }
 
@@ -106,8 +108,8 @@ public class ControladorInicio implements Controlador {
     }
 
     private void faseDeDespliegue(Bando bando, Tablero tablero) {
-            System.out.println("\n--- FASE DE DESPLIEGUE: " + bando + " ---");
-            System.out.println("\n--Las unidades de tu bando solo pueden desplegarse en casillas adyacentes a su Lord--");
+            System.out.println("\n══════════ FASE DE DESPLIEGUE: " + bando + " ══════════");
+            System.out.println("\n⚠️  " + "Aviso: Las unidades de tu bando solo pueden desplegarse en casillas adyacentes a su Lord");
             
             boolean despliegueCompleto = false;
             while (!despliegueCompleto) {

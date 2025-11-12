@@ -10,18 +10,14 @@ import org.modelo.equipamiento.estrategias.EstrategiaFortaleza;
 import org.modelo.equipamiento.estrategias.EstrategiaSanacion;
 
 public class EstrategiaDefault implements EstrategiaFactory {
-    
-    // Un "registro" de estrategias. ES un mapa, pero es privado y DE INSTANCIA.
     private final Map<String, Supplier<EstrategiaBaculo>> registro = new HashMap<>();
 
     public EstrategiaDefault() {
-        // En el constructor, registramos las estrategias que esta fábrica sabe crear.
         registrar("CURACION", EstrategiaCuracion::new);
         registrar("SANACION", EstrategiaSanacion::new);
         registrar("FORTALEZA", EstrategiaFortaleza::new);
     }
 
-    // Método de utilidad privado para registrar
     private void registrar(String tipo, Supplier<EstrategiaBaculo> constructor) {
         registro.put(tipo.toUpperCase(), constructor);
     }
@@ -32,6 +28,6 @@ public class EstrategiaDefault implements EstrategiaFactory {
         if (constructor == null) {
             throw new IllegalArgumentException("Tipo de Báculo desconocido: " + subtipo);
         }
-        return constructor.get(); // Llama al constructor (ej: new EstrategiaCuracion())
+        return constructor.get();
     }
 }

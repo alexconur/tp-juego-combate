@@ -5,7 +5,6 @@ public enum Bando {
     REINO_DRUIDA,
     REINO_NIGROMANTICO;
 
-    // *A* elige un bando al azar
     public static Bando random(Random rnd) {
         Bando[] v = values();
         return v[rnd.nextInt(v.length)];

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.archivos.factories.EquipamientoFactory;
-import org.archivos.factories.UnidadFactory; // Interfaz
-import org.modelo.equipamiento.Equipamiento;       // Interfaz
+import org.archivos.factories.UnidadFactory;
+import org.modelo.equipamiento.Equipamiento;
 import org.modelo.unidades.Unidad;
 
 public class EjercitoLoader {

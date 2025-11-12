@@ -3,8 +3,8 @@ package org.modelo.tablero.casillas;
 import org.modelo.tablero.Casilla;
 
 public class Bosque extends Casilla {
-    private static final int BONUS_ATAQUE = 5;  // Valor hipotético
-    private static final int BONUS_MAGIA = 5;  // Valor hipotético
+    private static final int BONUS_ATAQUE = 5;
+    private static final int BONUS_MAGIA = 5;
 
     public static String codigo() { return "BO"; }
 

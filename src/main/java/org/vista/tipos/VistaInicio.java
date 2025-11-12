@@ -1,4 +1,3 @@
-// src/main/java/org/vista/tipos/VistaInicio.java
 package org.vista.tipos;
 
 import java.net.URL;
@@ -23,7 +22,7 @@ public class VistaInicio {
 public void mostrar() {
         System.out.println("╔══════════════════════════════════════════════╗");
         System.out.println("║                                              ║");
-        System.out.println("║         🛡️ BIENVENIDO A CLASS EMBLEM 🛡️        ║");
+        System.out.println("║         🛡️  BIENVENIDO A CLASS EMBLEM 🛡️       ║");
         System.out.println("║                                              ║");
         System.out.println("╚══════════════════════════════════════════════╝" + Colores.RESET);
         System.out.println();
@@ -33,15 +32,14 @@ public void mostrar() {
         String mapa = pedirArchivo("Mapa", DIR_MAPAS);
         String ejercito = pedirArchivo("Ejército", DIR_EJERCITOS);
 
-        System.out.println("\n╔══════════ CONFIGURACIÓN ══════════╗");
-        System.out.printf("║ %-10s %-27s ║%n", "Mapa:", mapa);
+        System.out.println("\n╔═══════════════ CONFIGURACIÓN ══════════════╗");
+        System.out.printf("║ %-10s %-27s     ║%n", "Mapa:", mapa);
         System.out.printf("║ %-10s %-27s ║%n", "Ejército:", ejercito);
-        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.println("╚════════════════════════════════════════════╝");
 
         return new SeleccionesInicio(mapa, ejercito);
     }
 
-    // --- pide Fila/Columna dentro del rango [0..filas-1], [0..columnas-1] ---
     public UbicacionInicio pedirUbicacionLord(Bando bando, int filas, int columnas) {
 
         String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
@@ -86,20 +84,15 @@ public void mostrar() {
             System.out.println("║ [0] TERMINAR FASE DE DESPLIEGUE     ║");
             
             int i = 1;
-            // Iteramos usando un índice numérico para acceder a ambas listas
             for (int j = 0; j < nombresUnidades.size(); j++) {
-                // Obtenemos los datos de las listas
                 String nombre = nombresUnidades.get(j);
-                String equip = equipsUnidades.get(j);
-                
-                // La VISTA se encarga de su propio formateo
+                String equip = equipsUnidades.get(j);                
                 String linea = String.format("[%d] %-15s (%s)", i++, nombre, equip);
-                
+
                 System.out.printf("║ %s%-35s%s ║%n", bandoColor, linea, Colores.RESET);
             }
             System.out.println("╚═════════════════════════════════════╝");
                     
-            // El rango es 0 o hasta el total de unidades
             int idx = leerEnteroEnRango("Opción", 0, nombresUnidades.size());
             
             return idx; 
@@ -130,7 +123,6 @@ public void mostrar() {
         }
     }
 
-    // --------- selección de archivos ---------
     private String pedirArchivo(String titulo, String resourceDir) {
         List<String> archivos = listarRecursosCSV(resourceDir);
         if (archivos.isEmpty()) {
@@ -171,10 +163,10 @@ public void mostrar() {
                 }
             }
 
-            // si no es "file":
             System.out.println("(No puedo listar automáticamente en protocolo " + url.getProtocol() + ")");
             System.out.println("Escribí el nombre del archivo dentro de " + resourceDir + " (ej: mapa1.csv): ");
             String nombre = in.nextLine().trim();
+
             if (!nombre.toLowerCase().endsWith(".csv")) nombre += ".csv";
             return List.of(resourceDir + "/" + nombre);
 
@@ -183,9 +175,8 @@ public void mostrar() {
         }
     }
 
-    // Este método ya NO depende del Modelo (Tablero, Bando)
     public void mostrarTablero(String tableroRenderizado) {
-        System.out.println("\n=== TABLERO ===");
+        System.out.println("\n═══════════════ TABLERO ═══════════════");
         System.out.println(tableroRenderizado);
     }
 }

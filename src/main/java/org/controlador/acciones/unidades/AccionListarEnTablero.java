@@ -6,6 +6,7 @@ import java.util.List;
 import org.modelo.Juego;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaUnidades;
+import org.vista.Colores;
 
 public class AccionListarEnTablero implements AccionUnidades {
     private final Juego juego;
@@ -26,12 +27,14 @@ public class AccionListarEnTablero implements AccionUnidades {
         } else {
             List<String> nombresDesplegadas = new ArrayList<>();
             List<String> equipsDesplegadas = new ArrayList<>();
+            List<String> coloresDesplegadas = new ArrayList<>();
             for (Unidad u : unidades) {
                 nombresDesplegadas.add(u.getNombre());
                 String eq = (u.getEquipamiento() != null) ? u.getEquipamiento().getNombre() : "Puño limpio";
                 equipsDesplegadas.add(eq);
+                coloresDesplegadas.add(Colores.colorParaBando(u.getBando()));
             }
-            vUnidades.mostrarListaUnidades("Unidades desplegadas", nombresDesplegadas, equipsDesplegadas);
+            vUnidades.mostrarListaUnidades("Unidades desplegadas", nombresDesplegadas, equipsDesplegadas, coloresDesplegadas);
         }
         return true;
     }

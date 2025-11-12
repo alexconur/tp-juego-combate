@@ -11,7 +11,6 @@ public class Castillo extends Casilla {
     public Castillo(int fila, int columna) {
         super(fila, columna, null,
             (unidad, casilla, bandoActual) -> {
-                // Esto siempre se aplica. No importa de quién es el turno
                 unidad.recibirCuracion(CURACION_FUERTE);
                 unidad.aplicarBonusDefTemporal(BONUS_DEFENSA);
                 System.out.println(unidad.getNombre()

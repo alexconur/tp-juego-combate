@@ -35,9 +35,6 @@ public class VistaTurno {
         
         System.out.println("\n╔══════════════════════════ UNIDADES EN TABLERO ══════════════════════════╗");
 
-        // Itera sobre las listas de strings preparadas por el controlador
-        // Si las listas están vacías, este bucle no se ejecuta,
-        // replicando el comportamiento original (no imprime nada entre header y footer).
         for (int i = 0; i < lineasDeUnidad.size(); i++) {
             String linea = lineasDeUnidad.get(i);
             String color = coloresUnidad.get(i);
@@ -127,7 +124,7 @@ public class VistaTurno {
         }
     }
 
-    private int leerEnteroEnRango(String prompt, int min, int max) { //*M* ver forma de unificar esto para todas las vistas
+    private int leerEnteroEnRango(String prompt, int min, int max) {
         int valor;
         while (true) {
             valor = leerEntero(prompt);
