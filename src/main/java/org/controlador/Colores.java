@@ -1,4 +1,4 @@
-package org.vista;
+package org.controlador;
 
 import org.modelo.unidades.Bando;
 

@@ -4,9 +4,9 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 import org.modelo.tablero.InfoCasilla;
-import org.vista.Colores;
 
 public class VistaTurno {
     

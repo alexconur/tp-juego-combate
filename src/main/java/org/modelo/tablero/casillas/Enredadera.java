@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 
 public class Enredadera extends Casilla {
@@ -18,7 +19,7 @@ public class Enredadera extends Casilla {
     public String getTipoTerreno() { return "Enredadera"; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_ENREDADERA_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_ENREDADERA_BG; }
 
     @Override
     public String descripcionEfecto() {

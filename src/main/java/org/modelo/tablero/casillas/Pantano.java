@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 
 public class Pantano extends Casilla {
@@ -21,7 +22,7 @@ public class Pantano extends Casilla {
     public String getTipoTerreno() { return "Pantano"; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_PANTANO_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_PANTANO_BG; }
 
     @Override
     public String descripcionEfecto() {

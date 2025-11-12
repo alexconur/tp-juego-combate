@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 public class Acantilado extends Casilla {
 
@@ -16,7 +17,7 @@ public class Acantilado extends Casilla {
     public String getTipoTerreno() { return "Acantilado"; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_ACANTILADO_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_ACANTILADO_BG; }
 
     @Override
     public String descripcionEfecto() {

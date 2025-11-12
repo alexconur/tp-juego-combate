@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.controlador.Colores;
 import org.modelo.Juego;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
-import org.vista.Colores;
 import org.vista.tipos.VistaTurno;
 
 public class AccionActuar implements Accion {

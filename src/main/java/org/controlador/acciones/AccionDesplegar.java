@@ -3,10 +3,10 @@ package org.controlador.acciones;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.controlador.Colores;
 import org.modelo.Juego;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
-import org.vista.Colores;
 import org.vista.tipos.UbicacionInicio;
 import org.vista.tipos.VistaTurno;
 

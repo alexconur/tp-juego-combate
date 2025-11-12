@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 
 public class Castillo extends Casilla {
@@ -26,7 +27,7 @@ public class Castillo extends Casilla {
     public String getTipoTerreno() { return "Castillo"; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_CASTILLO_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_CASTILLO_BG; }
 
     @Override
     public String descripcionEfecto() {

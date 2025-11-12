@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.controlador.Colores;
 import org.modelo.Juego;
 import org.modelo.equipamiento.Equipamiento;
 import org.modelo.tablero.Casilla;
 import org.modelo.unidades.Unidad;
-import org.vista.Colores;
 import org.vista.tipos.VistaUnidades;
 
 public class AccionVerDetalle implements AccionUnidades {

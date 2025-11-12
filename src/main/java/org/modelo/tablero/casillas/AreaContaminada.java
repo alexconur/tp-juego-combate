@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 
 public class AreaContaminada extends Casilla {
@@ -24,7 +25,7 @@ public class AreaContaminada extends Casilla {
     public String getTipoTerreno() { return "Area Contaminada"; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_PELIGROSO_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_PELIGROSO_BG; }
 
     @Override
     public String descripcionEfecto() {

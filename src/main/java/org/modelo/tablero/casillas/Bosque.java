@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 
 public class Bosque extends Casilla {
@@ -25,7 +26,7 @@ public class Bosque extends Casilla {
     public boolean permiteEmboscada() { return true; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_BOSQUE_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_BOSQUE_BG; }
 
     @Override
     public String descripcionEfecto() {

@@ -3,7 +3,7 @@ package org.vista.tipos;
 import java.util.List;
 import java.util.Scanner;
 
-import org.vista.Colores;
+import org.controlador.Colores;
 
 public class VistaUnidades {
 

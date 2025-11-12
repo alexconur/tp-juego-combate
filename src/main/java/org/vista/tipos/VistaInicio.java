@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import org.controlador.Colores;
 import org.modelo.unidades.Bando;
-import org.vista.Colores;
 
 public class VistaInicio {
 

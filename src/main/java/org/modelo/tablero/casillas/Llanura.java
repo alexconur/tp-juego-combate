@@ -1,5 +1,6 @@
 package org.modelo.tablero.casillas;
 
+import org.controlador.Colores;
 import org.modelo.tablero.Casilla;
 
 public class Llanura extends Casilla {
@@ -16,7 +17,7 @@ public class Llanura extends Casilla {
     public String getTipoTerreno() { return "Llanura"; }
 
     @Override
-    public String getCodigoColorVista() { return org.vista.Colores.TERRENO_LLANURA_BG; }
+    public String getCodigoColorVista() { return Colores.TERRENO_LLANURA_BG; }
 
     @Override
     public String descripcionEfecto() {
