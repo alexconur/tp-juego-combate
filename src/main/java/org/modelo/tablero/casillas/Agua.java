@@ -22,6 +22,6 @@ public class Agua extends Casilla {
 
     @Override
     public String descripcionEfecto() {
-        return "No se puede atravesar.";
+        return "No es transitable.";
     }
 }

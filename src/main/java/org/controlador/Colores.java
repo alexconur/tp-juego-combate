@@ -3,24 +3,14 @@ package org.controlador;
 import org.modelo.unidades.Bando;
 
 public class Colores {
-
-    // Código para resetear cualquier color y volver al default
     public static final String RESET = "\u001B[0m";
-
     public static final String WARNING = "\u001B[38;5;208m";
-
-    // --- COLORES DE UNIDADES ---
-    public static final String VACIO_U = "\u001B[1;90m"; // Gris (para el '·' de vacío)
+    public static final String VACIO_U = "\u001B[1;90m"; // Gris (para el '·' de vacio)
     public static final String DRUIDA = "\u001B[1;94m"; // Azul brillante
     public static final String DRUIDA_OCULTO = "\u001B[2;94m"; // Azul tenue
     public static final String NIGROMANTICO = "\u001B[1;91m"; // Rojo brillante
     public static final String NIGROMANTICO_OCULTO = "\u001B[2;91m"; // Rojo tenue
-
-
-    // --- COLOR TERRENO TRANSITABLE ---
     public static final String TERRENO_ALCANZABLE_BG = "\u001B[103m"; // Fondo Amarillo brillante
-    
-    // --- COLORES DE TERRENOS ---
     public static final String TERRENO_LLANURA_BG = "\u001B[48;5;118m"; // Verde brillante
     public static final String TERRENO_BOSQUE_BG = "\u001B[48;5;28m";  // Verde
     public static final String TERRENO_PANTANO_BG = "\u001B[48;2;90;80;30m"; // Marrón/Amarillo

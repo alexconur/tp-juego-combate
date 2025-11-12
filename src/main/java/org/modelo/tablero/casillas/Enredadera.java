@@ -23,6 +23,6 @@ public class Enredadera extends Casilla {
 
     @Override
     public String descripcionEfecto() {
-        return "No se puede recorrer.";
+        return "No es transitable.";
     }
 }

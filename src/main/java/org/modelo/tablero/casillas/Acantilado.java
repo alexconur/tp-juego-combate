@@ -21,6 +21,6 @@ public class Acantilado extends Casilla {
 
     @Override
     public String descripcionEfecto() {
-        return "No se puede avanzar.";
+        return "No es transitable.";
     }
 }
