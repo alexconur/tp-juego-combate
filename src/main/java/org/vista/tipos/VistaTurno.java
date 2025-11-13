@@ -9,7 +9,7 @@ import org.modelo.tablero.Casilla;
 import org.modelo.tablero.InfoCasilla;
 
 public class VistaTurno {
-    
+
     private final Scanner sc = new Scanner(System.in);
 
     public void mostrarEstado(
@@ -21,7 +21,7 @@ public class VistaTurno {
             List<String> lineasDeUnidad,
             List<String> coloresUnidad
         ) {
-        
+
         if (isGameOver) {
             return;
         }
@@ -32,69 +32,76 @@ public class VistaTurno {
         System.out.println("══════════════════════════════════════════════");
         
         System.out.println(tableroRenderizado);
-        
-        System.out.println("\n╔══════════════════════════ UNIDADES EN TABLERO ══════════════════════════╗");
 
+        List<String> lineas = new java.util.ArrayList<>();
         for (int i = 0; i < lineasDeUnidad.size(); i++) {
-            String linea = lineasDeUnidad.get(i);
-            String color = coloresUnidad.get(i);
-            System.out.println("║ " + color + linea + " " + Colores.RESET + " ║");
+            lineas.add(coloresUnidad.get(i) + lineasDeUnidad.get(i) + Colores.RESET);
         }
-        System.out.println("╚═════════════════════════════════════════════════════════════════════════╝");
+
+        imprimirCajaLista("Unidades en Tablero", lineas);
     }
 
     public int mostrarMenuPrincipal() {
-        System.out.println("\n╔═════════════════════════ ACCIONES ═════════════════════════════════╗");
-        System.out.println("║ [1] Mover           [2] Atacar/Curar      [3] Ver unidades         ║");
-        System.out.println("║ [4] Desplegar       [5] Emboscada         [6] Informacion casillas ║");
-        System.out.println("║ [7] Terminar turno  [8] Rendirse                                   ║");        
-        System.out.println("╚════════════════════════════════════════════════════════════════════╝");   
+        List<String> acciones = new java.util.ArrayList<>();
+        acciones.add("[1] Mover            [2] Atacar/Curar     [3] Ver unidades");
+        acciones.add("[4] Desplegar        [5] Emboscada        [6] Información casillas");
+        acciones.add("[7] Terminar turno   [8] Rendirse");
+
+        imprimirCajaLista("Acciones", acciones);
         return leerEnteroEnRango("Opción", 1, 8);
     }
-    
+
     public int seleccionarUnidad(String prompt, List<String> lineasFormateadas, String colorLista) {
         if (lineasFormateadas.isEmpty()) {
             System.out.println("\nNo hay unidades disponibles para " + prompt + ".");
             return 0;
         }
-        
-        System.out.println("\n╔═══ SELECCIONAR UNIDAD (" + prompt.toUpperCase() + ") ═══╗");
-        System.out.println("║ [0] Cancelar                   ║");
 
-        for (int i = 0; i < lineasFormateadas.size(); i++) {
-            
-            String linea = lineasFormateadas.get(i);
-            System.out.printf("║ %s%-30s%s ║%n", colorLista, linea, Colores.RESET);
-        }
-        System.out.println("╚══════════════════════════════════╝");
+        List<String> lista = new java.util.ArrayList<>();
+        lista.add("[0] Cancelar");
+
+        for (String linea : lineasFormateadas)
+            lista.add(colorLista + linea + Colores.RESET);
+
+        imprimirCajaLista("Seleccionar Unidad (" + prompt.toUpperCase() + ")", lista);
 
         int idx = leerEnteroEnRango("Opción", 0, lineasFormateadas.size());
         return idx;
     }
-    
+
     public int seleccionarUnidadReserva(List<String> lineasFormateadas, String colorLista) {
         if (lineasFormateadas.isEmpty()) {
             System.out.println("No hay unidades en la reserva.");
             return 0;
         }
-        
-        System.out.println("\n╔═══ SELECCIONAR DE RESERVA ═══╗");
-        System.out.println("║ [0] Cancelar                 ║");        
-        
-        for (int i = 0; i < lineasFormateadas.size(); i++) {
-            String linea = lineasFormateadas.get(i);
-            System.out.printf("║ %s%-30s%s ║%n", colorLista, linea, Colores.RESET);
-        }
-        System.out.println("╚══════════════════════════════╝");
-                
+
+        List<String> lista = new java.util.ArrayList<>();
+        lista.add("[0] Cancelar");
+
+        for (String linea : lineasFormateadas)
+            lista.add(colorLista + linea + Colores.RESET);
+
+        imprimirCajaLista("Seleccionar de Reserva", lista);
+
         int idx = leerEnteroEnRango("Opción", 0, lineasFormateadas.size());
         return idx;
     }
 
     public void mostrarCasillasDisponibles(String tableroRenderizado) {
-        System.out.println("\n═════════ CASILLAS ALCANZABLES ═════════");
+
+        String titulo = " CASILLAS ALCANZABLES ";
+        int ancho = titulo.length();
+
+        String arriba    = "╔" + "═".repeat(ancho) + "╗";
+        String medio = "║" + titulo + "║";
+        String abajo = "╚" + "═".repeat(ancho) + "╝";
+
+        System.out.println();
+        System.out.println(arriba);
+        System.out.println(medio);
+        System.out.println(abajo);
+
         System.out.println(tableroRenderizado);
-        System.out.println("═════════════════════════════════════════");
     }
 
     public UbicacionInicio pedirUbicacion(String mensaje) {
@@ -163,5 +170,41 @@ public class VistaTurno {
         System.out.print(sb.toString());
         System.out.println("Presione Enter para continuar...");
         sc.nextLine();
+    }
+
+    private void imprimirCajaLista(String titulo, List<String> lineas) {
+
+        String tituloTxt = " " + titulo.toUpperCase() + " ";
+
+        int ancho = tituloTxt.length();
+        for (String l : lineas) {
+            String limpio = l.replaceAll("\u001B\\[[;\\d]*m", "");
+            ancho = Math.max(ancho, limpio.length());
+        }
+
+        String arriba    = "╔" + "═".repeat(ancho) + "╗";
+        String titul  = "║" + centrar(tituloTxt, ancho) + "║";
+        String sep    = "║" + "─".repeat(ancho) + "║";
+        String abajo = "╚" + "═".repeat(ancho) + "╝";
+
+        System.out.println();
+        System.out.println(arriba);
+        System.out.println(titul);
+        System.out.println(sep);
+
+        for (String l : lineas) {
+            String limpio = l.replaceAll("\u001B\\[[;\\d]*m", "");
+            System.out.println("║" + l + " ".repeat(ancho - limpio.length()) + "║");
+        }
+
+        System.out.println(abajo);
+    }
+
+
+    private String centrar(String s, int ancho) {
+        int espacios = ancho - s.length();
+        int izq = espacios / 2;
+        int der = espacios - izq;
+        return " ".repeat(izq) + s + " ".repeat(der);
     }
 }

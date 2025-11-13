@@ -19,7 +19,7 @@ public class VistaInicio {
     private static final String DIR_MAPAS = "archivos/mapas";
     private static final String DIR_EJERCITOS = "archivos/ejercito";
 
-public void mostrar() {
+    public void mostrar() {
         System.out.println("╔══════════════════════════════════════════════╗");
         System.out.println("║                                              ║");
         System.out.println("║         🛡️  BIENVENIDO A CLASS EMBLEM 🛡️       ║");
@@ -32,25 +32,25 @@ public void mostrar() {
         String mapa = pedirArchivo("Mapa", DIR_MAPAS);
         String ejercito = pedirArchivo("Ejército", DIR_EJERCITOS);
 
-        System.out.println("\n╔═══════════════ CONFIGURACIÓN ══════════════╗");
-        System.out.printf("║ %-10s %-27s     ║%n", "Mapa:", mapa);
-        System.out.printf("║ %-10s %-27s ║%n", "Ejército:", ejercito);
-        System.out.println("╚════════════════════════════════════════════╝");
+        List<String> config = new ArrayList<>();
+        config.add("Mapa:      " + mapa);
+        config.add("Ejército:  " + ejercito);
 
+        imprimirCajaCompleta("Configuración", config);
         return new SeleccionesInicio(mapa, ejercito);
     }
 
     public UbicacionInicio pedirUbicacionLord(Bando bando, int filas, int columnas) {
 
-        String bandoColor = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
-        String bandoNombre = bando.toString();
+        String color = (bando == Bando.REINO_DRUIDA) ? Colores.DRUIDA : Colores.NIGROMANTICO;
 
-        System.out.println("\n╔═════════════ POSICIONAR LORD ═════════════╗");
-        System.out.printf("║ Jugador: %s%-31s%s  ║%n", bandoColor, bandoNombre, Colores.RESET);
-        System.out.println("║                                           ║");
-        System.out.printf("║ Rango Filas:    0..%-22s ║%n", (filas - 1));
-        System.out.printf("║ Rango Columnas: 0..%-22s ║%n", (columnas - 1));
-        System.out.println("╚═══════════════════════════════════════════╝");
+        List<String> lineas = new ArrayList<>();
+        lineas.add("Jugador: " + color + bando + Colores.RESET);
+        lineas.add("─"); 
+        lineas.add("Rango Filas:    0.." + (filas - 1));
+        lineas.add("Rango Columnas: 0.." + (columnas - 1));
+
+        imprimirCajaCompleta("Posicionar Lord", lineas);
 
         int f = leerEnteroEnRango("Fila", 0, filas - 1);
         int c = leerEnteroEnRango("Columna", 0, columnas - 1);
@@ -60,15 +60,13 @@ public void mostrar() {
 
     public UbicacionInicio pedirUbicacionUnidad(String nombreUnidad, String bandoNombre, String bandoColor, int filas, int columnas) {
 
-        System.out.println("\n╔════════════ POSICIONAR UNIDAD ════════════╗");
-        System.out.printf("║ Jugador: %s%-31s%s  ║%n", bandoColor, bandoNombre, Colores.RESET);
+        List<String> info = new ArrayList<>();
+        info.add("Jugador: " + bandoColor + bandoNombre + Colores.RESET);
+        info.add("Unidad: " + nombreUnidad);
+        info.add("Rango Filas:    0.." + (filas - 1));
+        info.add("Rango Columnas: 0.." + (columnas - 1));
 
-        String lineaUnidad = "Unidad: " + nombreUnidad;
-        System.out.printf("║ %-43s ║%n", lineaUnidad);
-
-        System.out.printf("║ Rango Filas:    0..%-22s ║%n", (filas - 1));
-        System.out.printf("║ Rango Columnas: 0..%-22s ║%n", (columnas - 1));
-        System.out.println("╚═══════════════════════════════════════════╝");
+        imprimirCajaOpciones("Posicionar Unidad", info);
 
         int f = leerEnteroEnRango("Fila", 0, filas - 1);
         int c = leerEnteroEnRango("Columna", 0, columnas - 1);
@@ -77,25 +75,25 @@ public void mostrar() {
     }
 
     public int seleccionarUnidadDeReserva(String bandoNombre, String bandoColor, List<String> nombresUnidades, List<String> equipsUnidades) {
-        
-            System.out.println("\n╔═══ DESPLEGAR UNIDADES DE RESERVA ═══╗");
-            System.out.printf("║ JUGADOR: %s%-24s%s ║%n", bandoColor, bandoNombre, Colores.RESET);
-            System.out.println("║─────────────────────────────────────║");
-            System.out.println("║ [0] TERMINAR FASE DE DESPLIEGUE     ║");
-            
-            int i = 1;
-            for (int j = 0; j < nombresUnidades.size(); j++) {
-                String nombre = nombresUnidades.get(j);
-                String equip = equipsUnidades.get(j);                
-                String linea = String.format("[%d] %-15s (%s)", i++, nombre, equip);
 
-                System.out.printf("║ %s%-35s%s ║%n", bandoColor, linea, Colores.RESET);
-            }
-            System.out.println("╚═════════════════════════════════════╝");
-                    
-            int idx = leerEnteroEnRango("Opción", 0, nombresUnidades.size());
-            
-            return idx; 
+        List<String> lineas = new ArrayList<>();
+
+        lineas.add("Jugador: " + bandoColor + bandoNombre + Colores.RESET);
+        lineas.add("─");
+        lineas.add("[0] TERMINAR FASE DE DESPLIEGUE");
+
+        for (int i = 0; i < nombresUnidades.size(); i++) {
+            String nombre = nombresUnidades.get(i);
+            String equip  = equipsUnidades.get(i);
+
+            lineas.add(String.format("[%d] %s%s (%s)%s", i + 1, bandoColor, nombre, equip, Colores.RESET));    
+        }
+
+        imprimirCajaConBloques("Desplegar Unidades de Reserva", lineas);
+
+        int idx = leerEnteroEnRango("Opción", 0, nombresUnidades.size());
+    
+        return idx;
     }
 
     public boolean pedirConfirmacion(String prompt) {
@@ -104,10 +102,9 @@ public void mostrar() {
             String linea = in.nextLine().trim().toLowerCase();
             if (linea.equals("s")) return true;
             if (linea.equals("n")) return false;
-            System.out.println(Colores.WARNING + "Respuesta inválida. Intente de nuevo." + Colores.RESET);
+            System.out.println(Colores.WARNING + "Respuesta inválida." + Colores.RESET);
         }
     }
-
 
     private int leerEnteroEnRango(String etiqueta, int min, int max) {
         while (true) {
@@ -125,19 +122,20 @@ public void mostrar() {
 
     private String pedirArchivo(String titulo, String resourceDir) {
         List<String> archivos = listarRecursosCSV(resourceDir);
+
         if (archivos.isEmpty()) {
             throw new IllegalStateException("No hay CSV en " + resourceDir +
                     " (revisá src/main/resources/" + resourceDir + ")");
         }
-        String tituloCaja = String.format(" ELEGIR %S ", titulo.toUpperCase());
-        System.out.printf("\n╔═══════════════%s═════════════╗%n", tituloCaja);
 
+        List<String> opciones = new ArrayList<>();
         for (int i = 0; i < archivos.size(); i++) {
-            String nombre = archivos.get(i).substring(resourceDir.length() + 1);
-            String linea = String.format("[%d] %s", i + 1, nombre);
-            System.out.printf("║ %-38s  ║%n", linea);
+            opciones.add(String.format("[%d] %s",
+                    i + 1,
+                    archivos.get(i).substring(resourceDir.length() + 1)));
         }
-        System.out.println("╚═════════════════════════════════════════╝");
+
+        imprimirCajaOpciones("Elegir " + titulo, opciones);
 
         int idx = leerEnteroEnRango("Opción", 1, archivos.size());
         return archivos.get(idx - 1);
@@ -178,5 +176,107 @@ public void mostrar() {
     public void mostrarTablero(String tableroRenderizado) {
         System.out.println("\n═══════════════ TABLERO ═══════════════");
         System.out.println(tableroRenderizado);
+    }
+
+    private void imprimirCajaOpciones(String titulo, List<String> lineas) {
+        String tituloTxt = " " + titulo.toUpperCase() + " ";
+
+        int ancho = tituloTxt.length();
+        for (String l : lineas) {
+            ancho = Math.max(ancho, limpiarANSI(l).length());
+        }
+
+        String arriba = "╔" + "═".repeat(ancho) + "╗";
+        String titul = "║" + centrar(tituloTxt, ancho) + "║";
+        String sep = "║" + "─".repeat(ancho) + "║";
+        String abajo = "╚" + "═".repeat(ancho) + "╝";
+
+        System.out.println();
+        System.out.println(arriba);
+        System.out.println(titul);
+        System.out.println(sep);
+
+        for (String l : lineas) {
+            String clean = limpiarANSI(l);
+            System.out.println("║" + l + " ".repeat(ancho - clean.length()) + "║");
+        }
+
+        System.out.println(abajo);
+    }
+
+    private void imprimirCajaConBloques(String titulo, List<String> lineas) {
+        String tituloTxt = " " + titulo.toUpperCase() + " ";
+
+        int ancho = tituloTxt.length();
+        for (String l : lineas) {
+            if (!l.equals("─"))
+                ancho = Math.max(ancho, limpiarANSI(l).length());
+        }
+
+        String arriba = "╔" + "═".repeat(ancho) + "╗";
+        String titul = "║" + centrar(tituloTxt, ancho) + "║";
+        String sep = "║" + "─".repeat(ancho) + "║";
+        String abajo = "╚" + "═".repeat(ancho) + "╝";
+
+        System.out.println();
+        System.out.println(arriba);
+        System.out.println(titul);
+        System.out.println(sep);
+
+        for (String l : lineas) {
+            if (l.equals("─")) {
+                System.out.println(sep);
+                continue;
+            }
+
+            String limpio = limpiarANSI(l);
+            System.out.println("║" + l + " ".repeat(ancho - limpio.length()) + "║");
+        }
+
+        System.out.println(abajo);
+    }
+
+    private void imprimirCajaCompleta(String titulo, List<String> lineas) {
+        String tituloTxt = " " + titulo.toUpperCase() + " ";
+
+        int ancho = tituloTxt.length();
+        for (String l : lineas) {
+            if (!l.equals("─"))
+                ancho = Math.max(ancho, limpiarANSI(l).length());
+        }
+
+        String arriba    = "╔" + "═".repeat(ancho) + "╗";
+        String titul  = "║" + centrar(tituloTxt, ancho) + "║";
+        String sep    = "╠" + "═".repeat(ancho) + "╣";
+        String abajo = "╚" + "═".repeat(ancho) + "╝";
+
+        System.out.println();
+        System.out.println(arriba);
+        System.out.println(titul);
+        System.out.println(sep);
+
+        for (String l : lineas) {
+
+            if (l.equals("─")) {
+                System.out.println(sep);
+                continue;
+            }
+
+            String limpio = limpiarANSI(l);
+            System.out.println("║" + l + " ".repeat(ancho - limpio.length()) + "║");
+        }
+
+        System.out.println(abajo);
+    }
+
+    private String limpiarANSI(String text) {
+        return text.replaceAll("\u001B\\[[;\\d]*m", "");
+    }
+
+    private String centrar(String s, int ancho) {
+        int espacios = ancho - s.length();
+        int izq = espacios / 2;
+        int der = espacios - izq;
+        return " ".repeat(izq) + s + " ".repeat(der);
     }
 }
