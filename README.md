@@ -25,6 +25,7 @@ TP2/
  ├── UML_MAIN.png
  ├── UML_MODELO.png
  ├── UML_VISTA.png
+ ├── SECUENCIA_ATACAR_CURAR.png
  └── README.md
  └── Informe.pdf
 ```
