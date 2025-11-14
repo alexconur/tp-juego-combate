@@ -27,7 +27,7 @@ TP2/
  ├── UML_VISTA.png
  ├── SECUENCIA_ATACAR_CURAR.png
  └── README.md
- └── Informe.pdf
+ └── TP2-2025c2.pdf
 ```
 
 ## Requisitos

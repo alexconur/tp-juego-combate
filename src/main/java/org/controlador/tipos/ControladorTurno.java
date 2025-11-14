@@ -23,6 +23,7 @@ import org.modelo.tablero.Tablero;
 import org.modelo.unidades.Bando;
 import org.modelo.unidades.Unidad;
 import org.vista.tipos.VistaTurno;
+
 public class ControladorTurno implements Controlador {
     private final Juego juego;
     private final VistaTurno vTurno;
